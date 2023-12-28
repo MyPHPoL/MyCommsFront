@@ -1,15 +1,36 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import ServerList from './ServerList';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
+
+export const servers = [
+  {
+    id: 'id-test',
+    name: 'MyCommsFront',
+    description: 'A React client powered by MyPHPoL',
+    ownerId: 'ownerId-test'
+  },
+  {
+    id: 'id-test2',
+    name: 'server2',
+    description: 'A React client powered by MyPHPoL',
+    picture: 'https://cdn.7tv.app/emote/63eba1b7b482c20fd932a293/4x.png',
+    ownerId: 'ownerId-test2'
+  }
+];
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <ServerList servers={servers} ></ServerList>
   </React.StrictMode>
 );
 
