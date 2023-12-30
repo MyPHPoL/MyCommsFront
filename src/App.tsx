@@ -1,13 +1,56 @@
-import React from 'react';
-import './App.css';
+import Header from "./Components/Header";
+import { ServerProps } from "./Components/Server";
+import { UserProps } from "./Components/User";
 
-function App() {
-  return (
-  <div>
-      <h1>Welcome to MyCommsFront</h1>
-      <h1>A React client powered by MyPHPoL</h1>
-  </div>
-  );
+export const servers: ServerProps[] = [
+    {
+      id: 'id-test',
+      name: 'MyCommsFront',
+      description: 'A React client powered by MyPHPoL',
+      ownerId: 'ownerId-test'
+    },
+    {
+      id: 'id-test2',
+      name: 'server2',
+      description: 'Opis servera2',
+      picture: 'https://cdn.7tv.app/emote/63eba1b7b482c20fd932a293/4x.png',
+      ownerId: 'ownerId-test2'
+    },
+    {
+      id: 'id-test2',
+      name: 'getto',
+      description: 'Opis servera2',
+      picture: 'https://cdn.frankerfacez.com/emoticon/513200/4',
+      ownerId: 'ownerId-test2'
+    },
+    {
+      id: 'id-test',
+      name: 'MyCommsFront',
+      description: 'A React client powered by MyPHPoL',
+      ownerId: 'ownerId-test'
+    },
+  ];
+
+export const friends: UserProps[] = [
+    {
+      id: '1',
+      name: 'test user',
+      picture: 'https://cdn.7tv.app/emote/639938bf1e2f45552fe4fa03/4x.png',
+      creationDate: new Date(),
+    },
+    {
+      id: '2',
+      name: 'test user2',
+      creationDate: new Date(),
+    },
+  ];
+
+function App(){
+    return (
+        <div>
+          <Header></Header>
+        </div>
+    );
 }
 
 export default App;

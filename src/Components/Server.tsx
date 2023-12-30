@@ -1,8 +1,7 @@
 import React from "react";
-import "./index.css";
-import Button from '@mui/material/Button';
+import "../index.css";
 
-interface ServerProps {
+export interface ServerProps {
     id: string;
     name: string;
     description?: string;
@@ -13,8 +12,6 @@ interface ServerProps {
 export default function Server({id, name, description, picture, ownerId}: ServerProps) {
 
 return(
-	<div style={{margin: '20px'}}>
-        <Button size="medium" variant="contained">{name}</Button>
-	</div>
+    <div></div>
       );
 };
