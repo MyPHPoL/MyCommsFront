@@ -9,5 +9,4 @@ npm start
 
 ## Used Libraries
 - mui
-- stylised components (needs to be deleted)
 - tailwind
