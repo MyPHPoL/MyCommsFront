@@ -1,5 +1,5 @@
 import { Avatar } from "@mui/material";
-import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
+import { Route, Link, Routes } from 'react-router-dom';
 import React from "react";
 import Sidebar from "./Sidebar";
 import { servers } from "../App";
@@ -7,7 +7,7 @@ import { friends } from "../App";
 
 function Header() {
     return (
-        <Router>
+        <div>
             <nav className="h-20 w-full fixed bg-primary">
                 <label className="text-white text-3xl font-bold leading-[80px] pl-12">MyCommsPoL</label>
                 <ul className="float-right mr-10 flex leading-[80px] space-x-4 text-white uppercase">
@@ -17,10 +17,10 @@ function Header() {
                 </ul>
             </nav>
             <Routes>
-                <Route path="/Servers" element={<Sidebar items={servers} />} />
-                <Route path="/Friends" element={<Sidebar items={friends} />} />
+                <Route path="/Servers/*" element={<Sidebar items={servers} />} />
+                <Route path="/Friends/*" element={<Sidebar items={friends} />} />
             </Routes>
-        </Router>
+        </div>
     );
 }
 

@@ -17,14 +17,14 @@ export const servers: ServerProps[] = [
       ownerId: 'ownerId-test2'
     },
     {
-      id: 'id-test2',
+      id: 'id-test3',
       name: 'getto',
       description: 'Opis servera2',
       picture: 'https://cdn.frankerfacez.com/emoticon/513200/4',
       ownerId: 'ownerId-test2'
     },
     {
-      id: 'id-test',
+      id: 'id-test4',
       name: 'MyCommsFront',
       description: 'A React client powered by MyPHPoL',
       ownerId: 'ownerId-test'
