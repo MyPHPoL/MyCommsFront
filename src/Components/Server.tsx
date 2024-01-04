@@ -10,15 +10,14 @@ export interface ServerProps {
     ownerId: string;
 }
 
-
 function Server() {
-    let { id } = useParams();
-    return(
-    // Now you can use this id to fetch server data or do something else
-    <div className='align-middle text-white'>
-        <h1>Server {id}</h1>
-    </div>
-    );
+    const { ServerId } = useParams();
+    console.log(ServerId);
+    return (
+        <div className='text-white size-11 left-10 top-10'>
+            {ServerId}
+        </div>
+      );
   };
 
 export default Server;

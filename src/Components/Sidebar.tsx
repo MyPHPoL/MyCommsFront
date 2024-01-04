@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Link, Routes } from 'react-router-dom';
+import { Route, Link, Routes, Outlet } from 'react-router-dom';
 import { IoAdd } from "react-icons/io5";
 import { IoMdCreate } from "react-icons/io";
 import Server from './Server';
@@ -10,14 +10,14 @@ interface SidebarProps {
 
 export default function Sidebar({items}: SidebarProps) {
     return(
-        <div>
+        <div className='fixed h-full w-full'>
             <div className="fixed h-full top-20 left-0 w-31 flex flex-col bg-primary shadow-lg">
                 <ul className='m-4 first:my-0 last:my-0'>
-                    {items.map((el) =>
-                        <li key={el.id}>
-                            <Link to={el.id}><ServerButton name={el.name} picture={el.picture} /></Link>
+                    {items.map((({id, name, picture}) =>
+                        <li key={id}>
+                            <Link to={id}><ServerButton name={name} picture={picture} /></Link>
                         </li>
-                    )}
+                    ))}
                 </ul>
                     <hr className="w-14 h-1 mx-auto my-4 bg-gray-100 border-0 rounded dark:bg-gray-700"></hr>
                 <ul className='m-4 first:my-0 last:my-0'>
@@ -26,7 +26,7 @@ export default function Sidebar({items}: SidebarProps) {
                 </ul>
             </div>
             <Routes>
-                <Route path='/Servers/*' element={<Server />} />
+                <Route path='/:ServerId' element={<Server />} />
             </Routes>
         </div>
     );
