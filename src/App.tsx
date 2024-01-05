@@ -1,3 +1,4 @@
+import { Outlet } from "react-router-dom";
 import Header from "./Components/Header";
 import { ServerProps } from "./Components/Server";
 import { UserProps } from "./Components/User";
@@ -47,8 +48,9 @@ export const friends: UserProps[] = [
 
 function App(){
     return (
-        <div>
+        <div className="flex">
           <Header></Header>
+          <Outlet/>
         </div>
     );
 }

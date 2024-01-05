@@ -4,7 +4,6 @@ import React from "react";
 import Sidebar from "./Sidebar";
 import { servers } from "../App";
 import { friends } from "../App";
-import Server from "./Server";
 
 function Header() {
     return (
