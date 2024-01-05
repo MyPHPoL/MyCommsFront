@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Link, Routes } from 'react-router-dom';
+import { Route, Link, Routes, Outlet } from 'react-router-dom';
 import { IoAdd } from "react-icons/io5";
 import { IoMdCreate } from "react-icons/io";
 import Server from './Server';
@@ -13,11 +13,11 @@ export default function Sidebar({items}: SidebarProps) {
         <div>
             <div className="fixed h-full top-20 left-0 w-31 flex flex-col bg-primary shadow-lg">
                 <ul className='m-4 first:my-0 last:my-0'>
-                    {items.map((el) =>
-                        <li key={el.id}>
-                            <Link to={el.id}><ServerButton name={el.name} picture={el.picture} /></Link>
+                    {items.map((({id, name, picture}) =>
+                        <li key={id}>
+                            <Link to={id}><ServerButton name={name} picture={picture} /></Link>
                         </li>
-                    )}
+                    ))}
                 </ul>
                     <hr className="w-14 h-1 mx-auto my-4 bg-gray-100 border-0 rounded dark:bg-gray-700"></hr>
                 <ul className='m-4 first:my-0 last:my-0'>
@@ -26,7 +26,7 @@ export default function Sidebar({items}: SidebarProps) {
                 </ul>
             </div>
             <Routes>
-                <Route path='/Servers/*' element={<Server />} />
+                <Route path='/:ServerId' element={<Server />} />
             </Routes>
         </div>
     );
@@ -42,7 +42,7 @@ const IconButton = ({icon, name}: IconButtonProps) => (
     <div className='font-semibold relative flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto bg-secondary group hover:bg-yellow-500 text-white hover:text-primary hover:rounded-xl rounded-3xl transition-all duration-300 ease-linear cursor-pointer shadow-lg;'>
         {icon}
 
-        <span className='group-hover:scale-100 absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-left;'>
+        <span className='group-hover:scale-100 z-50 absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-left;'>
             {name}
         </span>
     </div>
