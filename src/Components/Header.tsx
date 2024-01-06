@@ -2,8 +2,7 @@ import { Avatar } from "@mui/material";
 import { Route, Link, Routes } from 'react-router-dom';
 import React from "react";
 import Sidebar from "./Sidebar";
-import { servers } from "../App";
-import { friends } from "../App";
+import { servers, friends } from "../fakedb";
 
 function Header() {
     return (
