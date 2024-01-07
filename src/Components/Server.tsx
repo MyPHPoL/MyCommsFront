@@ -64,16 +64,18 @@ function Server() {
   );
 }
 
-export default Server;
-
+// button that redirects to a specific channel
 const ChannelButton = ({ name }: { name: string }) => (
   <div className="bg-secondary hover:brightness-75 text-gray-300 font-semibold py-2 px-4 border border-gray-300 rounded-full shadow w-full justify-self-center">
     {name}
   </div>
 );
 
+// same as channel button but with dashed border
 const NewChannelButton = ({ text }: { text: string }) => (
   <div className="bg-secondary hover:brightness-75 text-gray-300 font-semibold py-2 px-4 border border-dashed border-gray-300 rounded-full shadow w-full justify-self-center">
     {text}
   </div>
 );
+
+export default Server;
