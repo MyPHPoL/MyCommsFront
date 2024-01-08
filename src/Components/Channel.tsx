@@ -4,7 +4,6 @@ import { RiAttachment2 } from "react-icons/ri";
 import { FaRegSmile } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
 import { HiGif } from "react-icons/hi2";
-import ScrollToBottom from 'react-scroll-to-bottom';
 
 export interface ChannelProps {
   id: string;
@@ -21,6 +20,7 @@ export interface MessageProps {
 }
 
 class ChannelClass extends React.Component<{ChannelId: string}, any> {
+  chatWindowRef = React.createRef<HTMLDivElement>();
   state = {
     channelId: this.props.ChannelId as string,
     channel: channels.find((channel) => channel.id === this.props.ChannelId) as ChannelProps,
@@ -30,7 +30,13 @@ class ChannelClass extends React.Component<{ChannelId: string}, any> {
   addMessage = (message: MessageProps) => {
     this.setState((prevState: { messages: MessageProps[]; }) => ({
       messages: [...prevState.messages, message]
-    }));
+    }),
+    () => {
+      if (this.chatWindowRef.current) {
+        this.chatWindowRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    );
   };
 
   render() {
@@ -40,7 +46,7 @@ class ChannelClass extends React.Component<{ChannelId: string}, any> {
         <div className='text-5xl shadow-sg tracking-wider font-semibold text-white ml-2'>
           {this.state.channel?.name} | {this.state.channel?.description}
         </div>
-        <ScrollToBottom className='items-center mt-0 ml-0 mx-auto px-0 pb-16 overflow-y-hidden'>
+        <div className='items-center mt-0 ml-0 mx-auto px-0 pb-16 overflow-y-auto'>
           {messages.map(({ id, author, content, timestamp }) => (
             <Message
               key={id}
@@ -50,7 +56,8 @@ class ChannelClass extends React.Component<{ChannelId: string}, any> {
               timestamp={timestamp}
             />
           ))}
-        </ScrollToBottom>
+          <div ref={this.chatWindowRef} />
+        </div>
         <TextBar addMessage={this.addMessage}/>
       </div>
     );
