@@ -1,9 +1,9 @@
-import Header from "./Components/Header";
+import MainPage from "./Pages/MainPage";
 
 function App(){
     return (
-        <div className="flex">
-          <Header></Header>
+        <div>
+          <MainPage/>
         </div>
     );
 }

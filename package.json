@@ -48,6 +48,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-scroll-to-bottom": "^4.2.4",
     "tailwindcss": "^3.4.0"
   }
 }
