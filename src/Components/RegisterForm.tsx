@@ -48,10 +48,10 @@ const RegisterForm = () => {
                         <FaLock className='icon' />
                     </div>
                     {!passwordsMatch && <p className="text-center pb-10">Passwords do not match</p>}
-                    <button type="submit" className="btn">Register</button>
+                    <button type="submit" className="btn w-full h-11 bg-white border-none outline-none rounded-s-3xl rounded-e-3xl shadow cursor-pointer text-base text-slate-800 font-bold">Register</button>
 
-                    <div className="register-link">
-                        <p>Already a MyPhPol community member?<br></br><a href="#">Login</a></p>
+                    <div className="register-link text-sm text-center mt-5 mb-4">
+                        <p className='text-white no-underline font-semibold'>Already a MyPhPol community member?<br></br><a className='text-white no-underline font-semibold hover:underline' href="#">Login</a></p>
                     </div>
                 </form>
             </div>
