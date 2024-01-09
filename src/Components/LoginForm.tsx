@@ -3,7 +3,7 @@ import './LoginForm.css';
 import { FaUser, FaLock } from "react-icons/fa";
 const LoginForm = () => {
     return (
-        <body className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-cover">
+        <body className="bg-gradient-to-r from-main to-second bg-cover">
         <div className="box">
             <form action="">
                 <h1>Login</h1>
@@ -19,7 +19,7 @@ const LoginForm = () => {
                 <button type="submit" className="btn">Login</button>
 
                 <div className="register-link">
-                    <p>Not a MyPhPol community member?<a href="#">Register</a></p>
+                    <p>Not a MyPhPol community member?<br></br><a href="#">Register</a></p>
                 </div>
             </form>
         </div>
