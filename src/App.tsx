@@ -1,9 +1,11 @@
 import MainPage from "./Pages/MainPage";
 import LoginForm from "./Components/LoginForm";
+import RegisterForm from "./Components/RegisterForm";
 function App(){
     return (
         <div>
-          <LoginForm/>
+          <RegisterForm/>
+          {/* <LoginForm/> */}
           {/*<MainPage/>*/} 
         </div>
     );
