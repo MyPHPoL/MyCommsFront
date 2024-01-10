@@ -5,8 +5,8 @@ function App(){
     return (
         <div>
           {/* <RegisterForm/> */}
-          <LoginForm/>
-          {/*<MainPage/>*/} 
+          {/* <LoginForm/> */}
+          <MainPage/> 
         </div>
     );
 }
