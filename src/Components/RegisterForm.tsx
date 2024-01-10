@@ -23,7 +23,7 @@ const RegisterForm = () => {
 
     return (
         <body className="bg-gradient-to-r from-main to-second bg-cover flex justify-center items-center min-h-screen min-w-screen">
-            <div className="box w-[26rem] bg-transparent backdrop-blur-xl text-white rounded-lg pt-7 pb-7 pl-10 pr-10 border-2 border-solid border-slate-600">
+            <div className="w-[26rem] bg-transparent backdrop-blur-xl text-white rounded-lg pt-7 pb-7 pl-10 pr-10 border-2 border-solid border-slate-600">
                 <form action="">
                     <h1 className='text-4xl	text-center font-semibold'>Register</h1>
                     <div className="relative w-full h-12 mt-7">

@@ -4,8 +4,8 @@ import RegisterForm from "./Components/RegisterForm";
 function App(){
     return (
         <div>
-          <RegisterForm/>
-          {/* <LoginForm/> */}
+          {/* <RegisterForm/> */}
+          <LoginForm/>
           {/*<MainPage/>*/} 
         </div>
     );
