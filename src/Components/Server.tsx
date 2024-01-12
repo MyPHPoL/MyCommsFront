@@ -20,7 +20,7 @@ function Server() {
     (channel) => channel.serverId === ServerId
   );
   return (
-    <div className="md:flex h-full w-[300px] -z-20 flex-col fixed inset-y-0 top-20 left-20 bg-tertiary">
+    <div className="md:flex h-full w-[300px] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary">
       <div className="flex items-center text-white text-3xl m-2 truncate h-10">
         {Server?.picture ? (
           <img src={Server?.picture} alt="No img" className="w-10 h-10 mr-2" />

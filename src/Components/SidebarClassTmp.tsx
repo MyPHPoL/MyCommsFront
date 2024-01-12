@@ -19,13 +19,7 @@ class SidebarClassTmp extends React.Component< {Items: SidebarProps}, any> {
               <div className='fixed h-full top-20 left-0 w-31 flex flex-col bg-primary'>
                 <ul className='m-4 first:my-0 last:my-0'>
                 // ???? No idea what map is doing here
-                  {this.state.items?.map(({ id, name, picture }) => (
-                    <li key={id}>
-                      <Link to={id}>
-                        <ServerButton name={name} picture={picture} />
-                      </Link>
-                    </li>
-                  ))}
+               
                 </ul>
                 <hr className='w-14 h-1 mx-auto my-4 border-0 rounded bg-gray-700'></hr>
                 <ul className='m-4 first:my-0 last:my-0'>
