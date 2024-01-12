@@ -8,34 +8,37 @@ interface SidebarProps {
   items: any[];
 }
 
-export default function Sidebar({ items }: SidebarProps) {
-  return (
-    <div>
-      <div className='h-auto w-auto flex flex-row bg-primary'>
-      <ul className='first:my-0 last:my-0 flex flex-row'>
-          <i>
-            <IconButton icon={<IoMdAdd />} name={"Join Server"} />
-          </i>
-          <i>
-            <IconButton icon={<IoMdCreate />} name={"Create Server"} />
-          </i>
-        </ul>
-        <ul className='m-4 first:my-0 last:my-0 flex flex-row'>
-          {items.map(({ id, name, picture }) => (
-            <li key={id}>
-              <Link to={id}>
-                <ServerButton name={name} picture={picture} />
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <Routes>
-        <Route path='/:ServerId/*' element={<Server />} />
-      </Routes>
-    </div>
-  );
-}
+
+class SidebarClassTmp extends React.Component< {Items: SidebarProps}, any> {
+    state ={
+        items: this.props.Items
+    }
+    render() {
+        return (
+            <div>
+              <div className='fixed h-full top-20 left-0 w-31 flex flex-col bg-primary'>
+                <ul className='m-4 first:my-0 last:my-0'>
+                // ???? No idea what map is doing here
+               
+                </ul>
+                <hr className='w-14 h-1 mx-auto my-4 border-0 rounded bg-gray-700'></hr>
+                <ul className='m-4 first:my-0 last:my-0'>
+                  <i>
+                    <IconButton icon={<IoMdAdd />} name={"Join Server"} />
+                  </i>
+                  <i>
+                    <IconButton icon={<IoMdCreate />} name={"Create Server"} />
+                  </i>
+                </ul>
+              </div>
+              <Routes>
+                <Route path='/:ServerId/*' element={<Server />} />
+              </Routes>
+            </div>
+          );
+        }
+    }
+
 
 interface IconButtonProps {
   icon: any;
@@ -90,7 +93,7 @@ const ServerButton = ({ name, picture }: ServerButtonProps) => (
       name[0].toUpperCase()
     )}
 
-    <span className='group-hover:scale-100 z-50 absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-left'>
+    <span className='group-hover:scale-100 absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-gray-900 text-xs font-semibold transition-all duration-100 scale-0 origin-left'>
       {name}
     </span>
   </div>

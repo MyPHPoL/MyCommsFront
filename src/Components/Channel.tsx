@@ -42,7 +42,7 @@ class ChannelClass extends React.Component<{ChannelId: string}, any> {
   render() {
     const { messages } = this.state;
     return (
-      <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[380px]'>
+      <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[320px]'>
         <div className='text-5xl shadow-sg tracking-wider font-semibold text-white ml-2'>
           {this.state.channel?.name} | {this.state.channel?.description}
         </div>
@@ -91,7 +91,7 @@ const TextBar = ({ addMessage }: { addMessage: (message: MessageProps) => void }
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className='flex flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 left-[380px] shadow-lg bg-gray-600 px-2 h-12 m-2 mx-4'>
+    <form onSubmit={handleFormSubmit} className='flex flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 left-[320px] shadow-lg bg-gray-600 px-2 h-12 m-2 mx-4'>
       <button>
         <RiAttachment2 size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
