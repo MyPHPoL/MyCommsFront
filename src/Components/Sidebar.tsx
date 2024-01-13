@@ -2,6 +2,8 @@ import React from "react";
 import { Route, Link, Routes } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
 import { IoMdCreate } from "react-icons/io";
+
+
 import Server from "./Server";
 
 interface SidebarProps {
@@ -13,7 +15,7 @@ export default function Sidebar({ items }: SidebarProps) {
     <div>
       <div className='h-auto w-auto flex flex-row bg-primary'>
       <ul className='first:my-0 last:my-0 flex flex-row'>
-          <i>
+          <i className="mr-1">
             <IconButton icon={<IoMdAdd />} name={"Join Server"} />
           </i>
           <i>
@@ -22,7 +24,7 @@ export default function Sidebar({ items }: SidebarProps) {
         </ul>
         <ul className='m-4 first:my-0 last:my-0 flex flex-row'>
           {items.map(({ id, name, picture }) => (
-            <li key={id}>
+            <li className="mr-1" key={id}>
               <Link to={id}>
                 <ServerButton name={name} picture={picture} />
               </Link>
