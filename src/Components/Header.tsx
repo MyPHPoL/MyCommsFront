@@ -15,8 +15,8 @@ function Header() {
                 <ul className="float-left  flex leading-[80px] text-white uppercase">
                     <li className="float-left text-white text-3xl font-bold leading-[80px] pl-12">TestUsername</li>
                     <li className="relative flex items-center justify-center mx-4"><Avatar alt='test user' src="https://cdn.7tv.app/emote/6362932bbb563bf696e11394/4x.webp" sx={{ width: 56, height: 56 }} /></li>
-                    <li className="relative flex items-center justify-center mx-auto mr-1"><Link to="/Servers" onClick={() => setActiveSidebar('servers')}><IconButton icon={<IoServer size={30}/>} name="ServerList"></IconButton></Link></li>
-                    <li className="relative flex items-center justify-center mx-auto"><Link to="/Friends" onClick={() => setActiveSidebar('friends')}><IconButton icon={<FaUserFriends size={30}/>} name="FriendList"></IconButton></Link></li>
+                    <li className="relative flex items-center justify-center mx-auto mr-1"><a onClick={() => setActiveSidebar('servers')}><IconButton icon={<IoServer size={30}/>} name="ServerList"></IconButton></a></li>
+                    <li className="relative flex items-center justify-center mx-auto"><a onClick={() => setActiveSidebar('friends')}><IconButton icon={<FaUserFriends size={30}/>} name="FriendList"></IconButton></a></li>
                     <label  style={{borderRight: '2px solid grey', borderRadius: '50%', margin: '15px'}}></label>
                 </ul>
 
