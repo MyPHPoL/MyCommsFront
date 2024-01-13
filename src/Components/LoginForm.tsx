@@ -4,7 +4,7 @@ import { Link, Route, Routes } from 'react-router-dom';
 import RegisterPage from '../Pages/RegisterPage';
 const LoginForm = () => {
     return (
-        <body className="w-full h-full bg-gradient-to-r from-main to-second bg-cover flex justify-center items-center min-h-screen min-w-screen">
+        <div className="w-full h-full bg-gradient-to-r from-main to-second bg-cover flex justify-center items-center min-h-screen min-w-screen z-90">
         <div className="w-[26rem] bg-transparent backdrop-blur-xl text-white rounded-lg pt-7 pb-7 pl-10 pr-10 border-2 border-solid border-slate-600">
             <form action="">
                 <h1 className='text-4xl	text-center font-semibold'>Login</h1>
@@ -29,7 +29,7 @@ const LoginForm = () => {
         <Routes>
                 <Route path="/Register" element={<RegisterPage />} />
         </Routes>
-        </body>
+        </div>
     );
 }
 
