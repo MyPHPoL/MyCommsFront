@@ -19,7 +19,7 @@ function Header() {
                     <li className="relative flex items-center justify-center mx-auto"><Link to="/Friends" onClick={() => setActiveSidebar('friends')}><IconButton icon={<FaUserFriends size={30}/>} name="FriendList"></IconButton></Link></li>
                     <label  style={{borderRight: '2px solid grey', borderRadius: '50%', margin: '15px'}}></label>
                 </ul>
-
+                
                 <div className="my-2">
                 {activeSidebar === 'servers' && <Sidebar items={servers} />}
                 {activeSidebar === 'friends' && <Sidebar items={friends} />}

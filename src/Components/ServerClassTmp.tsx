@@ -55,11 +55,7 @@ class ServerClassTmp extends React.Component<{ServerId: string}, any> {
                 </li>
             ))}
             </ul>
-            <div className="justify-center flex flex-col m-1">
-            <button>
-                <NewChannelButton text={"Add Channel"}></NewChannelButton>
-            </button>
-            </div>
+            
             <Routes>
             <Route path="/:ChannelId/*" element={<Channel />} />
             </Routes>

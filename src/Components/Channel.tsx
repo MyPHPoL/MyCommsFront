@@ -42,7 +42,7 @@ class ChannelClass extends React.Component<{ChannelId: string}, any> {
   render() {
     const { messages } = this.state;
     return (
-      <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[320px]'>
+      <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[320px] '>
         <div className='text-5xl shadow-sg tracking-wider font-semibold text-white ml-2'>
           {this.state.channel?.name} | {this.state.channel?.description}
         </div>

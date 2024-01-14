@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaUser, FaLock, FaEnvelope, FaEye } from "react-icons/fa";
 import { Link, Route, Routes } from "react-router-dom";
 import LoginPage from "../Pages/LoginPage";
-//import axios from "../api/axios";
+import axios from "../api/axios";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/; // 3 to 23 characters, letters, numbers, underscores, hyphens allowed
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,32}$/; // 8 to 32 characters, must include uppercase and lowercase letters, a number and a special character

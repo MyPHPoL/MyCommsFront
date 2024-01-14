@@ -35,7 +35,6 @@ export default function Sidebar({ items }: SidebarProps) {
       </div>
       <Routes>
         <Route path='/:ServerId/*' element={<Server />} />
-        <Route path='/:ServerId/*' element={<ServerMembers />} />
       </Routes>
     </div>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from 'react';
 import { Link, Route, Routes, useParams } from "react-router-dom";
 import "../index.css";
 import { serverChannels, users, servers } from "../fakedb";
@@ -18,6 +18,7 @@ function Server() {
   const { ServerId } = useParams();
   const Server = servers.find((server) => server.id === ServerId);
   const ServerOwner = users.find((user) => user.id === Server?.ownerId);
+  const [showMembers, setShowMembers] = useState(false);
   const Channels = serverChannels.find(
     (channel) => channel.serverId === ServerId
   );
@@ -60,16 +61,19 @@ function Server() {
         </button>
       </div>
       <div className="justify-center flex flex-col m-1">
-        <Link to={`/${ServerId}/ServerMembers`}>
-          <button>
-            <NewChannelButton text={"Show Members"}></NewChannelButton>
-          </button>
-        </Link>
+      <div className="justify-center flex flex-col m-1">
+        <button onClick={() => setShowMembers(!showMembers)}>
+            <ChannelButton name='ShowMembers'></ChannelButton>
+        </button>
+        {showMembers && <ServerMembers/>}
       </div>
-      <Routes>
-        <Route path="/:ChannelId/*" element={<Channel />} />
-        <Route path="/:ServerId/*" element={<ServerMembers />} />
-      </Routes>
+      </div>
+      <div className={showMembers ? 'right-[0%]' : 'right-[95%]'}>
+        <Routes>
+          <Route path="/:ChannelId/*" element={<Channel />} />
+          <Route path="/:ServerId/*" element={<ServerMembers />} />
+        </Routes>
+  </div>
     </div>
   );
 }
