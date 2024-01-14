@@ -5,6 +5,7 @@ import { IoMdCreate } from "react-icons/io";
 
 
 import Server from "./Server";
+import ServerMembers from "./ServerMembers";
 
 interface SidebarProps {
   items: any[];
@@ -34,6 +35,7 @@ export default function Sidebar({ items }: SidebarProps) {
       </div>
       <Routes>
         <Route path='/:ServerId/*' element={<Server />} />
+        <Route path='/:ServerId/*' element={<ServerMembers />} />
       </Routes>
     </div>
   );

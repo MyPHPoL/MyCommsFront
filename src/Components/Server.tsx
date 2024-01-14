@@ -3,6 +3,7 @@ import { Link, Route, Routes, useParams } from "react-router-dom";
 import "../index.css";
 import { serverChannels, users, servers } from "../fakedb";
 import Channel from "./ChannelParams";
+import ServerMembers from "./ServerMembers";
 
 export interface ServerProps {
   id: string;
@@ -10,6 +11,7 @@ export interface ServerProps {
   description?: string;
   picture?: string;
   ownerId: string;
+  users: any[];
 }
 
 function Server() {
@@ -57,8 +59,16 @@ function Server() {
           <NewChannelButton text={"Add Channel"}></NewChannelButton>
         </button>
       </div>
+      <div className="justify-center flex flex-col m-1">
+        <Link to={`/${ServerId}/ServerMembers`}>
+          <button>
+            <NewChannelButton text={"Show Members"}></NewChannelButton>
+          </button>
+        </Link>
+      </div>
       <Routes>
         <Route path="/:ChannelId/*" element={<Channel />} />
+        <Route path="/:ServerId/*" element={<ServerMembers />} />
       </Routes>
     </div>
   );
