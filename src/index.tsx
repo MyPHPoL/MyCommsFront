@@ -11,6 +11,7 @@ import RegisterPage from './Pages/RegisterPage';
 import LoginPage from './Pages/LoginPage';
 import MainPage from './Pages/MainPage';
 import Server from './Components/Server';
+import Channel from './Components/Channel';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -24,7 +25,8 @@ root.render(
           <Route path="login" element={<LoginPage />} />
           <Route path="home" element={<MainPage />}>
             <Route path="home/:id" element={<Server />} />
-            </Route>
+            <Route path="home/:id/:channel" element={<Channel />} />
+          </Route>
           <Route path="*" element={<App />} />
         </Route>
       </Routes>
