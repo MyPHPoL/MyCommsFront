@@ -11,8 +11,6 @@ const MAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/; // email regex
 const REGISTER_URL = '/Account/Register';
 
 const RegisterForm = () => {
-    const userRef = useRef(null); // set focus on page load
-    const errRef = useRef(null); // set focus on error (for accessibility features)
 
     const [email, setEmail] = useState("");
     const [validEmail, setValidEmail] = useState(false);
@@ -72,7 +70,7 @@ const RegisterForm = () => {
             return;
         }
         try {
-            const response = await axios.post(
+            await axios.post(
                 REGISTER_URL,
                 JSON.stringify({
                     name: username,
@@ -96,7 +94,6 @@ const RegisterForm = () => {
             }
             else{
                 setErrMsg("Something went wrong. Please try again later.");
-
             };
         }; 
     };
@@ -130,14 +127,14 @@ const RegisterForm = () => {
                     <h1 className='text-4xl	text-center font-semibold'>
                         Register
                     </h1>
-                    <p ref={errRef} className={errMsg ? 'bg-red-500 to-black font-bold p-2 mt-7 rounded-s-3xl rounded-e-3xl text-center' : "absolute left-[-9999px]"} aria-live="assertive">{errMsg}</p>
+                    <p className={errMsg ? 'bg-red-500 to-black font-bold p-2 mt-7 rounded-s-3xl rounded-e-3xl text-center' : "absolute left-[-9999px]"} aria-live="assertive">{errMsg}</p>
                     <div className='relative w-full h-12 mt-7'>
                         <input
                             id='email'
                             type='email'
-                            ref={userRef}
                             required
                             placeholder='E-mail'
+                            value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             aria-invalid={validEmail ? "false" : "true"}
                             aria-describedby='emailnote'
@@ -163,6 +160,7 @@ const RegisterForm = () => {
                             autoComplete='off'
                             required
                             placeholder='Username'
+                            value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             aria-invalid={validUsername ? "false" : "true"}
                             aria-describedby='uidnote'
