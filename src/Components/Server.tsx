@@ -2,7 +2,7 @@ import React from "react";
 import { Link, Route, Routes, useParams } from "react-router-dom";
 import "../index.css";
 import { serverChannels, users, servers } from "../fakedb";
-import Channel from "./ChannelParams";
+import Channel from "./Channel";
 
 export interface ServerProps {
   id: string;
