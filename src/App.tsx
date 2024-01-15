@@ -4,7 +4,7 @@ import RegisterPage from "./Pages/RegisterPage";
 function App(){
     return (
         <div>
-          <MainPage/> 
+          <LoginPage/> 
         </div>
     );
 }

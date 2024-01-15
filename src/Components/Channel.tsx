@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { channels, messages } from "../fakedb";
 import { RiAttachment2 } from "react-icons/ri";
 import { FaRegSmile } from "react-icons/fa";
@@ -24,13 +24,22 @@ function Channel() {
   const { ChannelId } = useParams(); // ChannelId is the name of the variable in the URL
   const Channel = channels.find((channel) => channel.id === ChannelId);
   const [Messages, setMessages] = useState(messages || []);
+  const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
+
+  const addMessage = (newMessage: MessageProps) => {
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
+  };
+
+  useEffect(() => {
+    chatWindowRef.current?.scrollIntoView({ behavior: 'smooth' });
+  },);
 
   return (
     <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[320px]'>
-      <div className='text-5xl shadow-sg tracking-wider font-semibold text-white ml-2'>
+      <div className='text-5xl shadow-sg tracking-wider font-semibold text-white ml-2 pb-2'>
         {Channel?.name} | {Channel?.description}
       </div>
-      <div className='items-center mt-0 ml-0 mx-auto px-0 pb-16 overflow-y-auto'>
+      <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16'>
         {Messages.map(({ id, author, content, timestamp }) => (
           <Message
             key={id}
@@ -40,17 +49,18 @@ function Channel() {
             timestamp={timestamp}
           />
         ))}
-      <div/>
+      <div ref={chatWindowRef}/>
       </div>
       <TextBar
-        addMessage={(message: MessageProps) => setMessages([...Messages, message])}
+        addMessage={addMessage}
+        name={Channel?.name || 'this channel' }
       />
     </div>
   );
 }
 
 // input field at the bottom of the page
-const TextBar = ({ addMessage }: { addMessage: (message: MessageProps) => void }) => {
+const TextBar = ({ addMessage, name }: { addMessage: (message: MessageProps) => void, name: string}) => {
   const [inputValue, setInputValue] = useState('');
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,14 +75,13 @@ const TextBar = ({ addMessage }: { addMessage: (message: MessageProps) => void }
     // Create a new message object
     const newMessage: MessageProps = {
       id: 'newid', // replace with a real id
-      author: 'current user', // replace with the current users name
+      author: 'current user', // replace with the current username
       content: inputValue,
       timestamp: new Date().toDateString(),
     };
 
     // Clear the input field and add the new message
     addMessage(newMessage);
-    
     setInputValue('');
   };
 
@@ -85,7 +94,7 @@ const TextBar = ({ addMessage }: { addMessage: (message: MessageProps) => void }
         type='text'
         value={inputValue}
         onChange={handleInputChange}
-        placeholder='Enter message... on'
+        placeholder={`Enter message on ${name}`}
         className='w-full bg-transparent outline-none ml-0 mr-auto text-gray-300 placeholder-gray-500 cursor-text'
       />
       <button>
@@ -102,7 +111,7 @@ const TextBar = ({ addMessage }: { addMessage: (message: MessageProps) => void }
 };
 
 const Message = ({ author, content, timestamp }: MessageProps) => (
-  <div className='w-full flex-row justify-evenly py-4 px-8 m-0 cursor-pointer'>
+  <div className='w-full flex-row justify-evenly py-3 px-8 m-0 cursor-pointer'>
     <div className='flex flex-col justify-start ml-auto;'>
       <p className='text-left font-semibold text-white mr-2 cursor-pointer'>
         {author}
