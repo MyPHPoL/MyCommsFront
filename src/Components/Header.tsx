@@ -28,9 +28,10 @@ function Header() {
                     <li className="relative flex items-center justify-center mx-auto"><a onClick={() => setActiveSidebar('friends')}><IconButton icon={<FaUserFriends size={30}/>} name="FriendList"></IconButton></a></li>
                     <label  style={{borderRight: '2px solid grey', borderRadius: '50%', margin: '15px'}}></label>
                 </ul>
-                <div id="dropdown-menu" className="hidden absolute text-white top-[10px] left-[320px] w-400 border border-gray-900 bg-secondary shadow-md mt-2 rounded-3xl">
-                        <div className="py-4 px-4 cursor-pointer hover:text-primary hover:bg-yellow-500 rounded-t-3xl">Settings</div>
-                        <div className="py-4 px-4 cursor-pointer hover:text-primary hover:bg-yellow-500 rounded-b-3xl text-center">Log out</div>
+                <div id="dropdown-menu" className="hidden divide-y divide-primary absolute text-white top-[40px] left-[315px] w-400 border border-gray-900 bg-secondary shadow-md mt-2 rounded-xl">
+                        <div className="py-2 px-2 cursor-pointer hover:text-primary hover:bg-yellow-500 rounded-t-xl text-center">Settings</div>
+                        <div className="py-2 px-2 cursor-pointer hover:text-primary hover:bg-yellow-500 text-center">test</div>
+                        <div className="py-2 px-2 cursor-pointer hover:text-primary hover:bg-yellow-500 rounded-b-xl text-center">Log out</div>
                       </div>
                 <div className="my-2">
                 {activeSidebar === 'servers' && <Sidebar items={servers} />}
