@@ -11,7 +11,6 @@ import { AuthProvider } from './context/AuthProvider';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-//the route path "*" and / might need changes, but for now it works
 root.render(
     <React.StrictMode>
       <AuthProvider>
