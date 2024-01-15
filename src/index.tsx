@@ -23,10 +23,7 @@ root.render(
         <Route path="/" element={<App />}>
           <Route index element={<RegisterPage />} />
           <Route path="login" element={<LoginPage />} />
-          <Route path="home" element={<MainPage />}>
-            <Route path="home/:id" element={<Server />} />
-            <Route path="home/:id/:channel" element={<Channel />} />
-          </Route>
+          <Route path="home" element={<MainPage />}/>
           <Route path="*" element={<App />} />
         </Route>
       </Routes>
