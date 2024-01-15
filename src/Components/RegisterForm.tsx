@@ -61,13 +61,14 @@ const RegisterForm = () => {
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        // incase JS hack
+
+        // incase JS hack check again if all data is valid
         const v1 = USER_REGEX.test(username);
         const v2 = MAIL_REGEX.test(email);
         const v3 = PWD_REGEX.test(password);
         const v4 = password === repeatPassword;
         if (!v1 || !v2 || !v3 || !v4) {
-            setErrMsg("Did you really think you could outsmart me?"); // xpp
+            setErrMsg("Not all data is valid.");
             return;
         }
         try {
@@ -79,23 +80,26 @@ const RegisterForm = () => {
                     password: password,
                     confirmPassword: repeatPassword,
                 }),
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
             );
-            console.log(JSON.stringify(response.data));
             setSuccess(true);
             // clear input fields
             setEmail("");
             setUsername("");
             setPassword("");
             setRepeatPassword("");
-        } catch (err) {
-            console.log(err);
-        };
-    }; 
+        } catch (error: any) {
+            if(!error?.response){
+                setErrMsg("No server response. Please try again later.");
+            }
+            else if(error.response?.status === 500){
+                setErrMsg("E-mail or username is already taken!");
+            }
+            else{
+                setErrMsg("Something went wrong. Please try again later.");
+
+            };
+        }; 
+    };
 
     return (
         <>
@@ -121,16 +125,17 @@ const RegisterForm = () => {
             </div>
         ) : (
         <div className=' w-full h-full bg-gradient-to-r from-main to-second bg-cover flex justify-center items-center min-h-screen min-w-screen'>
-            <p ref={errRef} className={errMsg ? 'bg-purple-500 to-black font-bold p-2 mb-2' : "absolute left-[-9999px]"}>{errMsg}</p>
             <div className='w-[26rem] bg-transparent backdrop-blur-xl text-white rounded-lg pt-7 pb-7 pl-10 pr-10 border-2 border-solid border-slate-600'>
                 <form onSubmit={handleSubmit}>
                     <h1 className='text-4xl	text-center font-semibold'>
                         Register
                     </h1>
+                    <p ref={errRef} className={errMsg ? 'bg-red-500 to-black font-bold p-2 mt-7 rounded-s-3xl rounded-e-3xl text-center' : "absolute left-[-9999px]"} aria-live="assertive">{errMsg}</p>
                     <div className='relative w-full h-12 mt-7'>
                         <input
                             id='email'
                             type='email'
+                            ref={userRef}
                             required
                             placeholder='E-mail'
                             onChange={(e) => setEmail(e.target.value)}
