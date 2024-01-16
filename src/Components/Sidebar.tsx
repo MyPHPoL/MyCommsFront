@@ -2,10 +2,7 @@ import React from "react";
 import { Route, Link, Routes } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
 import { IoMdCreate } from "react-icons/io";
-
-
 import Server from "./Server";
-import ServerMembers from "./ServerMembers";
 
 interface SidebarProps {
   items: any[];

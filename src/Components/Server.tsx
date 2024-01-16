@@ -62,7 +62,7 @@ function Server() {
             <div className="justify-center flex flex-col m-1">
             <div className="justify-center flex flex-col m-1">
             <button onClick={() => setShowMembers(!showMembers)}>
-                <ChannelButton name='ShowMembers'></ChannelButton>
+                <ChannelButton name='Show Members'></ChannelButton>
             </button>
             {showMembers && <ServerMembers/>}
           </div>

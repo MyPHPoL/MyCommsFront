@@ -1,31 +1,26 @@
 import { Avatar } from "@mui/material";
-import { Route, Link, Routes } from 'react-router-dom';
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import Sidebar from "./Sidebar";
 import { servers, friends } from "../fakedb";
 import { IoServer } from "react-icons/io5";
 import { FaUserFriends } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
+import DataContext from "../context/AuthProvider";
 
 function Header() {
     const [activeSidebar, setActiveSidebar] = useState<string | null>(null);
+    const { auth } : { auth: any } = useContext(DataContext); // id, username, email, password, token
     
     return (
         <div>
             <nav className="float-left h-20 w-full fixed bg-primary">
                 <ul className="float-left  flex leading-[80px] text-white uppercase">
-                    <li className="float-left text-white text-3xl font-bold leading-[80px] pl-12">Amonra</li>
+                    <li className="float-left text-white text-3xl font-bold leading-[80px] pl-12">{ auth.username }</li>
                     <li className="relative flex items-center justify-center mx-4"><Avatar alt='test user' src="https://cdn.7tv.app/emote/6362932bbb563bf696e11394/4x.webp" sx={{ width: 56, height: 56 }} /></li>
-                    <li className="relative flex items-center justify-center mx-auto">
-                      <div id="dropdown-button">
-                        <a onClick={toggleDropdown}>
-                        <IconButton icon={<IoMdSettings size={30}/>} name="Settings" ></IconButton>
-                        </a>
-                      </div>
-                    </li>
+                    <li className="relative flex items-center justify-center mx-auto mr-1" id="dropdown-button"><button onClick={toggleDropdown}> <IconButton icon={<IoMdSettings size={30}/>} name="Settings" ></IconButton></button></li>
                     <label  style={{borderRight: '2px solid grey', borderRadius: '50%', margin: '15px'}}></label>
-                    <li className="relative flex items-center justify-center mx-auto mr-1"><a onClick={() => setActiveSidebar('servers')}><IconButton icon={<IoServer size={30}/>} name="ServerList"></IconButton></a></li>
-                    <li className="relative flex items-center justify-center mx-auto"><a onClick={() => setActiveSidebar('friends')}><IconButton icon={<FaUserFriends size={30}/>} name="FriendList"></IconButton></a></li>
+                    <li className="relative flex items-center justify-center mx-auto mr-1"><button onClick={() => setActiveSidebar('servers')}><IconButton icon={<IoServer size={30}/>} name="ServerList"></IconButton></button></li>
+                    <li className="relative flex items-center justify-center mx-auto"><button onClick={() => setActiveSidebar('friends')}><IconButton icon={<FaUserFriends size={30}/>} name="FriendList"></IconButton></button></li>
                     <label  style={{borderRight: '2px solid grey', borderRadius: '50%', margin: '15px'}}></label>
                 </ul>
                 <div id="dropdown-menu" className="hidden divide-y divide-primary absolute text-white top-[40px] left-[315px] w-400 border border-gray-900 bg-secondary shadow-md mt-2 rounded-xl">

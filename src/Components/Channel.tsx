@@ -27,7 +27,7 @@ function Channel() {
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
 
   const addMessage = (newMessage: MessageProps) => {
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
+    setMessages((Messages) => [...Messages, newMessage]);
   };
 
   useEffect(() => {
