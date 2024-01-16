@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { channels, messages } from "../fakedb";
 import { RiAttachment2 } from "react-icons/ri";
 import { FaRegSmile } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
 import { HiGif } from "react-icons/hi2";
+import { useParams } from "react-router-dom";
 
 export interface ChannelProps {
   id: string;
@@ -19,53 +20,47 @@ export interface MessageProps {
   timestamp: string
 }
 
-class ChannelClass extends React.Component<{ChannelId: string}, any> {
-  chatWindowRef = React.createRef<HTMLDivElement>();
-  state = {
-    channelId: this.props.ChannelId as string,
-    channel: channels.find((channel) => channel.id === this.props.ChannelId) as ChannelProps,
-    messages: messages as MessageProps[],
+function Channel() {
+  const { ChannelId } = useParams(); // ChannelId is the name of the variable in the URL
+  const Channel = channels.find((channel) => channel.id === ChannelId);
+  const [Messages, setMessages] = useState(messages || []);
+  const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
+
+  const addMessage = (newMessage: MessageProps) => {
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
   };
 
-  addMessage = (message: MessageProps) => {
-    this.setState((prevState: { messages: MessageProps[]; }) => ({
-      messages: [...prevState.messages, message]
-    }),
-    () => {
-      if (this.chatWindowRef.current) {
-        this.chatWindowRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-    );
-  };
+  useEffect(() => {
+    chatWindowRef.current?.scrollIntoView({ behavior: 'smooth' });
+  },);
 
-  render() {
-    const { messages } = this.state;
-    return (
-      <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[320px] '>
-        <div className='text-5xl shadow-sg tracking-wider font-semibold text-white ml-2'>
-          {this.state.channel?.name} | {this.state.channel?.description}
-        </div>
-        <div className='items-center mt-0 ml-0 mx-auto px-0 pb-16 overflow-y-auto'>
-          {messages.map(({ id, author, content, timestamp }) => (
-            <Message
-              key={id}
-              id={id}
-              author={author}
-              content={content}
-              timestamp={timestamp}
-            />
-          ))}
-          <div ref={this.chatWindowRef} />
-        </div>
-        <TextBar addMessage={this.addMessage}/>
+  return (
+    <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[320px]'>
+      <div className='text-5xl shadow-sg tracking-wider font-semibold text-white ml-2 pb-2'>
+        {Channel?.name} | {Channel?.description}
       </div>
-    );
-  }
+      <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16'>
+        {Messages.map(({ id, author, content, timestamp }) => (
+          <Message
+            key={id}
+            id={id}
+            author={author}
+            content={content}
+            timestamp={timestamp}
+          />
+        ))}
+      <div ref={chatWindowRef}/>
+      </div>
+      <TextBar
+        addMessage={addMessage}
+        name={Channel?.name || 'this channel' }
+      />
+    </div>
+  );
 }
 
 // input field at the bottom of the page
-const TextBar = ({ addMessage }: { addMessage: (message: MessageProps) => void }) => {
+const TextBar = ({ addMessage, name }: { addMessage: (message: MessageProps) => void, name: string}) => {
   const [inputValue, setInputValue] = useState('');
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +75,7 @@ const TextBar = ({ addMessage }: { addMessage: (message: MessageProps) => void }
     // Create a new message object
     const newMessage: MessageProps = {
       id: 'newid', // replace with a real id
-      author: 'current user', // replace with the current users name
+      author: 'current user', // replace with the current username
       content: inputValue,
       timestamp: new Date().toDateString(),
     };
@@ -99,7 +94,7 @@ const TextBar = ({ addMessage }: { addMessage: (message: MessageProps) => void }
         type='text'
         value={inputValue}
         onChange={handleInputChange}
-        placeholder='Enter message...'
+        placeholder={`Enter message on ${name}`}
         className='w-full bg-transparent outline-none ml-0 mr-auto text-gray-300 placeholder-gray-500 cursor-text'
       />
       <button>
@@ -116,7 +111,7 @@ const TextBar = ({ addMessage }: { addMessage: (message: MessageProps) => void }
 };
 
 const Message = ({ author, content, timestamp }: MessageProps) => (
-  <div className='w-full flex-row justify-evenly py-4 px-8 m-0 cursor-pointer'>
+  <div className='w-full flex-row justify-evenly py-3 px-8 m-0 cursor-pointer'>
     <div className='flex flex-col justify-start ml-auto;'>
       <p className='text-left font-semibold text-white mr-2 cursor-pointer'>
         {author}
@@ -131,4 +126,4 @@ const Message = ({ author, content, timestamp }: MessageProps) => (
   </div>
 );
 
-export default ChannelClass;
+export default Channel;
