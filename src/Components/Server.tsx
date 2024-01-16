@@ -33,7 +33,7 @@ function Server() {
         ) : null}
         {Server?.name}
         <div className="flex items-center text-white text-3xl m-2 truncate h-10 align-right">
-          <button onClick={() => {setShowMembers(!showMembers); setWidthmsg(widthmsg === 0 ? 5 : 0)}}>
+          <button onClick={() => {setShowMembers(!showMembers); setWidthmsg(widthmsg === 0 ? 10 : 0)}}>
                   <IconButton icon={<MdRememberMe size={30}/>} name="ShowMembers"></IconButton>
           </button>
           {showMembers && <ServerMembers/>}
