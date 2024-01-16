@@ -19,6 +19,8 @@ function Server() {
   const Server = servers.find((server) => server.id === ServerId);
   const ServerOwner = users.find((user) => user.id === Server?.ownerId);
   const [showMembers, setShowMembers] = useState(false);
+  const [widthmsg, setWidthmsg] = useState(0);
+
   const Channels = serverChannels.find(
     (channel) => channel.serverId === ServerId
   );
@@ -61,19 +63,19 @@ function Server() {
         </button>
             <div className="justify-center flex flex-col m-1">
             <div className="justify-center flex flex-col m-1">
-            <button onClick={() => setShowMembers(!showMembers)}>
+            <button onClick={() => {setShowMembers(!showMembers); setWidthmsg(widthmsg === 0 ? 5 : 0)}}>
                 <ChannelButton name='ShowMembers'></ChannelButton>
             </button>
             {showMembers && <ServerMembers/>}
           </div>
           </div>
-          <div className={showMembers ? 'right-[0%]' : 'right-[95%]'}>
-  </div>
-      </div>
-      <Routes>
-        <Route path="/:ChannelId/*" element={<Channel />} />
-      </Routes>
-    </div>
+          <div>
+          </div>
+              </div>
+              <Routes>
+                <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg}/>} />
+              </Routes>
+          </div>
   );
 }
 
