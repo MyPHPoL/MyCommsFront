@@ -5,6 +5,7 @@ import { IoMdCreate } from "react-icons/io";
 
 
 import Server from "./Server";
+import ServerMembers from "./ServerMembers";
 
 interface SidebarProps {
   items: any[];

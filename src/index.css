@@ -5,3 +5,15 @@
 body {
   background-color: #374151;
 }
+
+.channel-large {
+  flex: 1;
+}
+
+.channel-small {
+  flex: 0.7;
+}
+
+.server-members {
+  flex: 0.3;
+}
