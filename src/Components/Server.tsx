@@ -68,10 +68,6 @@ function Server() {
           </div>
           </div>
           <div className={showMembers ? 'right-[0%]' : 'right-[95%]'}>
-            <Routes>
-              <Route path="/:ChannelId/*" element={<Channel />} />
-              <Route path="/:ServerId/*" element={<ServerMembers />} />
-            </Routes>
   </div>
       </div>
       <Routes>
