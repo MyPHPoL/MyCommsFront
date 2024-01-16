@@ -13,7 +13,7 @@ function ServerMembers() {
 
   return (
     <div>
-      <div className="md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[95%] bg-tertiary">
+      <div className="md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[95%] bg-tertiary align:right">
         <ul>
           {ServerMembers.map((user) => ( // Map over the members
             user && ( // Check if the user is defined
@@ -29,7 +29,6 @@ function ServerMembers() {
     </div>
   );
 }
-
 
 
 export default ServerMembers;
