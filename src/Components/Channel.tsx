@@ -5,6 +5,7 @@ import { FaRegSmile } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
 import { HiGif } from "react-icons/hi2";
 import { useParams } from "react-router-dom";
+import { IoRefreshOutline } from "react-icons/io5";
 
 export interface ChannelProps {
   id: string;
@@ -89,6 +90,10 @@ const TextBar = ({ addMessage, name }: { addMessage: (message: MessageProps) => 
     <form onSubmit={handleFormSubmit} className='flex flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 left-[320px] shadow-lg bg-gray-600 px-2 h-12 m-2 mx-4'>
       <button>
         <RiAttachment2 size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
+      </button>
+      {/* This will be a button to refresh chat when backend is working, needed for tests, might be removed in further implementation*/}
+      <button>
+      <IoRefreshOutline size='22' className='text-gray-300 mx-2 hover:text-gray-200'/>
       </button>
       <input
         type='text'
