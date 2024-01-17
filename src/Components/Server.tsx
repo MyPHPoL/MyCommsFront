@@ -26,14 +26,14 @@ function Server() {
     (channel) => channel.serverId === ServerId
   );
   return (
-    <div className="md:flex h-full w-[300px] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary">
+    <div className="md:flex h-full w-[300px] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary ">
       <div className="flex items-center text-white text-3xl m-2 truncate h-10">
         {Server?.picture ? (
           <img src={Server?.picture} alt="No img" className="w-10 h-10 mr-2" />
         ) : null}
         {Server?.name}
-        <div className="flex items-center text-white text-3xl m-2 truncate h-10 align-right">
-          <button onClick={() => {setShowMembers(!showMembers); setWidthmsg(widthmsg === 0 ? 10 : 0)}}>
+        <div className="flex  items-center text-white  text-3xl m-2 mr-0 truncate h-10">
+          <button className='flex-end' onClick={() => {setShowMembers(!showMembers); setWidthmsg(widthmsg === 0 ? 10 : 0)}}>
                   <IconButton icon={<MdRememberMe size={30}/>} name="ShowMembers"></IconButton>
           </button>
           {showMembers && <ServerMembers/>}
