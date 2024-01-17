@@ -21,12 +21,11 @@ export interface MessageProps {
   timestamp: string
 }
 
-function Channel() {
+function Channel({widthmsg}: {widthmsg:number}) {
   const { ChannelId } = useParams(); // ChannelId is the name of the variable in the URL
   const Channel = channels.find((channel) => channel.id === ChannelId);
   const [Messages, setMessages] = useState(messages || []);
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
-
   const addMessage = (newMessage: MessageProps) => {
     setMessages((prevMessages) => [...prevMessages, newMessage]);
   };
@@ -36,7 +35,7 @@ function Channel() {
   },);
 
   return (
-    <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[320px]'>
+    <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[320px]' style={{ marginRight: `${widthmsg}%` }}>
       <div className='text-5xl shadow-sg tracking-wider font-semibold text-white ml-2 pb-2'>
         {Channel?.name} | {Channel?.description}
       </div>
@@ -55,15 +54,15 @@ function Channel() {
       <TextBar
         addMessage={addMessage}
         name={Channel?.name || 'this channel' }
+        widthmsg={widthmsg}
       />
     </div>
   );
 }
 
 // input field at the bottom of the page
-const TextBar = ({ addMessage, name }: { addMessage: (message: MessageProps) => void, name: string}) => {
+const TextBar = ({ addMessage, name, widthmsg }: { addMessage: (message: MessageProps) => void, name: string, widthmsg: number }) => {
   const [inputValue, setInputValue] = useState('');
-
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
@@ -87,7 +86,7 @@ const TextBar = ({ addMessage, name }: { addMessage: (message: MessageProps) => 
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className='flex flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 left-[320px] shadow-lg bg-gray-600 px-2 h-12 m-2 mx-4'>
+    <form onSubmit={handleFormSubmit} className='flex flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 left-[320px] shadow-lg bg-gray-600 px-2 h-12 m-2 mx-4' style={{ marginRight: `${widthmsg}%` }}>
       <button>
         <RiAttachment2 size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>

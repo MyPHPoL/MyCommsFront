@@ -4,6 +4,7 @@ import "../index.css";
 import { serverChannels, users, servers } from "../fakedb";
 import Channel from "./Channel";
 import ServerMembers from "./ServerMembers";
+import { MdRememberMe } from "react-icons/md";
 
 export interface ServerProps {
   id: string;
@@ -19,6 +20,8 @@ function Server() {
   const Server = servers.find((server) => server.id === ServerId);
   const ServerOwner = users.find((user) => user.id === Server?.ownerId);
   const [showMembers, setShowMembers] = useState(false);
+  const [widthmsg, setWidthmsg] = useState(0);
+
   const Channels = serverChannels.find(
     (channel) => channel.serverId === ServerId
   );
@@ -29,6 +32,12 @@ function Server() {
           <img src={Server?.picture} alt="No img" className="w-10 h-10 mr-2" />
         ) : null}
         {Server?.name}
+        <div className="flex items-center text-white text-3xl m-2 truncate h-10 align-right">
+          <button onClick={() => {setShowMembers(!showMembers); setWidthmsg(widthmsg === 0 ? 10 : 0)}}>
+                  <IconButton icon={<MdRememberMe size={30}/>} name="ShowMembers"></IconButton>
+          </button>
+          {showMembers && <ServerMembers/>}
+          </div>
       </div>
       <div className="text-white text-1xl m-2 truncate">
         {Server?.description}
@@ -46,9 +55,9 @@ function Server() {
         {Channels?.channels.map(({id, name}) => (
           <li key={id}>
             <Link to={id}>
-              <div className="justify-center flex flex-col m-1">
+              <div className="justify-left flex flex-col m-1">
                 <button>
-                  <ChannelButton name={name}></ChannelButton>
+                  <ChannelButton name={`#${name}`} ></ChannelButton>
                 </button>
               </div>
             </Link>
@@ -59,27 +68,17 @@ function Server() {
         <button>
           <NewChannelButton text={"Add Channel"}></NewChannelButton>
         </button>
-            <div className="justify-center flex flex-col m-1">
-            <div className="justify-center flex flex-col m-1">
-            <button onClick={() => setShowMembers(!showMembers)}>
-                <ChannelButton name='ShowMembers'></ChannelButton>
-            </button>
-            {showMembers && <ServerMembers/>}
+              </div>
+              <Routes>
+                <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg}/>} />
+              </Routes>
           </div>
-          </div>
-          <div className={showMembers ? 'right-[0%]' : 'right-[95%]'}>
-  </div>
-      </div>
-      <Routes>
-        <Route path="/:ChannelId/*" element={<Channel />} />
-      </Routes>
-    </div>
   );
 }
 
 // button that redirects to a specific channel
 const ChannelButton = ({ name }: { name: string }) => (
-  <div className="bg-secondary hover:brightness-75 text-gray-300 font-semibold py-2 px-4 border border-gray-300 rounded-full shadow w-full justify-self-center">
+  <div className="bg-secondary hover:brightness-75 text-gray-300 font-semibold py-2 px-4 rounded-full shadow w-full justify-self-center">
     {name}
   </div>
 );
@@ -90,5 +89,21 @@ const NewChannelButton = ({ text }: { text: string }) => (
     {text}
   </div>
 );
+
+interface IconButtonProps {
+  icon: any;
+  name: string;
+}
+
+const IconButton = ({ icon, name }: IconButtonProps) => (
+  <div className='font-semibold relative flex items-center justify-center h-12 w-12 mt-2 mb-2 bg-secondary group hover:bg-yellow-500 text-white hover:text-primary hover:rounded-xl rounded-3xl transition-all duration-300 ease-linear cursor-pointer'>
+    {icon}
+
+    <span className='group-hover:scale-100 z-50 absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-left'>
+      {name}
+    </span>
+  </div>
+);
+
 
 export default Server;
