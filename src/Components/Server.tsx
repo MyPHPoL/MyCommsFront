@@ -55,9 +55,9 @@ function Server() {
         {Channels?.channels.map(({id, name}) => (
           <li key={id}>
             <Link to={id}>
-              <div className="justify-center flex flex-col m-1">
+              <div className="justify-left flex flex-col m-1">
                 <button>
-                  <ChannelButton name={name}></ChannelButton>
+                  <ChannelButton name={`#${name}`} ></ChannelButton>
                 </button>
               </div>
             </Link>
@@ -78,7 +78,7 @@ function Server() {
 
 // button that redirects to a specific channel
 const ChannelButton = ({ name }: { name: string }) => (
-  <div className="bg-secondary hover:brightness-75 text-gray-300 font-semibold py-2 px-4 border border-gray-300 rounded-full shadow w-full justify-self-center">
+  <div className="bg-secondary hover:brightness-75 text-gray-300 font-semibold py-2 px-4 rounded-full shadow w-full justify-self-center">
     {name}
   </div>
 );
