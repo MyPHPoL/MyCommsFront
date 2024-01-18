@@ -86,7 +86,7 @@ const TextBar = ({ addMessage, name, widthmsg }: { addMessage: (message: Message
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className='flex flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 left-[320px] shadow-lg bg-gray-600 px-2 h-12 m-2 mx-4' style={{ marginRight: `${widthmsg+2.5}%` }}>
+    <form onSubmit={handleFormSubmit} className='flex flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 left-[320px] shadow-lg bg-gray-600 px-2 h-12 m-2 mx-4' style={{ marginRight: `${widthmsg+1.5}%` }}>
       <button>
         <RiAttachment2 size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
