@@ -1,25 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { Route, Link, Routes } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
-import { IoMdCreate } from "react-icons/io";
-
+import { ImEnter } from "react-icons/im";
 
 import Server from "./Server";
+import AddServerDialog from "./AddServerDialog";
 
 interface SidebarProps {
   items: any[];
 }
 
 export default function Sidebar({ items }: SidebarProps) {
+  const [ openDialog, setOpenDialog ] = useState(false);
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+};
   return (
     <div>
       <div className='h-auto w-auto flex flex-row bg-primary'>
       <ul className='first:my-0 last:my-0 flex flex-row'>
           <i className="mr-1">
-            <IconButton icon={<IoMdAdd />} name={"Join Server"} />
+            <IconButton icon={<ImEnter />} name={"Join Server"} />
           </i>
-          <i>
-            <IconButton icon={<IoMdCreate />} name={"Create Server"} />
+          <i onClick={handleOpenDialog}>
+            <IconButton icon={<IoMdAdd />} name={"Create Server"} />
           </i>
         </ul>
         <ul className='m-4 first:my-0 last:my-0 flex flex-row'>
@@ -31,6 +35,7 @@ export default function Sidebar({ items }: SidebarProps) {
             </li>
           ))}
         </ul>
+        <AddServerDialog openDialog={openDialog} setOpenDialog={setOpenDialog}/>
       </div>
       <Routes>
         <Route path='/:ServerId/*' element={<Server />} />

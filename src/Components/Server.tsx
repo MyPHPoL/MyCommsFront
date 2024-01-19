@@ -3,6 +3,7 @@ import { Link, Route, Routes, useParams } from "react-router-dom";
 import "../index.css";
 import { serverChannels, users, servers } from "../fakedb";
 import Channel from "./Channel";
+import AddServerDialog from "./AddServerDialog";
 
 export interface ServerProps {
   id: string;
@@ -19,6 +20,9 @@ function Server() {
   const Channels = serverChannels.find(
     (channel) => channel.serverId === ServerId
   );
+
+  
+
   return (
     <div className="md:flex h-full w-[300px] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary">
       <div className="flex items-center text-white text-3xl m-2 truncate h-10">
@@ -53,8 +57,8 @@ function Server() {
         ))}
       </ul>
       <div className="justify-center flex flex-col m-1">
-        <button>
-          <NewChannelButton text={"Add Channel"}></NewChannelButton>
+        <button >
+          <NewChannelButton text={"Add Channel"} ></NewChannelButton>
         </button>
       </div>
       <Routes>
