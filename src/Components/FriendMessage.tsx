@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { users, messages } from "../fakedb";
+import { friends, messages } from "../fakedb";
 import { RiAttachment2 } from "react-icons/ri";
 import { FaRegSmile } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
 import { HiGif } from "react-icons/hi2";
 import { useParams } from "react-router-dom";
 import { IoRefreshOutline } from "react-icons/io5";
+import { TfiLayoutPlaceholder } from "react-icons/tfi";
 
 export interface UserProps {
   id: string;
@@ -21,8 +22,8 @@ export interface MessageProps {
 }
 
 function FriendMessage() {
-    const { userId } = useParams(); // userId is the name of the variable in the URL
-    const User = users.find((user: UserProps) => user.id === userId);
+    const { UserId } = useParams(); // userId is the name of the variable in the URL
+    const User = friends.find((friend: UserProps) => friend.id === UserId);
     const [Messages, setMessages] = useState(messages || []);
     const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
     const addMessage = (newMessage: MessageProps) => {
@@ -35,8 +36,8 @@ function FriendMessage() {
   
     return (
       <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[20px]'>
-        <div className='text-5xl shadow-sg tracking-wider font-semibold text-white ml-2 pb-2'>
-          {User?.name}
+        <div className='flex-row flex  text-5xl shadow-sg tracking-wider font-semibold text-white ml-2 pb-2'>
+          Chat with: <TfiLayoutPlaceholder className="mx-2" size={50}></TfiLayoutPlaceholder> {User?.id}
         </div>
         <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16'>
           {Messages.map(({ id, author, content, timestamp }) => (

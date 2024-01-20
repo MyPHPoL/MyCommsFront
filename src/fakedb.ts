@@ -37,13 +37,13 @@ export const servers: ServerProps[] = [
 
 export const friends: UserProps[] = [
     {
-      id: '1',
+      id: 'test1',
       name: 'test user',
       picture: 'https://cdn.7tv.app/emote/639938bf1e2f45552fe4fa03/4x.png',
       creationDate: new Date(),
     },
     {
-      id: '2',
+      id: 'test2',
       name: 'test user2',
       creationDate: new Date(),
     },

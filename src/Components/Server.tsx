@@ -7,6 +7,7 @@ import ServerMembers from "./ServerMembers";
 import { MdRememberMe } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 import { FaRegPlusSquare } from "react-icons/fa";
+import { ChannelButton, IconButton } from "./IconLib";
 
 export interface ServerProps {
   id: string;
@@ -19,6 +20,7 @@ export interface ServerProps {
 
 function Server() {
   const { ServerId } = useParams();
+  console.log(ServerId)
   const Server = servers.find((server) => server.id === ServerId);
   const ServerOwner = users.find((user) => user.id === Server?.ownerId);
   const [showMembers, setShowMembers] = useState(false);
@@ -74,46 +76,16 @@ function Server() {
           </li>
         ))}
       </ul>
-      <div className="justify-center flex flex-col ml-1">
+      <div className="items-center align-center flex flex-col ml-1">
         <button>
           <IconButton icon={<FaRegPlusSquare size={30}/>} name="AddChannel"></IconButton>
         </button>
-              </div>
+      </div>
               <Routes>
                 <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg}/>} />
               </Routes>
-          </div>
+      </div>
   );
 }
-
-// button that redirects to a specific channel
-const ChannelButton = ({ name }: { name: string }) => (
-  <div className="bg-secondary hover:brightness-75 text-gray-300 font-semibold py-2 px-4 rounded-full shadow w-full justify-self-center">
-    {name}
-  </div>
-);
-
-// same as channel button but with dashed border
-const NewChannelButton = ({ text }: { text: string }) => (
-  <div className="bg-secondary hover:brightness-75 text-gray-300 font-semibold py-2 px-4 border border-dashed border-gray-300 rounded-full shadow w-full justify-self-center">
-    {text}
-  </div>
-);
-
-interface IconButtonProps {
-  icon: any;
-  name: string;
-}
-
-const IconButton = ({ icon, name }: IconButtonProps) => (
-  <div className='font-semibold relative flex items-center justify-center h-12 w-12 mt-2 mb-2 bg-secondary group hover:bg-yellow-500 text-white hover:text-primary hover:rounded-xl rounded-3xl transition-all duration-300 ease-linear cursor-pointer'>
-    {icon}
-
-    <span className='group-hover:scale-100 z-50 absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-left'>
-      {name}
-    </span>
-  </div>
-);
-
 
 export default Server;
