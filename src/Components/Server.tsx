@@ -74,15 +74,15 @@ function Server() {
           </li>
         ))}
       </ul>
-      <div className="justify-center flex flex-col ml-1">
+      <div className="items-center align-center flex flex-col ml-1">
         <button>
           <IconButton icon={<FaRegPlusSquare size={30}/>} name="AddChannel"></IconButton>
         </button>
-              </div>
+      </div>
               <Routes>
                 <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg}/>} />
               </Routes>
-          </div>
+      </div>
   );
 }
 
