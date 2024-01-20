@@ -23,7 +23,7 @@ export default function TopbarFriend({ items }: TopbarProps) {
         </ul>
       </div>
       <Routes>
-        <Route path='/:ServerId/*' element={<FriendMessage />} />
+        <Route path='/:UserId/*' element={<FriendMessage />} />
       </Routes>
     </div>
   );

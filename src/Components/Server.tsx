@@ -19,6 +19,7 @@ export interface ServerProps {
 
 function Server() {
   const { ServerId } = useParams();
+  console.log(ServerId)
   const Server = servers.find((server) => server.id === ServerId);
   const ServerOwner = users.find((user) => user.id === Server?.ownerId);
   const [showMembers, setShowMembers] = useState(false);
