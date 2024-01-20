@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { channels, messages } from "../fakedb";
+import { users, messages } from "../fakedb";
 import { RiAttachment2 } from "react-icons/ri";
 import { FaRegSmile } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
@@ -7,10 +7,9 @@ import { HiGif } from "react-icons/hi2";
 import { useParams } from "react-router-dom";
 import { IoRefreshOutline } from "react-icons/io5";
 
-export interface ChannelProps {
+export interface UserProps {
   id: string;
   name: string;
-  description?: string;
 }
 
 // for testing purposes (interface may change when we will connect app to the backend)
@@ -21,47 +20,46 @@ export interface MessageProps {
   timestamp: string
 }
 
-function Channel({widthmsg}: {widthmsg:number}) {
-  const { ChannelId } = useParams(); // ChannelId is the name of the variable in the URL
-  const Channel = channels.find((channel) => channel.id === ChannelId);
-  const [Messages, setMessages] = useState(messages || []);
-  const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
-  const addMessage = (newMessage: MessageProps) => {
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
-  };
-
-  useEffect(() => {
-    chatWindowRef.current?.scrollIntoView({ behavior: 'smooth' });
-  },);
-
-  return (
-    <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[320px]' style={{ marginRight: `${widthmsg}%` }}>
-      <div className='text-5xl shadow-sg tracking-wider font-semibold text-white ml-2 pb-2'>
-        {Channel?.name} | {Channel?.description}
-      </div>
-      <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16'>
-        {Messages.map(({ id, author, content, timestamp }) => (
-          <Message
-            key={id}
-            id={id}
-            author={author}
-            content={content}
-            timestamp={timestamp}
+function FriendMessage() {
+    const { userId } = useParams(); // userId is the name of the variable in the URL
+    const User = users.find((user: UserProps) => user.id === userId);
+    const [Messages, setMessages] = useState(messages || []);
+    const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
+    const addMessage = (newMessage: MessageProps) => {
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    };
+  
+    useEffect(() => {
+      chatWindowRef.current?.scrollIntoView({ behavior: 'smooth' });
+    },);
+  
+    return (
+      <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[20px]'>
+        <div className='text-5xl shadow-sg tracking-wider font-semibold text-white ml-2 pb-2'>
+          {User?.name}
+        </div>
+        <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16'>
+          {Messages.map(({ id, author, content, timestamp }) => (
+            <Message
+              key={id}
+              id={id}
+              author={author}
+              content={content}
+              timestamp={timestamp}
           />
         ))}
       <div ref={chatWindowRef}/>
       </div>
       <TextBar
         addMessage={addMessage}
-        name={Channel?.name || 'this channel' }
-        widthmsg={widthmsg}
+        name={User?.name || 'this channel' }
       />
     </div>
   );
 }
 
 // input field at the bottom of the page
-const TextBar = ({ addMessage, name, widthmsg }: { addMessage: (message: MessageProps) => void, name: string, widthmsg: number }) => {
+const TextBar = ({ addMessage, name, }: { addMessage: (message: MessageProps) => void, name: string }) => {
   const [inputValue, setInputValue] = useState('');
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -86,7 +84,7 @@ const TextBar = ({ addMessage, name, widthmsg }: { addMessage: (message: Message
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className='flex flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 left-[320px] shadow-lg bg-gray-600 px-2 h-12 m-2 mx-4' style={{ marginRight: `${widthmsg+1.5}%` }}>
+    <form onSubmit={handleFormSubmit} className='flex flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 left-[20px] shadow-lg bg-gray-600 px-2 h-12 m-2 mx-4'>
       <button>
         <RiAttachment2 size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
@@ -130,4 +128,4 @@ const Message = ({ author, content, timestamp }: MessageProps) => (
   </div>
 );
 
-export default Channel;
+export default FriendMessage;

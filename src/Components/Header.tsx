@@ -1,14 +1,16 @@
 import { Avatar } from "@mui/material";
 import { Route, Link, Routes } from 'react-router-dom';
 import React, {useState} from "react";
-import Sidebar from "./Sidebar";
+import TopbarServer from "./TopbarServer";
 import { servers, friends } from "../fakedb";
 import { IoServer } from "react-icons/io5";
 import { FaUserFriends } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
+import SidebarBasic from "./TopbarBasic";
+import TopbarFriend from "./TopbarFriend";
 
 function Header() {
-    const [activeSidebar, setActiveSidebar] = useState<string | null>(null);
+    const [activeTopbar, setActiveTopbar] = useState<string | null>(null);
     
     return (
         <div>
@@ -30,14 +32,15 @@ function Header() {
                       </div>
                     </li>
                     <label  style={{borderRight: '2px solid grey', borderRadius: '50%', margin: '15px'}}></label>
-                    <li className="relative flex items-center justify-center mx-auto mr-1"><a onClick={() => setActiveSidebar('servers')}><IconButton icon={<IoServer size={30}/>} name="ServerList"></IconButton></a></li>
-                    <li className="relative flex items-center justify-center mx-auto"><a onClick={() => setActiveSidebar('friends')}><IconButton icon={<FaUserFriends size={30}/>} name="FriendList"></IconButton></a></li>
+                    <li className="relative flex items-center justify-center mx-auto mr-1"><a onClick={() => setActiveTopbar('servers')}><IconButton icon={<IoServer size={30}/>} name="ServerList"></IconButton></a></li>
+                    <li className="relative flex items-center justify-center mx-auto"><a onClick={() => setActiveTopbar('friends')}><IconButton icon={<FaUserFriends size={30}/>} name="FriendList"></IconButton></a></li>
                     <label  style={{borderRight: '2px solid grey', borderRadius: '50%', margin: '15px'}}></label>
                 </ul>
                 
-                <div className="my-2">
-                {activeSidebar === 'servers' && <Sidebar items={servers} />}
-                {activeSidebar === 'friends' && <Sidebar items={friends} />}
+                <div className="my-2 flex">
+                <SidebarBasic />
+                {activeTopbar === 'servers' && <TopbarServer items={servers} />}
+                {activeTopbar === 'friends' && <TopbarFriend items={friends} />}
                 </div>
             </nav>
         </div>
