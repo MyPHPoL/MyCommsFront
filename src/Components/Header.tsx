@@ -1,5 +1,4 @@
 import { Avatar } from "@mui/material";
-import { Route, Link, Routes } from 'react-router-dom';
 import React, {useState} from "react";
 import TopbarServer from "./TopbarServer";
 import { servers, friends } from "../fakedb";
@@ -8,6 +7,7 @@ import { FaUserFriends } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import SidebarBasic from "./TopbarBasic";
 import TopbarFriend from "./TopbarFriend";
+import { IconButton } from "./IconLib";
 
 function Header() {
     const [activeTopbar, setActiveTopbar] = useState<string | null>(null);
@@ -53,19 +53,5 @@ function Header() {
     }
 }
 
-interface IconButtonProps {
-    icon: any;
-    name: string;
-  }
-
-  const IconButton = ({ icon, name }: IconButtonProps) => (
-    <div className='font-semibold relative flex items-center justify-center h-12 w-12 mt-2 mb-2 bg-secondary group hover:bg-yellow-500 text-white hover:text-primary hover:rounded-xl rounded-3xl transition-all duration-300 ease-linear cursor-pointer'>
-      {icon}
-  
-      <span className='group-hover:scale-100 z-50 absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-left'>
-        {name}
-      </span>
-    </div>
-  );
 
 export default Header;
