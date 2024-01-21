@@ -4,7 +4,7 @@ interface ServerButtonProps {
   }
 
   interface UserAvatarProps {
-    name: string;
+    name?: string;
     picture?: string;
   }
 
@@ -87,7 +87,7 @@ export const ServerButton = ({ name, picture }: ServerButtonProps) => (
           className='group bg-center bg-cover w-full h-full rounded-full'
           style={{ backgroundImage: `url(${picture})` }}></picture>
       ) : (
-        name[0].toUpperCase()
+        name ? name[0].toUpperCase() : ''
       )}
     </div>
   );
