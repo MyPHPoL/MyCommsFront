@@ -1,13 +1,13 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import "../index.css";
-import { users, servers } from "../fakedb";
+import { users, test12} from "../fakedb";
 import { TfiLayoutPlaceholder } from "react-icons/tfi";
 
 
 function ServerMembers() {
   const { ServerId } = useParams();
-  const Server = servers.find((server) => server.id === ServerId);
+  const Server = test12.find((server) => server.id === ServerId);
   
   // Find the members of the server
   const ServerMembers = Server?.users.map(userId => users.find(user => user.id === userId)) || [];

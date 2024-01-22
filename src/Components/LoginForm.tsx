@@ -1,11 +1,10 @@
 import React from "react";
 import { FaUser, FaLock } from "react-icons/fa";
-import { Link, Route, Routes } from "react-router-dom";
-import { useRef, useState, useEffect, useContext } from "react";
+import { Link, Navigate, Route, Routes } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
 import RegisterPage from "../Pages/RegisterPage";
 import AuthContext from "../context/AuthProvider";
 import axios from "../api/axios";
-import MainPage from "../Pages/MainPage";
 
 const LOGIN_URL = '/Account/Login';
 
@@ -31,11 +30,10 @@ const LoginForm = () => {
                     password: password,
                 }),
             );
-            const id = response?.data?.id;
-            const username = response?.data?.username;
+            const id = response?.data?.user.id;
+            const username = response?.data?.user.username;
             const token = response?.data?.token;
             setAuth({ id, username, email, password, token });
-            console.log(token);
             setSuccess(true);
             
         } catch (error: any) {
@@ -55,11 +53,7 @@ const LoginForm = () => {
         <>
         {success ? (
             <div>
-                    <Link to='*'>
-                    </Link>
-            <Routes>
-                <Route path='*' element={<MainPage />} />
-            </Routes>
+                <Navigate to='/home' />
             </div>
         ) : (
         <div className='w-full h-full bg-gradient-to-r from-main to-second bg-cover flex justify-center items-center min-h-screen min-w-screen'>
@@ -122,7 +116,4 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
-function setAuth(arg0: { email: string; password: string; accessToken: any; }) {
-    throw new Error("Function not implemented.");
-}
 
