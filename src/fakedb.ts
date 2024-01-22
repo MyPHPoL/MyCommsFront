@@ -2,7 +2,7 @@ import { ChannelProps, MessageProps } from "./Components/Channel";
 import { ServerProps } from "./Components/Server";
 import { UserProps } from "./Components/User";
 
-export const servers: ServerProps[] = [
+export const test12: ServerProps[] = [
     {
       id: 'id-test',
       name: 'MyCommsFront',

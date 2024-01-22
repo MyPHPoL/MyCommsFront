@@ -2,18 +2,18 @@ import React from "react";
 import { Route, Link, Routes } from "react-router-dom";
 import { ServerButton } from "./IconLib";
 
-import Server from "./Server";
+import Server, { ServerProps } from "./Server";
 
 interface TopbarProps {
-  items: any[];
+  servers?: ServerProps[];
 }
 
-export default function TopbarServer({ items }: TopbarProps) {
+export default function TopbarServer({ servers }: TopbarProps) {
   return (
     <div>
       <div className='h-auto w-auto flex flex-row bg-primary'>
         <ul className='m-4 first:my-0 last:my-0 flex flex-row'>
-          {items.map(({ id, name, picture }) => (
+          {servers?.map(({ id, name, picture }) => (
             <li className="mr-1" key={id}>
               <Link to={id}>
                 <ServerButton name={name} picture={picture} />
