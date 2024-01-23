@@ -1,13 +1,19 @@
-import React, { useState } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, Route, Routes, useParams } from "react-router-dom";
 import "../index.css";
 import { serverChannels } from "../fakedb";
-import Channel from "./Channel";
+import Channel, { ChannelProps } from "./Channel";
 import ServerMembers from "./ServerMembers";
 import { MdRememberMe } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 import { FaRegPlusSquare } from "react-icons/fa";
 import { ChannelButton, IconButton } from "./IconLib";
+import { useEffect } from "react";
+import axios from "../api/axios";
+import DataContext from "../context/AuthProvider";
+
+const SERVER_URL = '/Server/GetServer?id=';
+const CHANNELS_URL = '/Channel/GetAllOnServer?id=';
 
 export interface ServerProps {
   id: string;
@@ -17,21 +23,60 @@ export interface ServerProps {
   ownerId: string;
 }
 
-function Server({ id, name, description, picture, ownerId }: ServerProps) {
+function Server() {
 
+  const { ServerId } = useParams();
+  const [server, setServer] = useState<ServerProps | undefined>();
+  const [channels, setChannels] = useState<ChannelProps[] | undefined>();
+  const { auth }: { auth: any } = useContext(DataContext); // id, username, email, password, token
   const [showMembers, setShowMembers] = useState(false);
   const [widthmsg, setWidthmsg] = useState(0);
 
-  const Channels = serverChannels.find(
-    (channel) => channel.serverId === id
-  );
+  // for user authentication (should be moved to axios.ts later)
+  const config = {
+    headers: { Authorization: `Bearer ${auth.token}` } 
+  };
+
+  useEffect(() => {
+    let isMounted = true; // something, something not to render when component is unmounted
+    const controller = new AbortController(); // cancels request when component unmounts
+
+    const getServer = async () => {
+        try {
+            const response = await axios.get(SERVER_URL+ServerId, config);
+            isMounted && setServer(response.data);
+        } catch (error: any) {
+            console.log(error); // TODO: handle error
+        }
+    }
+
+    const getChannels = async () => {
+        try {
+            const response = await axios.get(CHANNELS_URL+ServerId, config);
+            isMounted && setChannels(response.data);
+        } catch (error: any) {
+            console.log(error); // TODO: handle error
+        }
+    }
+
+    getServer();
+    getChannels();
+
+    return () => {
+        isMounted = false;
+        controller.abort();
+    };
+
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [ServerId]); // WITHOUT THIS ARRAY, IT WILL INFINITELY LOOP
+
   return (
     <div className="md:flex h-full w-[300px] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary ">
       <div className="flex items-center text-white text-3xl m-2 truncate h-10">
-        {picture ? (
-          <img src={picture} alt="No img" className="w-10 h-10 mr-2" />
+        {server?.picture ? (
+          <img src={server?.picture} alt="No img" className="w-10 h-10 mr-2" />
         ) : null}
-        {name}
+        {server?.name}
         <div className="flex  items-center text-white  text-3xl m-2 mr-0 truncate h-10">
           <button className='flex-end' onClick={() => {setShowMembers(!showMembers); setWidthmsg(widthmsg === 0 ? 8 : 0)}}>
                   <IconButton icon={<MdRememberMe size={30}/>} name="ShowMembers"></IconButton>
@@ -40,10 +85,7 @@ function Server({ id, name, description, picture, ownerId }: ServerProps) {
           </div>
       </div>
       <div className="text-white text-1xl m-2 truncate">
-        {description}
-      </div>
-      <div className="text-white text-1xl m-2">
-        Server created by: {ownerId}
+        {server?.description}
       </div>
       <div className="my-1 ml-2 xl:w-auto">
           <div className="relative mb-4 flex w-full flex-wrap items-stretch">
@@ -60,7 +102,7 @@ function Server({ id, name, description, picture, ownerId }: ServerProps) {
         </span>
       </div>
       <ul>
-        {Channels?.channels.map(({id, name}) => (
+        {channels?.map(({id, name}) => (
           <li key={id}>
             <Link to={id}>
               <div className="justify-left flex flex-col m-1">

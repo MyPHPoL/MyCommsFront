@@ -52,12 +52,13 @@ function Header() {
   
       getServers();
       getFriends();
-      console.log(servers);
   
       return () => {
           isMounted = false;
           controller.abort();
       };
+      
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // WITHOUT THIS ARRAY, IT WILL INFINITELY LOOP
 
     const logout = async () => {
