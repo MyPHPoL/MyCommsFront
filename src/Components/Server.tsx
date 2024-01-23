@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Link, Route, Routes, useParams } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 import "../index.css";
-import { serverChannels, users, test12 } from "../fakedb";
+import { serverChannels } from "../fakedb";
 import Channel from "./Channel";
 import ServerMembers from "./ServerMembers";
 import { MdRememberMe } from "react-icons/md";
@@ -15,27 +15,23 @@ export interface ServerProps {
   description?: string;
   picture?: string;
   ownerId: string;
-  users: string[];
 }
 
-function Server() {
-  const { ServerId } = useParams();
-  console.log(ServerId)
-  const Server = test12.find((server) => server.id === ServerId);
-  const ServerOwner = users.find((user) => user.id === Server?.ownerId);
+function Server({ id, name, description, picture, ownerId }: ServerProps) {
+
   const [showMembers, setShowMembers] = useState(false);
   const [widthmsg, setWidthmsg] = useState(0);
 
   const Channels = serverChannels.find(
-    (channel) => channel.serverId === ServerId
+    (channel) => channel.serverId === id
   );
   return (
     <div className="md:flex h-full w-[300px] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary ">
       <div className="flex items-center text-white text-3xl m-2 truncate h-10">
-        {Server?.picture ? (
-          <img src={Server?.picture} alt="No img" className="w-10 h-10 mr-2" />
+        {picture ? (
+          <img src={picture} alt="No img" className="w-10 h-10 mr-2" />
         ) : null}
-        {Server?.name}
+        {name}
         <div className="flex  items-center text-white  text-3xl m-2 mr-0 truncate h-10">
           <button className='flex-end' onClick={() => {setShowMembers(!showMembers); setWidthmsg(widthmsg === 0 ? 8 : 0)}}>
                   <IconButton icon={<MdRememberMe size={30}/>} name="ShowMembers"></IconButton>
@@ -44,10 +40,10 @@ function Server() {
           </div>
       </div>
       <div className="text-white text-1xl m-2 truncate">
-        {Server?.description}
+        {description}
       </div>
       <div className="text-white text-1xl m-2">
-        Server created by: {ServerOwner?.name}
+        Server created by: {ownerId}
       </div>
       <div className="my-1 ml-2 xl:w-auto">
           <div className="relative mb-4 flex w-full flex-wrap items-stretch">

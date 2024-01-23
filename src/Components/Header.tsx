@@ -1,7 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import React, {useContext, useEffect, useState} from "react";
 import TopbarServer from "./TopbarServer";
-import { friends } from "../fakedb";
 import { IoServer } from "react-icons/io5";
 import { FaUserFriends } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
@@ -11,15 +10,18 @@ import DataContext from "../context/AuthProvider";
 import AuthContext from "../context/AuthProvider";
 import axios from "../api/axios";
 import { ServerProps } from "./Server";
+import { FriendProps } from "./FriendMessage";
 import { FaRegUser } from "react-icons/fa";
 
 const SERVER_LIST_URL = '/Server/GetServers';
+const FRIEND_LIST_URL = '/FriendList/GetAll';
 
 function Header() {
     const [activeTopbar, setActiveTopbar] = useState<string | null>(null);
     const { auth }: { auth: any } = useContext(DataContext); // id, username, email, password, token
     const { setAuth }: { setAuth: any } = useContext(AuthContext);
     const [servers, setServers] = useState<ServerProps[] | undefined>();
+    const [friends, setFriends] = useState<FriendProps[] | undefined>(); // TODO: replace with [FriendProps
 
     // for user authentication (should be moved to axios.ts later)
     const config = {
@@ -38,8 +40,19 @@ function Header() {
               console.log(error); // TODO: handle error
           }
       };
+
+      const getFriends = async () => {
+          try {
+              const response = await axios.get(FRIEND_LIST_URL, config);
+              isMounted && setFriends(response.data);
+          } catch (error: any) {
+              console.log(error); // TODO: handle error
+          }
+      };
   
       getServers();
+      getFriends();
+      console.log(servers);
   
       return () => {
           isMounted = false;
@@ -79,7 +92,7 @@ function Header() {
                 <div className="my-2 flex">
                 <SidebarBasic />
                 {activeTopbar === 'servers' && <TopbarServer servers={servers}/>}
-                {activeTopbar === 'friends' && <TopbarFriend items={friends} />}
+                {activeTopbar === 'friends' && <TopbarFriend friends={friends} />}
                 </div>
             </nav>
         </div>
