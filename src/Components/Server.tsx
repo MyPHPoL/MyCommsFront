@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, Route, Routes, useParams } from "react-router-dom";
 import "../index.css";
-import { serverChannels, users, servers } from "../fakedb";
+import { serverChannels, users, test12 } from "../fakedb";
 import Channel from "./Channel";
 import ServerMembers from "./ServerMembers";
 import { MdRememberMe } from "react-icons/md";
@@ -21,7 +21,7 @@ export interface ServerProps {
 function Server() {
   const { ServerId } = useParams();
   console.log(ServerId)
-  const Server = servers.find((server) => server.id === ServerId);
+  const Server = test12.find((server) => server.id === ServerId);
   const ServerOwner = users.find((user) => user.id === Server?.ownerId);
   const [showMembers, setShowMembers] = useState(false);
   const [widthmsg, setWidthmsg] = useState(0);
