@@ -2,7 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import "../index.css";
 import { TfiLayoutPlaceholder } from "react-icons/tfi";
-import { users, servers, test12 } from "../fakedb";
+import { users, test12 } from "../fakedb";
 import { UserAvatar } from "./IconLib";
 
 function ServerMembers() {

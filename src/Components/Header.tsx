@@ -1,8 +1,8 @@
 
 import { Navigate } from 'react-router-dom';
 import React, {useContext, useEffect, useState} from "react";
-import { Avatar } from "@mui/material";
 import TopbarServer from "./TopbarServer";
+import { IconButton } from "./IconLib";
 import { friends } from "../fakedb";
 import { IoServer } from "react-icons/io5";
 import { FaUserFriends } from "react-icons/fa";
@@ -14,15 +14,24 @@ import AuthContext from "../context/AuthProvider";
 import axios from "../api/axios";
 import { ServerProps } from "./Server";
 import { FaRegUser } from "react-icons/fa";
+import CustomDialog from './DialogTemplate';
 
 const SERVER_LIST_URL = '/Server/GetServers';
-import { IconButton } from "./IconLib";
 
 function Header() {
     const [activeTopbar, setActiveTopbar] = useState<string | null>(null);
     const { auth }: { auth: any } = useContext(DataContext); // id, username, email, password, token
     const { setAuth }: { setAuth: any } = useContext(AuthContext);
     const [servers, setServers] = useState<ServerProps[] | undefined>();
+    const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
 
     // for user authentication (should be moved to axios.ts later)
     const config = {
@@ -77,8 +86,10 @@ function Header() {
                     <li className="relative flex items-center justify-center mx-auto mr-1"><button onClick={() => setActiveTopbar('servers')}><IconButton icon={<IoServer size={30}/>} name="ServerList"></IconButton></button></li>
                     <li className="relative flex items-center justify-center mx-auto"><button onClick={() => setActiveTopbar('friends')}><IconButton icon={<FaUserFriends size={30}/>} name="FriendList"></IconButton></button></li>
                     <label  style={{borderRight: '2px solid grey', borderRadius: '50%', margin: '15px'}}></label>
+                    {/* basic dialog window usage */  }
+                    <button onClick={handleDialogOpen}><IconButton icon={<IoMdSettings size={30}/>} name="Dialog" ></IconButton></button>
+                    <CustomDialog open={dialogOpen} handleClose={handleDialogClose} title="My Dialog" content="This is my dialog content." />
                 </ul>
-                
                 <div className="my-2 flex">
                 <SidebarBasic />
                 {activeTopbar === 'servers' && <TopbarServer servers={servers}/>}
