@@ -2,6 +2,12 @@ interface ServerButtonProps {
     name: string;
     picture?: string;
   }
+
+  interface UserAvatarProps {
+    name?: string;
+    picture?: string;
+  }
+
   
 interface IconButtonProps {
     icon: any;
@@ -39,7 +45,7 @@ export const ServerButton = ({ name, picture }: ServerButtonProps) => (
         name[0].toUpperCase()
       )}
   
-      <span className='group-hover:scale-100 z-50 absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-left'>
+      <span className='group-hover:scale-100 z-50 absolute w-auto p-2 m-2 min-w-max top-11 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-bottom'>
         {name}
       </span>
     </div>
@@ -50,7 +56,7 @@ export const ServerButton = ({ name, picture }: ServerButtonProps) => (
     <div className='font-semibold relative flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto bg-secondary group hover:bg-yellow-500 text-white hover:text-primary hover:rounded-xl rounded-3xl transition-all duration-300 ease-linear cursor-pointer'>
       {icon}
   
-      <span className='group-hover:scale-100 z-50 absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-left'>
+      <span className='group-hover:scale-100 z-50 absolute w-auto p-2 m-2 min-w-max top-11 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-left'>
         {name}
       </span>
     </div>
@@ -69,3 +75,19 @@ export const ServerButton = ({ name, picture }: ServerButtonProps) => (
     </div>
   );
   
+
+  export const UserAvatar = ({ name, picture }: UserAvatarProps) => (
+    <div
+      className='group font-semibold relative flex items-center justify-center h-12 w-12 text-primary rounded-3xl duration-300'
+      style={{
+        backgroundColor: colors[Math.floor(Math.random() * colors.length)],
+      }}>
+      {picture ? (
+        <picture
+          className='group bg-center bg-cover w-full h-full rounded-full'
+          style={{ backgroundImage: `url(${picture})` }}></picture>
+      ) : (
+        name ? name[0].toUpperCase() : ''
+      )}
+    </div>
+  );

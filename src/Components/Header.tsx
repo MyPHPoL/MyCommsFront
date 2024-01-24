@@ -1,5 +1,7 @@
+
 import { Navigate } from 'react-router-dom';
 import React, {useContext, useEffect, useState} from "react";
+import { Avatar } from "@mui/material";
 import TopbarServer from "./TopbarServer";
 import { friends } from "../fakedb";
 import { IoServer } from "react-icons/io5";
@@ -14,6 +16,7 @@ import { ServerProps } from "./Server";
 import { FaRegUser } from "react-icons/fa";
 
 const SERVER_LIST_URL = '/Server/GetServers';
+import { IconButton } from "./IconLib";
 
 function Header() {
     const [activeTopbar, setActiveTopbar] = useState<string | null>(null);
@@ -92,19 +95,5 @@ function Header() {
     }
 }
 
-interface IconButtonProps {
-    icon: any;
-    name: string;
-  }
-
-  const IconButton = ({ icon, name }: IconButtonProps) => (
-    <div className='font-semibold relative flex items-center justify-center h-12 w-12 mt-2 mb-2 bg-secondary group hover:bg-yellow-500 text-white hover:text-primary hover:rounded-xl rounded-3xl transition-all duration-300 ease-linear cursor-pointer'>
-      {icon}
-  
-      <span className='group-hover:scale-100 z-50 absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-left'>
-        {name}
-      </span>
-    </div>
-  );
 
 export default Header;
