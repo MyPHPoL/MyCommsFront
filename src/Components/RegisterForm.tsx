@@ -1,14 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaUser, FaLock, FaEnvelope, FaEye } from "react-icons/fa";
 import { Link, Route, Routes } from "react-router-dom";
 import LoginPage from "../Pages/LoginPage";
-import axios from "../api/axios";
+import { registerUser } from "../Api/axios";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/; // 3 to 23 characters, letters, numbers, underscores, hyphens allowed
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,32}$/; // 8 to 32 characters, must include uppercase and lowercase letters, a number and a special character
-const MAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/; // email regex
 
-const REGISTER_URL = '/Account/Register';
+// eslint-disable-next-line no-useless-escape
+const MAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/; // email regex
 
 const RegisterForm = () => {
 
@@ -70,15 +70,7 @@ const RegisterForm = () => {
             return;
         }
         try {
-            await axios.post(
-                REGISTER_URL,
-                JSON.stringify({
-                    name: username,
-                    email: email,
-                    password: password,
-                    confirmPassword: repeatPassword,
-                }),
-            );
+            await registerUser(username, email, password, repeatPassword);
             setSuccess(true);
             // clear input fields
             setEmail("");
@@ -86,16 +78,14 @@ const RegisterForm = () => {
             setPassword("");
             setRepeatPassword("");
         } catch (error: any) {
-            if(!error?.response){
+            if (!error?.response) {
                 setErrMsg("No server response. Please try again later.");
-            }
-            else if(error.response?.status === 500){
+            } else if (error.response?.status === 500) {
                 setErrMsg("E-mail or username is already taken!");
-            }
-            else{
+            } else {
                 setErrMsg("Something went wrong. Please try again later.");
-            };
-        }; 
+            }
+        }
     };
 
     return (

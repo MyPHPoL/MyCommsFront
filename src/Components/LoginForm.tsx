@@ -1,17 +1,14 @@
 import React from "react";
 import { FaUser, FaLock } from "react-icons/fa";
-import { Link, Route, Routes } from "react-router-dom";
-import { useRef, useState, useEffect, useContext } from "react";
+import { Link, Navigate, Route, Routes } from "react-router-dom";
+import { useState, useEffect } from "react";
 import RegisterPage from "../Pages/RegisterPage";
-import AuthContext from "../context/AuthProvider";
-import axios from "../api/axios";
-import MainPage from "../Pages/MainPage";
-
-const LOGIN_URL = '/Account/Login';
+import { loginUser } from "../Api/axios";
+import useAuth from "../Hooks/useAuth";
 
 const LoginForm = () => {
     
-    const { setAuth }: { setAuth: any } = useContext(AuthContext);
+    const { setAuth } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errMsg, setErrMsg] = useState("");
@@ -25,24 +22,18 @@ const LoginForm = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post(LOGIN_URL,
-                JSON.stringify({
-                    email: email,
-                    password: password,
-                }),
-            );
-            const id = response?.data?.id;
-            const username = response?.data?.username;
+            const response = await loginUser(email, password);
+            const id = response?.data?.user.id;
+            const username = response?.data?.user.username;
             const token = response?.data?.token;
             setAuth({ id, username, email, password, token });
-            console.log(token);
             setSuccess(true);
             
         } catch (error: any) {
             if(!error?.response){
                 setErrMsg("No server response. Please try again later.");
             }
-            else if(error.response?.status === 400){
+            else if(error.response?.status === 401){
                 setErrMsg("Invalid e-mail or password!");
             }
             else{
@@ -55,11 +46,7 @@ const LoginForm = () => {
         <>
         {success ? (
             <div>
-                    <Link to='*'>
-                    </Link>
-            <Routes>
-                <Route path='*' element={<MainPage />} />
-            </Routes>
+                <Navigate to='/home' />
             </div>
         ) : (
         <div className='w-full h-full bg-gradient-to-r from-main to-second bg-cover flex justify-center items-center min-h-screen min-w-screen'>
@@ -122,7 +109,4 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
-function setAuth(arg0: { email: string; password: string; accessToken: any; }) {
-    throw new Error("Function not implemented.");
-}
 

@@ -1,6 +1,6 @@
 import React from "react";
 import "../index.css";
-import { serverChannels, users, servers } from "../fakedb";
+import { serverChannels, users } from "../fakedb";
 
 export interface UserProps {
     id: string;
