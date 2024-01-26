@@ -7,6 +7,7 @@ import { HiGif } from "react-icons/hi2";
 import { useParams } from "react-router-dom";
 import { IoRefreshOutline } from "react-icons/io5";
 import { TfiLayoutPlaceholder } from "react-icons/tfi";
+import { UserAvatar } from "./IconLib";
 
 export interface FriendProps {
   id: string;
@@ -37,8 +38,12 @@ function FriendMessage() {
   
     return (
       <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[20px]'>
-        <div className='flex-row flex  text-5xl shadow-sg tracking-wider font-semibold text-white ml-2 pb-2'>
-          Chat with: <TfiLayoutPlaceholder className="mx-2" size={50}></TfiLayoutPlaceholder> {User?.id}
+        <div className='flex-row flex m-2  text-5xl shadow-sg tracking-wider font-semibold text-white ml-2 pb-2 items-center'>
+          Chat with: 
+          <div className='flex mx-2'>
+            <UserAvatar name={User?.name} picture={User?.picture}/>
+          </div>
+          {User?.name}
         </div>
         <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16'>
           {Messages.map(({ id, author, content, timestamp }) => (
@@ -48,8 +53,8 @@ function FriendMessage() {
               author={author}
               content={content}
               timestamp={timestamp}
-          />
-        ))}
+            />
+          ))}
       <div ref={chatWindowRef}/>
       </div>
       <TextBar
