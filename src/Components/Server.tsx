@@ -73,7 +73,6 @@ function Server() {
                 >
                   <MdRememberMe size={25} /> Show Members
                 </button>
-                {showMembers && <ServerMembers />}
                 <button
                   className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
                   role="menuitem"
@@ -121,6 +120,7 @@ function Server() {
           ))}
         </ul>
       )}
+      {showMembers && <ServerMembers />}
       <Routes>
         <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg} />} />
       </Routes>

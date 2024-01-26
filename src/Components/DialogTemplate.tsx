@@ -7,15 +7,11 @@ import Button from '@material-ui/core/Button';
 import TextField from "@material-ui/core/TextField";
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 
-
-//helo, i have commented title and content as they were never used, I believe that all we need is the type for picking the right dialog to use
 /* Define the props for the CustomDialog component */
 interface DialogProps {
   open: boolean; /* Whether the dialog is open or not */
   handleClose: () => void; /* Function to close the dialog */
-  type?: string; /* Type of the dialog */
- // title: string; /* Title of the dialog */
-  //content: string; /* Content of the dialog */
+  type?: string; /* Type of the dialog, we might change it to an enum later */
   actions?: React.ReactNode; /* Optional custom actions for the dialog */
 }
 
@@ -39,20 +35,15 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, actions 
     setIsPublic(event.target.checked);
   }
 
-  //test function to see if the values are passed correctly
+  //this is how a confirm function will look like, all we need now is to connect it to the backend and validate the input
   const handleCreateServer = () => {
     console.log(nameValue);
     console.log(description);
     console.log(isPublic);
+    handleClose();
   }
-  //CURRENTLY BOTH CLOSE AND ACCEPT USE THIS, it does not close the dialog for some reason after the function is called, needs fix
-  //commiting current changes cuz i dont want to lose them ):
-// handleClose = () => {
-//   if(type === 'Create Server')
-//   handleCreateServer();
-// return;
-// }
 
+//WEEEEOOOOO 
 if (type === 'Create Server') {
   return (
     /* Dialog component from Material UI */
@@ -95,7 +86,7 @@ if (type === 'Create Server') {
               Cancel
             </Button>
             {/* Confirm button, closes the dialog */}
-            <Button onClick={handleClose} color="primary">
+            <Button onClick={handleCreateServer} color="primary">
               Confirm
             </Button>
           </>
