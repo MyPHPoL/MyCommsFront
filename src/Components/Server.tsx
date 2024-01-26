@@ -11,7 +11,10 @@ import { getChannels, getServer } from "../Api/axios";
 import { enqueueSnackbar } from 'notistack';
 import { MdMoreHoriz } from "react-icons/md";
 import { IoMdArrowDropdown } from "react-icons/io";
+import { MdDescription } from "react-icons/md";
 import useAuth from "../Hooks/useAuth";
+import ServerDescDialog from './ServerDescDialog';
+
 
 export interface ServerProps {
   id: string;
@@ -34,6 +37,7 @@ function Server() {
   const [widthmsg, setWidthmsg] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showChannels, setShowChannels] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
 
   useEffect(() => {
@@ -91,7 +95,7 @@ function Server() {
             </div>
 
             {dropdownOpen && (
-              <div className="origin-top-right flex absolute h-auto right-[-300px]  mt-9 w-full rounded-md shadow-lg  bg-primary ring-1 ring-white ring-opacity-50 ">
+              <div className="origin-top-right flex absolute h-auto right-[-300px]  mt-[76px] w-full rounded-md shadow-lg  bg-primary ring-1 ring-white ring-opacity-50 ">
                 <div
                   className="py-1"
                   role="menu"
@@ -115,13 +119,22 @@ function Server() {
                   >
                     <FaRegPlusSquare size={25} />  Add Channel
                   </button>
+                  <button
+                    className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
+                    role="menuitem"
+                    onClick={() => setOpenDialog(true)}
+                  >
+                    <MdDescription size={25} /><ServerDescDialog
+                      open={openDialog}
+                      handleClose={() => setOpenDialog(false)}
+                      serverName={server?.name}
+                      serverDescription={server?.description}
+                    />
+                  </button>
                 </div>
               </div>
             )}
           </div>
-        </div>
-        <div className="text-white text-1xl m-2 truncate">
-          {server?.description}
         </div>
         <div className="my-1 ml-2 xl:w-auto">
           <div className="relative mb-4 flex w-full flex-wrap items-stretch">
