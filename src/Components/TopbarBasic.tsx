@@ -25,11 +25,13 @@ export default function TopbarBasic() {
     <div>
       <div className='h-auto w-auto flex flex-row bg-primary'>
       <ul className='first:my-0 last:my-0 flex flex-row'>
+
           <i className="mr-1" onClick={() => setDialogTypeAndOpen("Join Server")}>
             <IconButton icon={<IoMdAdd />} name={"Join Server"} />
           </i>
           <i  onClick={() => setDialogTypeAndOpen("Create Server")}>
             <IconButton icon={<IoMdCreate />} name={"Create Server"} />
+
           </i>
         </ul>
         </div>
