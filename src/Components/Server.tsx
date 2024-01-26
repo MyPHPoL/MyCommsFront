@@ -12,6 +12,7 @@ import { enqueueSnackbar } from 'notistack';
 import { MdMoreHoriz } from "react-icons/md";
 import { IoMdArrowDropdown } from "react-icons/io";
 import useAuth from "../Hooks/useAuth";
+import CustomDialog from "./DialogTemplate";
 
 export interface ServerProps {
   id: string;
@@ -34,6 +35,19 @@ function Server() {
   const [widthmsg, setWidthmsg] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showChannels, setShowChannels] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState("Add Channel"); 
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+  const setDialogTypeAndOpen = (type: string) => {
+    setDialogType(type);
+    handleDialogOpen();
+  }
 
 
   useEffect(() => {
@@ -162,7 +176,7 @@ function Server() {
         ))}
       </ul>
       <div className="items-center align-center flex flex-col ml-1">
-        <button>
+        <button onClick={() => setDialogTypeAndOpen("Add Channel")}>
           <IconButton icon={<FaRegPlusSquare size={30}/>} name="AddChannel"></IconButton>
         </button>
       </div>
@@ -189,6 +203,7 @@ function Server() {
         </ul>
       )}
       {showMembers && <ServerMembers />}
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType}/>
       <Routes>
         <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg} />} />
       </Routes>

@@ -140,7 +140,7 @@ if (type === 'Create Server') {
       </DialogActions>
     </Dialog>
   );
-} else if(type=="Join server"){
+} else if(type=="Join Server"){
   return(
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">Type the server name to join</DialogTitle>
