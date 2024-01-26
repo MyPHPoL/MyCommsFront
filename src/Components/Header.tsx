@@ -88,7 +88,8 @@ function Header() {
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
           {/* basic dialog window usage */}
           <button onClick={handleDialogOpen}><IconButton icon={<IoMdSettings size={30} />} name="Dialog" ></IconButton></button>
-          <CustomDialog open={dialogOpen} handleClose={handleDialogClose} title="My Dialog" content="This is my dialog content." />
+            {/* to change the type of the dialog used, please change type accordingly (future versions might change the call parameter) */}
+            <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type="Create Server"/>
         </ul>
         <div className="my-2 flex">
           <SidebarBasic />
