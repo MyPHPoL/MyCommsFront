@@ -175,7 +175,7 @@ function Server() {
       </button>
       {showChannels && (
         <ul>
-          {Channels?.channels.map(({ id, name }) => (
+          {channels?.map(({ id, name }) => (
             <li key={id}>
               <Link to={id}>
                 <div className="justify-left flex flex-col m-1">
