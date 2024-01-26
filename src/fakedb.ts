@@ -8,7 +8,6 @@ export const test12: ServerProps[] = [
       name: 'MyCommsFront',
       description: 'A React client powered by MyPHPoL',
       ownerId: 'ownerId-test',
-      users: ['ownerId-test', 'ownerId-test2']
     },
     {
       id: 'id-test2',
@@ -16,7 +15,6 @@ export const test12: ServerProps[] = [
       description: 'SKOŃCZYMY TEGO REACTA',
       picture: 'https://cdn.7tv.app/emote/63eba1b7b482c20fd932a293/4x.png',
       ownerId: 'ownerId-test2',
-      users: ['ownerId-test', 'ownerId-test2']
     },
     {
       id: 'id-test3',
@@ -24,14 +22,12 @@ export const test12: ServerProps[] = [
       description: 'tutaj planujemy zbrodnie',
       picture: 'https://cdn.frankerfacez.com/emoticon/513200/4',
       ownerId: 'ownerId-test2',
-      users: ['ownerId-test', 'ownerId-test2']
     },
     {
       id: 'id-test4',
       name: 'test',
       description: 'testowy serwer',
       ownerId: 'ownerId-test',
-      users: ['ownerId-test', 'ownerId-test2']
     },
   ];
 

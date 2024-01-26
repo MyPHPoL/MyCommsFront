@@ -8,9 +8,10 @@ import { useParams } from "react-router-dom";
 import { IoRefreshOutline } from "react-icons/io5";
 import { TfiLayoutPlaceholder } from "react-icons/tfi";
 
-export interface UserProps {
+export interface FriendProps {
   id: string;
   name: string;
+  picture?: string;
 }
 
 // for testing purposes (interface may change when we will connect app to the backend)
@@ -23,7 +24,7 @@ export interface MessageProps {
 
 function FriendMessage() {
     const { UserId } = useParams(); // userId is the name of the variable in the URL
-    const User = friends.find((friend: UserProps) => friend.id === UserId);
+    const User = friends.find((friend: FriendProps) => friend.id === UserId);
     const [Messages, setMessages] = useState(messages || []);
     const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
     const addMessage = (newMessage: MessageProps) => {

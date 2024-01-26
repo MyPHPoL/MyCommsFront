@@ -1,51 +1,57 @@
 import { Navigate } from 'react-router-dom';
-import React, {useContext, useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import TopbarServer from "./TopbarServer";
-import { friends } from "../fakedb";
 import { IoServer } from "react-icons/io5";
 import { FaUserFriends } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import SidebarBasic from "./TopbarBasic";
 import TopbarFriend from "./TopbarFriend";
-import DataContext from "../context/AuthProvider";
-import AuthContext from "../context/AuthProvider";
-import axios from "../api/axios";
+import useAuth from '../Hooks/useAuth';
+import { getFriends, getServers } from "../Api/axios";
 import { ServerProps } from "./Server";
+import { FriendProps } from "./FriendMessage";
 import { FaRegUser } from "react-icons/fa";
-
-const SERVER_LIST_URL = '/Server/GetServers';
+import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 
 function Header() {
     const [activeTopbar, setActiveTopbar] = useState<string | null>(null);
-    const { auth }: { auth: any } = useContext(DataContext); // id, username, email, password, token
-    const { setAuth }: { setAuth: any } = useContext(AuthContext);
+    const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
+    const { setAuth }: { setAuth: any } = useAuth();
     const [servers, setServers] = useState<ServerProps[] | undefined>();
-
-    // for user authentication (should be moved to axios.ts later)
-    const config = {
-      headers: { Authorization: `Bearer ${auth.token}` } 
-    };
+    const [friends, setFriends] = useState<FriendProps[] | undefined>();
 
     useEffect(() => {
       let isMounted = true; // something, something not to render when component is unmounted
       const controller = new AbortController(); // cancels request when component unmounts
-  
-      const getServers = async () => {
+    
+      const fetchServers = async () => {
           try {
-              const response = await axios.get(SERVER_LIST_URL, config);
+              const response = await getServers(auth.token);
               isMounted && setServers(response.data);
           } catch (error: any) {
-              console.log(error); // TODO: handle error
+              enqueueSnackbar("We couldn't load your server list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
           }
       };
-  
-      getServers();
-  
+    
+      const fetchFriends = async () => {
+          try {
+              const response = await getFriends(auth.token);
+              isMounted && setFriends(response.data);
+          } catch (error: any) {
+              enqueueSnackbar("We couldn't load your friend list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+          }
+      };
+    
+      fetchServers();
+      fetchFriends();
+    
       return () => {
           isMounted = false;
           controller.abort();
       };
-  }, []); // WITHOUT THIS ARRAY, IT WILL INFINITELY LOOP
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); 
 
     const logout = async () => {
       setAuth({}); // clear auth context
@@ -79,9 +85,10 @@ function Header() {
                 <div className="my-2 flex">
                 <SidebarBasic />
                 {activeTopbar === 'servers' && <TopbarServer servers={servers}/>}
-                {activeTopbar === 'friends' && <TopbarFriend items={friends} />}
+                {activeTopbar === 'friends' && <TopbarFriend friends={friends} />}
                 </div>
             </nav>
+            <SnackbarProvider autoHideDuration={3000}/>
         </div>
     );
     function toggleDropdown() {
