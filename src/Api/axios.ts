@@ -7,6 +7,9 @@ const SERVER_LIST_URL = '/Server/GetServers';
 const FRIEND_LIST_URL = '/FriendList/GetAll';
 const SERVER_URL = '/Server/GetServer?id=';
 const CHANNELS_URL = '/Channel/GetAllOnServer?id=';
+const CREATE_SERVER_URL = '/Server/Create';
+const CREATE_CHANNEL_URL = '/Channel/Add';
+const DELETE_CHANNEL_URL = '/Channel/Delete?id=';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -89,3 +92,65 @@ export const getChannels = async (token: string, id: string) => {
     );
     return response;
 };
+
+export const createServer = async (token: string, serverName: string, serverDescription: string, isPublic: boolean) => {
+    const response = await axios.post(
+        BASE_URL+CREATE_SERVER_URL,
+        JSON.stringify({
+            name: serverName,
+            description: serverDescription,
+            isPublic: isPublic,
+            picture: null,
+        }),
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+};
+
+export const createChannel = async (token: string, channelName: string, channelDescription: string, serverId: string) => {
+    const response = await axios.post(
+        BASE_URL+CREATE_CHANNEL_URL,
+        JSON.stringify({
+            name: channelName,
+            description: channelDescription,
+            serverId: serverId,
+        }),
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+};
+
+export const deleteChannel = async (token: string, id: string) => {
+    const response = await axios.get(
+        BASE_URL+DELETE_CHANNEL_URL+id,
+        {
+            headers: { 
+                Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+};
+
+// in works
+// export const joinServer = async (token: string, id: string) => {
+//     const response = await axios.post(
+//         BASE_URL+DELETE_CHANNEL_URL+id,
+//         {
+//             headers: { 
+//                 Authorization: `Bearer ${token}` 
+//             }
+//         },
+//     );
+//     return response;
+// };
