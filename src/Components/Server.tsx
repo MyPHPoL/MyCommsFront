@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Link, Route, Routes, useParams } from "react-router-dom";
 import "../index.css";
-import { serverChannels } from "../fakedb";
 import Channel, { ChannelProps } from "./Channel";
 import ServerMembers from "./ServerMembers";
 import { MdRememberMe } from "react-icons/md";
@@ -9,11 +8,9 @@ import { FaSearch } from "react-icons/fa";
 import { FaRegPlusSquare } from "react-icons/fa";
 import { ChannelButton, IconButton } from "./IconLib";
 import { useEffect } from "react";
-import axios from "../api/axios";
-import DataContext from "../context/AuthProvider";
-
-const SERVER_URL = '/Server/GetServer?id=';
-const CHANNELS_URL = '/Channel/GetAllOnServer?id=';
+import { getChannels, getServer } from "../Api/axios";
+import DataContext from "../Context/AuthProvider";
+import { enqueueSnackbar } from 'notistack';
 
 export interface ServerProps {
   id: string;
@@ -32,35 +29,30 @@ function Server() {
   const [showMembers, setShowMembers] = useState(false);
   const [widthmsg, setWidthmsg] = useState(0);
 
-  // for user authentication (should be moved to axios.ts later)
-  const config = {
-    headers: { Authorization: `Bearer ${auth.token}` } 
-  };
-
   useEffect(() => {
     let isMounted = true; // something, something not to render when component is unmounted
     const controller = new AbortController(); // cancels request when component unmounts
 
-    const getServer = async () => {
+    const fetchServer = async () => {
         try {
-            const response = await axios.get(SERVER_URL+ServerId, config);
+            const response = await getServer(auth.token, ServerId || '');
             isMounted && setServer(response.data);
         } catch (error: any) {
-            console.log(error); // TODO: handle error
+          enqueueSnackbar("We couldn't load this server. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
         }
     }
 
-    const getChannels = async () => {
+    const fetchChannels = async () => {
         try {
-            const response = await axios.get(CHANNELS_URL+ServerId, config);
+            const response = await getChannels(auth.token, ServerId || '');
             isMounted && setChannels(response.data);
         } catch (error: any) {
-            console.log(error); // TODO: handle error
+          enqueueSnackbar("We couldn't load this servers channel list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
         }
     }
 
-    getServer();
-    getChannels();
+    fetchServer();
+    fetchChannels();
 
     return () => {
         isMounted = false;
@@ -68,7 +60,7 @@ function Server() {
     };
 
 // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [ServerId]); // WITHOUT THIS ARRAY, IT WILL INFINITELY LOOP
+}, [ServerId]);
 
   return (
     <div className="md:flex h-full w-[300px] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary ">

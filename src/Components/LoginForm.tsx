@@ -1,16 +1,14 @@
 import React from "react";
 import { FaUser, FaLock } from "react-icons/fa";
 import { Link, Navigate, Route, Routes } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import RegisterPage from "../Pages/RegisterPage";
-import AuthContext from "../context/AuthProvider";
-import axios from "../api/axios";
-
-const LOGIN_URL = '/Account/Login';
+import { loginUser } from "../Api/axios";
+import useAuth from "../Hooks/useAuth";
 
 const LoginForm = () => {
     
-    const { setAuth }: { setAuth: any } = useContext(AuthContext);
+    const { setAuth } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errMsg, setErrMsg] = useState("");
@@ -24,12 +22,7 @@ const LoginForm = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post(LOGIN_URL,
-                JSON.stringify({
-                    email: email,
-                    password: password,
-                }),
-            );
+            const response = await loginUser(email, password);
             const id = response?.data?.user.id;
             const username = response?.data?.user.username;
             const token = response?.data?.token;
@@ -40,7 +33,7 @@ const LoginForm = () => {
             if(!error?.response){
                 setErrMsg("No server response. Please try again later.");
             }
-            else if(error.response?.status === 400){
+            else if(error.response?.status === 401){
                 setErrMsg("Invalid e-mail or password!");
             }
             else{
