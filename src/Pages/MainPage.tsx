@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import Header from "../Components/Header";
-import DataContext from "../context/AuthProvider";
+import DataContext from "../Context/AuthProvider";
 import { Navigate } from "react-router-dom";
 
 function MainPage(){

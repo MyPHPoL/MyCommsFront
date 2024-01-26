@@ -9,13 +9,14 @@ interface TopbarProps {
 }
 
 export default function TopbarServer({ servers }: TopbarProps) {
+
   return (
     <div>
       <div className='h-auto w-auto flex flex-row bg-primary'>
         <ul className='m-4 first:my-0 last:my-0 flex flex-row'>
           {servers?.map(({ id, name, picture }) => (
             <li className="mr-1" key={id}>
-              <Link to={id}>
+              <Link to={'/home/'+id}>
                 <ServerButton name={name} picture={picture} />
               </Link>
             </li>

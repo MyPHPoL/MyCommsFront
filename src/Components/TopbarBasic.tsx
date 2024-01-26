@@ -1,6 +1,6 @@
 import React from "react";
 import { IoMdAdd } from "react-icons/io";
-import { IoMdCreate } from "react-icons/io";
+import { IoEnterOutline } from "react-icons/io5";
 import { IconButton } from "./IconLib";
 
 
@@ -10,10 +10,10 @@ export default function TopbarBasic() {
       <div className='h-auto w-auto flex flex-row bg-primary'>
       <ul className='first:my-0 last:my-0 flex flex-row'>
           <i className="mr-1">
-            <IconButton icon={<IoMdAdd />} name={"Join Server"} />
+            <IconButton icon={<IoEnterOutline  />} name={"Join Server"} />
           </i>
           <i>
-            <IconButton icon={<IoMdCreate />} name={"Create Server"} />
+            <IconButton icon={<IoMdAdd />} name={"Create Server"} />
           </i>
         </ul>
         </div>
