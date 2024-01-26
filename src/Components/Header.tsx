@@ -1,9 +1,8 @@
 
 import { Navigate } from 'react-router-dom';
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import TopbarServer from "./TopbarServer";
 import { IconButton } from "./IconLib";
-import { friends } from "../fakedb";
 import { IoServer } from "react-icons/io5";
 import { FaUserFriends } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
