@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import TextField from "@material-ui/core/TextField";
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import useAuth from '../Hooks/useAuth';
-import { createChannel, createServer } from "../Api/axios";
+import { createChannel, createServer, deleteChannel, deleteServer, joinServer } from "../Api/axios";
 import { useStyles } from './DialogStyles';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -17,7 +17,7 @@ interface DialogProps {
   handleClose: () => void; /* Function to close the dialog */
   type?: string; /* Type of the dialog, we might change it to an enum later */
   actions?: React.ReactNode; /* Optional custom actions for the dialog */
-  currServerId?: string;
+  passedId?: string;
 }
 
 
@@ -32,13 +32,13 @@ const CustomCheckbox = withStyles({
 })(Checkbox);
 
 /* Define the CustomDialog component */
-const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServerId, actions }) => {
+const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions }) => {
   /* Add a state variable for the input field */
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [nameValue, setInputValue] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [isPublic, setIsPublic] = React.useState(false);
-  const isNameValueValid = nameValue.length < 32;
+  const isNameValueValid = (nameValue.length < 32) && (nameValue.length > 0);
   const isServerDescriptionValid = description.length < 128;
   const isChannelDescriptionValid = description.length < 64;
   const classes = useStyles();
@@ -62,9 +62,47 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
     }
   }
 
+  const handleDeleteServer = () => {
+    //needs to redirect to home here 
+    serverDelete();
+    handleClose();
+  }
+
+    const serverDelete = async () => {
+      try {
+        const response = await deleteServer(auth.token, passedId ?? '');
+      } catch (error: any) {
+        //throw error
+        console.log("beep boop nie działa");
+      }
+    }
+
   const addChannel = async () => {
     try {
-      const response = await createChannel(auth.token, nameValue, description, currServerId ?? '');
+      const response = await createChannel(auth.token, nameValue, description, passedId ?? '');
+    } catch (error: any) {
+      //throw error
+      console.log("beep boop nie działa");
+    }
+  }
+
+  const serverJoin = async () => {
+    try {
+      const response = await joinServer(auth.token, nameValue);
+    } catch (error: any) {
+      //throw error
+      console.log("beep boop nie działa");
+    }
+  }
+
+  const handleDeleteChannel = () =>{
+    //needs to redirect to server here 
+    channelDelete();
+    handleClose();
+  }
+  const channelDelete = async () => {
+    try {
+      const response = await deleteChannel(auth.token, passedId ?? '');
     } catch (error: any) {
       //throw error
       console.log("beep boop nie działa");
@@ -94,9 +132,14 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
   }
 
   const handleJoinServer = () => {
-    //here we will send the data to the backend
+    if(isNameValueValid){
+    serverJoin();
     console.log("Server joined");
     handleClose();
+    }else{
+      //throw error
+      console.log("Invalid input");
+    }
   }
 
   //WEEEEOOOOO 
@@ -121,7 +164,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
             fullWidth
             value={nameValue}
             onChange={handleInputChange}
-            helperText={!isNameValueValid ? "Name must be shorter than 32 characters" : ""}
+            helperText={!isNameValueValid ? "Name must be shorter than 32 characters and cannot be empty" : ""}
           />
           <TextField
             InputProps={{
@@ -203,7 +246,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
             fullWidth
             value={description}
             onChange={handleDescriptionChange}
-            helperText={!isServerDescriptionValid ? "Description must be shorter than 64 characters" : ""}
+            helperText={!isChannelDescriptionValid ? "Description must be shorter than 64 characters" : ""}
           />
         </DialogContent>
         {/* Actions of the dialog */}
@@ -265,7 +308,52 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
         </DialogActions>
       </Dialog>
     );
-  } else
+  } else if(type=="deleteChannel"){
+    return (
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Are You sure You want to delete the channel?</DialogTitle>
+        <DialogContent>
+        </DialogContent>
+        {/* Actions of the dialog */}
+        <DialogActions>
+          {/* If custom actions are provided, use them, otherwise use default actions */}
+          {actions ? actions : (
+            <>
+            <Button onClick={handleDeleteChannel} className={classes.styleButton}>
+                Yes
+              </Button>
+              <Button onClick={handleClose} className={classes.styleButton}>
+                Cancel
+              </Button>
+            </>
+          )}
+        </DialogActions>
+      </Dialog>
+    );
+
+  }else if(type=="deleteServer"){
+    return (
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Are You sure You want to delete the server?</DialogTitle>
+        <DialogContent>
+        </DialogContent>
+        {/* Actions of the dialog */}
+        <DialogActions>
+          {/* If custom actions are provided, use them, otherwise use default actions */}
+          {actions ? actions : (
+            <>
+            <Button onClick={handleDeleteServer} className={classes.styleButton}>
+                Yes
+              </Button>
+              <Button onClick={handleClose} className={classes.styleButton}>
+                Cancel
+              </Button>
+            </>
+          )}
+        </DialogActions>
+      </Dialog>
+    );
+  }else
     //THIS IS THE DEFAULT TEMPLATE FOR DIALOGS, returned if the type is not specified, as for now its retruned if the type is not specified
     //in the future it might be changed to return an error, and the default template might be moved
     return (

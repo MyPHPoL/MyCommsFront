@@ -13,8 +13,9 @@ const CHANNEL_INFO_URL = '/Channel/Get?id=';
 const SEND_MESSAGE_URL = '/Message/Create';
 const CREATE_SERVER_URL = '/Server/Create';
 const CREATE_CHANNEL_URL = '/Channel/Add';
-const DELETE_CHANNEL_URL = '/Channel/Delete?id=';
-
+const DELETE_CHANNEL_URL = '/Channel/Delete?channelId=';
+const JOIN_SERVER_URL = '/Server/JoinServer?name=';
+const DELETE_SERVER_URL = '/Server/DeleteServer?serverId=';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -203,8 +204,21 @@ export const createChannel = async (token: string, channelName: string, channelD
 };
 
 export const deleteChannel = async (token: string, id: string) => {
-    const response = await axios.get(
+    const response = await axios.delete(
         BASE_URL+DELETE_CHANNEL_URL+id,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+};
+
+export const joinServer = async (token: string, name: string) => {
+    const response = await axios.post(
+        BASE_URL+JOIN_SERVER_URL+name,
         {
             headers: { 
                 Authorization: `Bearer ${token}` 
@@ -214,15 +228,15 @@ export const deleteChannel = async (token: string, id: string) => {
     return response;
 };
 
-// in works
-// export const joinServer = async (token: string, id: string) => {
-//     const response = await axios.post(
-//         BASE_URL+DELETE_CHANNEL_URL+id,
-//         {
-//             headers: { 
-//                 Authorization: `Bearer ${token}` 
-//             }
-//         },
-//     );
-//     return response;
-// };
+export const deleteServer = async (token: string, id: string) => {
+    const response = await axios.delete(
+        BASE_URL+DELETE_SERVER_URL+id,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+};
