@@ -224,7 +224,7 @@ function Server() {
         </Routes>
       </div>
       
-      {showMembers && <ServerMembers />}
+      {showMembers && <ServerMembers serverMembers={serverMembers}/>}
       <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} newChannel={tmpChannel}  pushChannel={pushChannel} />
     </div>
   );
