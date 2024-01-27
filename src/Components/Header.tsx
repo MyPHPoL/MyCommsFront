@@ -1,4 +1,3 @@
-
 import { Navigate } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
 import TopbarServer from "./TopbarServer";
@@ -76,7 +75,6 @@ function Header() {
             {/* dropdown that is toggled by above button, currently test values, new content to have tailwind classes like "test" */}
             <div id="dropdown-menu" className="hidden divide-y top-[40px] left-[42px] z-10 divide-primary absolute text-white w-300 border border-gray-900 bg-secondary shadow-md mt-2 rounded-xl text-base">
               <div className="py-2 px-2 cursor-pointer hover:text-primary hover:bg-yellow-500 rounded-t-xl text-center">Settings</div>
-              <div className="py-2 px-2 cursor-pointer hover:text-primary hover:bg-yellow-500 text-center">test</div>
               <div className="py-2 px-2 cursor-pointer hover:text-primary hover:bg-yellow-500 rounded-b-xl text-center" onClick={logout}>Log out</div>
             </div>
           </li>

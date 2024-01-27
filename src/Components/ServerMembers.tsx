@@ -1,44 +1,39 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
 import "../index.css";
-import { TfiLayoutPlaceholder } from "react-icons/tfi";
-import { users, test12 } from "../fakedb";
 import { UserAvatar } from "./IconLib";
 import { IoMdArrowDropdown } from "react-icons/io";
+import { UserProps } from "./User";
 
+interface ServerMembersProps {
+  serverMembers: UserProps[];
+}
 
-function ServerMembers() {
-  const { ServerId } = useParams();
-  const Server = test12.find((server) => server.id === ServerId);
+function ServerMembers({ serverMembers }: ServerMembersProps) {
   const [showMembers, setShowMembers] = useState(false);
-  // Find the members of the server
-  // const ServerMembers = Server?.users.map(userId => users.find(user => user.id === userId)) || [];
+
   return (
     <div className="flex flex-col items-start">
       <div className="md:flex h-auto w-[9%] -z-20 flex-col text-sm fixed inset-y-0 top-20 left-[91%] bg-tertiary align:right">
         <button className="flex m-2 text-white text-xl font-semibold items-center" onClick={() => setShowMembers(!showMembers)}>
-          PHRole <IoMdArrowDropdown size='25' />
+          All Members <IoMdArrowDropdown size='25' />
         </button>
         {showMembers && (
           <ul>
-            {/* {ServerMembers?.map((user) => (
-              user && (
-                <li key={user.id} className="w-full">
-                  <div className="text-lg flex flex-col m-1 mb-2 font-semibold text-white mr-2 pl-2 bg-secondary py-2 px-4 shadow w-full items-start">
-                    <div className="flex justify-start items-center w-full">
-                      <UserAvatar name={user.name} picture={user.picture} />
-                      <span className="ml-2">{user.name}</span>
-                    </div>
+            {serverMembers.map((user) => ( // Fix the map function
+              <li key={user.id} className="w-full">
+                <div className="text-lg flex flex-col m-1 mb-2 font-semibold text-white mr-2 pl-2 bg-secondary py-2 px-4 shadow w-full items-start">
+                  <div className="flex justify-start items-center w-full">
+                    <div className="scale-75"><UserAvatar name={user.username}/></div>
+                    <span className="ml-2">{user.username}</span>
                   </div>
-                </li>
-              )
-            ))} */}
+                </div>
+              </li>
+            ))}
           </ul>
         )}
       </div>
-    </div >
+    </div>
   );
 }
-
 
 export default ServerMembers;

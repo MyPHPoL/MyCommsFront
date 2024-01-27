@@ -10,7 +10,7 @@ import { UserAvatar } from "./IconLib";
 
 export interface FriendProps {
   id: string;
-  name: string;
+  username: string;
   picture?: string;
 }
 
@@ -40,9 +40,9 @@ function FriendMessage() {
         <div className='flex-row flex m-2  text-5xl shadow-sg tracking-wider font-semibold text-white ml-2 pb-2 items-center'>
           Chat with: 
           <div className='flex mx-2'>
-            <UserAvatar name={User?.name} picture={User?.picture}/>
+            <UserAvatar name={User?.username} picture={User?.email}/>
           </div>
-          {User?.name}
+          {User?.username}
         </div>
         <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16'>
           {Messages.map(({ id, author, content, timestamp }) => (
@@ -58,7 +58,7 @@ function FriendMessage() {
       </div>
       <TextBar
         addMessage={addMessage}
-        name={User?.name || 'this channel' }
+        name={User?.username || 'this channel' }
       />
     </div>
   );

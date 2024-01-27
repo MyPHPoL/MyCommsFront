@@ -8,6 +8,8 @@ import { IoRefreshOutline } from "react-icons/io5";
 import { enqueueSnackbar } from "notistack";
 import useAuth from "../Hooks/useAuth";
 import { getAllMessages, getChannelInfo, getUsername, sendMessage } from "../Api/axios";
+import Picker from 'emoji-picker-react';
+import { EmojiStyle,Theme } from 'emoji-picker-react';
 
 export interface ChannelProps {
   id: string;
@@ -34,12 +36,12 @@ function Channel({widthmsg}: {widthmsg:number}) {
   // will add message to the database and then to the messages array (if successful)
   const addMessage = async (body: string) => {
     try {
-    const respone = await sendMessage(auth.token, ChannelId || '', body, '0');
+    const response = await sendMessage(auth.token, ChannelId || '', body, '0');
     const newMessage: MessageProps = {
-      id: respone.data.id,
-      authorId: respone.data.authorId,
-      body: respone.data.body,
-      creationDate: respone.data.creationDate,
+      id: response.data.id,
+      authorId: response.data.authorId,
+      body: response.data.body,
+      creationDate: response.data.creationDate,
     };
     setMessages((messages) => [...messages, newMessage]);
     } catch (error: any) {
@@ -92,7 +94,7 @@ function Channel({widthmsg}: {widthmsg:number}) {
       <div className='text-5xl shadow-sg tracking-wider font-semibold text-white w-full pl-5 h-[60px] bg-tertiary'>
         {channelInfo?.name} | {channelInfo?.description}
       </div>
-      <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 w-fullborder-tertiary w-full'>
+      <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 border-tertiary w-full'>
         {messages?.map(({ id, authorId, body, creationDate }) => (
           <Message
             key={id}
@@ -107,7 +109,7 @@ function Channel({widthmsg}: {widthmsg:number}) {
       <TextBar
         refreshMessages={fetchAllMessages}
         addMessage={addMessage}
-        name={Channel?.name || 'this channel' }
+        name={channelInfo?.name || 'this channel' }
         widthmsg={widthmsg}
       />
     </div>
@@ -116,7 +118,9 @@ function Channel({widthmsg}: {widthmsg:number}) {
 
 // input field at the bottom of the page
 const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: (message: string) => void, name: string, widthmsg: number, refreshMessages: () => void }) => {
+  const [emojiMenuOpen, setEmojiMenuOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
@@ -129,6 +133,10 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
     // Clear the input field and add the new message
     addMessage(inputValue);
     setInputValue('');
+  };
+
+  const handleEmojiClick = (emoji: any) => {
+    setInputValue(inputValue + emoji.emoji);
   };
 
   return (
@@ -152,10 +160,15 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
       <button>
         <HiGif size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
-      <button>
-      {/* This is a button that will open emoji menu */}
+      <div className="absolute bottom-full right-1 my-2">
+      {emojiMenuOpen && <Picker onEmojiClick={handleEmojiClick} theme={Theme.DARK} emojiStyle={EmojiStyle.NATIVE} />}
+      </div>
+
+      {/* This is a button that opens emoji menu */}
+      <button type="button" onClick={()=> setEmojiMenuOpen(!emojiMenuOpen)}>
         <FaRegSmile size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
+
       {/* This is a button that sends a message */}
       <button type='submit'>
         <IoSend size='22' className='text-gray-300 mx-2 hover:text-gray-200' />

@@ -10,6 +10,7 @@ import useAuth from '../Hooks/useAuth';
 import { createChannel, createServer, deleteChannel, deleteServer, joinServer } from "../Api/axios";
 import { useStyles } from './DialogStyles';
 import { withStyles } from '@material-ui/core/styles';
+import { ChannelProps } from './Channel';
 
 /* Define the props for the CustomDialog component */
 interface DialogProps {
@@ -18,6 +19,8 @@ interface DialogProps {
   type?: string; /* Type of the dialog, we might change it to an enum later */
   actions?: React.ReactNode; /* Optional custom actions for the dialog */
   passedId?: string;
+  newChannel?: ChannelProps;
+  pushChannel?:(channel:ChannelProps)=>void;
 }
 
 
@@ -32,7 +35,7 @@ const CustomCheckbox = withStyles({
 })(Checkbox);
 
 /* Define the CustomDialog component */
-const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions }) => {
+const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, newChannel, pushChannel }) => {
   /* Add a state variable for the input field */
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [nameValue, setInputValue] = React.useState('');
@@ -80,6 +83,16 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   const addChannel = async () => {
     try {
       const response = await createChannel(auth.token, nameValue, description, passedId ?? '');
+        newChannel = {
+        id: response.data.id,
+        name: response.data.name,
+        description: response.data.description,
+        serverId: response.data.serverId,
+        };
+        if (pushChannel) {
+          console.log(newChannel)
+          pushChannel(newChannel);
+        }
     } catch (error: any) {
       //throw error
       console.log("beep boop nie działa");
@@ -267,7 +280,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         </DialogActions>
       </Dialog>
     );
-  } else if (type == "Join Server") {
+  } else if (type === "Join Server") {
     return (
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
         <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Type the server name to join</DialogTitle>
@@ -308,7 +321,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         </DialogActions>
       </Dialog>
     );
-  } else if(type=="deleteChannel"){
+  } else if(type === "deleteChannel"){
     return (
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
         <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Are You sure You want to delete the channel?</DialogTitle>
@@ -331,7 +344,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
       </Dialog>
     );
 
-  }else if(type=="deleteServer"){
+  }else if(type === "deleteServer"){
     return (
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Are You sure You want to delete the server?</DialogTitle>
