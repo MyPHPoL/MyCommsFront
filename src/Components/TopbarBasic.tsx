@@ -3,11 +3,15 @@ import { IoMdAdd } from "react-icons/io";
 import { IoMdCreate } from "react-icons/io";
 import { IconButton } from "./IconLib";
 import CustomDialog from "./DialogTemplate";
+import { ServerProps } from "./Server";
 
-
-export default function TopbarBasic() {
+interface TopBarProps {
+  handleAddServer: (server: ServerProps) => void;
+}
+export default function TopbarBasic ({ handleAddServer }: TopBarProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("Create Server"); 
+
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
@@ -33,7 +37,7 @@ export default function TopbarBasic() {
           </i>
         </ul>
         </div>
-        <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType}/>
+        <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} handleAddServer={handleAddServer}/>
     </div>
     
   );

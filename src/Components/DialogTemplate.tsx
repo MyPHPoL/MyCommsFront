@@ -12,6 +12,7 @@ import { useStyles } from './DialogStyles';
 import { withStyles } from '@material-ui/core/styles';
 import { ChannelProps } from './Channel';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { ServerProps } from './Server';
 
 /* Define the props for the CustomDialog component */
 interface DialogProps {
@@ -22,6 +23,7 @@ interface DialogProps {
   passedId?: string;
   newChannel?: ChannelProps;
   pushChannel?:(channel:ChannelProps)=>void;
+  handleAddServer?: (server: ServerProps) => void;
 }
 
 
@@ -36,7 +38,7 @@ const CustomCheckbox = withStyles({
 })(Checkbox);
 
 /* Define the CustomDialog component */
-const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, newChannel, pushChannel }) => {
+const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, newChannel, handleAddServer, pushChannel }) => {
   /* Add a state variable for the input field */
   const navigate = useNavigate();
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
@@ -62,6 +64,16 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   const serverCreate = async () => {
     try {
       const response = await createServer(auth.token, nameValue, description, isPublic);
+      const newServer = {
+        id: response.data.id,
+        name: response.data.name,
+        description: response.data.description,
+        isPublic: response.data.isPublic,
+        ownerId: response.data.ownerId,
+      };
+      if (handleAddServer) {
+        handleAddServer(newServer);
+      }
     } catch (error: any) {
       //throw error
       console.log("beep boop nie działa");

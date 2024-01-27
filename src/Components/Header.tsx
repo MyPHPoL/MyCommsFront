@@ -20,7 +20,19 @@ function Header() {
     const { setAuth }: { setAuth: any } = useAuth();
     const [servers, setServers] = useState<ServerProps[] | undefined>();
     const [friends, setFriends] = useState<FriendProps[] | undefined>();
-
+    const [tmpServer, setTmpServer] = useState<ServerProps | undefined>();
+    
+    
+    const pushServer = (server: ServerProps) => {
+      setTmpServer(server);
+    }
+    useEffect(() => {
+      if (tmpServer) {
+        if (servers) {
+          setServers([...servers, tmpServer]);
+        }
+      }
+    }, [tmpServer])
     useEffect(() => {
       let isMounted = true; // something, something not to render when component is unmounted
       const controller = new AbortController(); // cancels request when component unmounts
@@ -84,7 +96,7 @@ function Header() {
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
         </ul>
         <div className="my-2 flex">
-          <SidebarBasic />
+          <SidebarBasic handleAddServer={pushServer}/>
           {activeTopbar === 'servers' && <TopbarServer servers={servers} />}
           {activeTopbar === 'friends' && <TopbarFriend friends={friends} />}
         </div>
