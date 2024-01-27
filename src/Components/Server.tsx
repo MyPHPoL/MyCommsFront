@@ -39,7 +39,7 @@ function Server() {
   const [showChannels, setShowChannels] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState("Add Channel"); 
+  const [dialogType, setDialogType] = useState("Add Channel");
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
@@ -129,6 +129,7 @@ function Server() {
                   <button
                     className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
                     role="menuitem"
+                    onClick={() => setDialogTypeAndOpen("Add Channel")}
                   >
                     <FaRegPlusSquare size={25} />  Add Channel
                   </button>
@@ -151,11 +152,33 @@ function Server() {
         </div>
         <div className="my-1 ml-2 xl:w-auto">
           <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-              <input type="search" className="relative m-0 block flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal text-neutral-700 outline-none transition duration-200 dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200" placeholder="Search" />
-              <span className="flex items-center whitespace-nowrap rounded px-3 py-1.5 text-center text-base font-normal text-neutral-700 dark:text-neutral-200">
-                  <FaSearch size={20}/>
-              </span>
+            <input type="search" className="relative m-0 block flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal text-neutral-700 outline-none transition duration-200 dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200" placeholder="Search" />
+            <span className="flex items-center whitespace-nowrap rounded px-3 py-1.5 text-center text-base font-normal text-neutral-700 dark:text-neutral-200">
+              <FaSearch size={20} />
+            </span>
           </div>
+          <button className="flex m-2 text-white font-semibold" onClick={() => setShowChannels(!showChannels)}>
+            PH Channel Group <IoMdArrowDropdown size='25' />
+          </button>
+          {showChannels && (
+            <ul>
+              {channels?.map(({ id, name }) => (
+                <li key={id}>
+                  <Link to={id}>
+                    <div className="justify-left flex flex-col m-1">
+                      <button>
+                        <ChannelButton name={`#${name}`}></ChannelButton>
+                      </button>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <Routes>
+          <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg} />} />
+        </Routes>
       </div>
       <div className="inline-flex items-center justify-center w-full">
         <hr className="w-64 h-1 mx-auto my-4 bg-gray-200 border-0"></hr>
@@ -205,6 +228,10 @@ function Server() {
       )}
       {showMembers && <ServerMembers />}
       <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType}/>
+
+      <Routes>
+        <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg} />} />
+      </Routes>
     </div>
   );
 }
