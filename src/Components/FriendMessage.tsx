@@ -6,7 +6,6 @@ import { IoSend } from "react-icons/io5";
 import { HiGif } from "react-icons/hi2";
 import { useParams } from "react-router-dom";
 import { IoRefreshOutline } from "react-icons/io5";
-import { TfiLayoutPlaceholder } from "react-icons/tfi";
 import { UserAvatar } from "./IconLib";
 
 export interface FriendProps {

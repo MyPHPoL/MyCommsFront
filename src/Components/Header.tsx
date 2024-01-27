@@ -22,16 +22,6 @@ function Header() {
     const { setAuth }: { setAuth: any } = useAuth();
     const [servers, setServers] = useState<ServerProps[] | undefined>();
     const [friends, setFriends] = useState<FriendProps[] | undefined>();
-    const [dialogOpen, setDialogOpen] = useState(false);
-
-    const handleDialogOpen = () => {
-      setDialogOpen(true);
-    };
-  
-    const handleDialogClose = () => {
-      setDialogOpen(false);
-    };
-
 
     useEffect(() => {
       let isMounted = true; // something, something not to render when component is unmounted
@@ -96,9 +86,8 @@ function Header() {
           <li className="relative flex items-center justify-center mx-auto"><button onClick={() => setActiveTopbar('friends')}><IconButton icon={<FaUserFriends size={30} />} name="FriendList"></IconButton></button></li>
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
           {/* basic dialog window usage */}
-          <button onClick={handleDialogOpen}><IconButton icon={<IoMdSettings size={30} />} name="Dialog" ></IconButton></button>
+          <button><IconButton icon={<IoMdSettings size={30} />} name="Dialog" ></IconButton></button>
             {/* to change the type of the dialog used, please change type accordingly (future versions might change the call parameter) */}
-            <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type="Create Server"/>
         </ul>
         <div className="my-2 flex">
           <SidebarBasic />

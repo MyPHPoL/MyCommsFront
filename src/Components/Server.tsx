@@ -11,7 +11,11 @@ import { getChannels, getServer } from "../Api/axios";
 import { enqueueSnackbar } from 'notistack';
 import { MdMoreHoriz } from "react-icons/md";
 import { IoMdArrowDropdown } from "react-icons/io";
+import { MdDescription } from "react-icons/md";
 import useAuth from "../Hooks/useAuth";
+import ServerDescDialog from './ServerDescDialog';
+
+import CustomDialog from "./DialogTemplate";
 
 export interface ServerProps {
   id: string;
@@ -33,6 +37,20 @@ function Server() {
   const [widthmsg, setWidthmsg] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showChannels, setShowChannels] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState("Add Channel"); 
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+  const setDialogTypeAndOpen = (type: string) => {
+    setDialogType(type);
+    handleDialogOpen();
+  }
 
 
   useEffect(() => {
@@ -90,7 +108,7 @@ function Server() {
             </div>
 
             {dropdownOpen && (
-              <div className="origin-top-right flex absolute h-auto right-[-300px]  mt-9 w-full rounded-md shadow-lg  bg-primary ring-1 ring-white ring-opacity-50 ">
+              <div className="origin-top-right flex absolute h-auto right-[-300px]  mt-[76px] w-full rounded-md shadow-lg  bg-primary ring-1 ring-white ring-opacity-50 ">
                 <div
                   className="py-1"
                   role="menu"
@@ -114,45 +132,82 @@ function Server() {
                   >
                     <FaRegPlusSquare size={25} />  Add Channel
                   </button>
+                  <button
+                    className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
+                    role="menuitem"
+                    onClick={() => setOpenDialog(true)}
+                  >
+                    <MdDescription size={25} /><ServerDescDialog
+                      open={openDialog}
+                      handleClose={() => setOpenDialog(false)}
+                      serverName={server?.name}
+                      serverDescription={server?.description}
+                    />
+                  </button>
                 </div>
               </div>
             )}
           </div>
         </div>
-        <div className="text-white text-1xl m-2 truncate">
-          {server?.description}
-        </div>
         <div className="my-1 ml-2 xl:w-auto">
           <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-            <input type="search" className="relative m-0 block flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal text-neutral-700 outline-none transition duration-200 dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200" placeholder="Search" />
-            <span className="flex items-center whitespace-nowrap rounded px-3 py-1.5 text-center text-base font-normal text-neutral-700 dark:text-neutral-200">
-              <FaSearch size={20} />
-            </span>
+              <input type="search" className="relative m-0 block flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal text-neutral-700 outline-none transition duration-200 dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200" placeholder="Search" />
+              <span className="flex items-center whitespace-nowrap rounded px-3 py-1.5 text-center text-base font-normal text-neutral-700 dark:text-neutral-200">
+                  <FaSearch size={20}/>
+              </span>
           </div>
-          <button className="flex m-2 text-white font-semibold" onClick={() => setShowChannels(!showChannels)}>
-            PH Channel Group <IoMdArrowDropdown size='25' />
-          </button>
-          {showChannels && (
-            <ul>
-              {channels?.map(({ id, name }) => (
-                <li key={id}>
-                  <Link to={''+id}>
-                    <div className="justify-left flex flex-col m-1">
-                      <button>
-                        <ChannelButton name={`#${name}`}></ChannelButton>
-                      </button>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <Routes>
-          <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg} />} />
-        </Routes>
       </div>
+      <div className="inline-flex items-center justify-center w-full">
+        <hr className="w-64 h-1 mx-auto my-4 bg-gray-200 border-0"></hr>
+        <span className="absolute px-3 font-semibold text-gray-300 -translate-x-1/2 bg-tertiary left-1/2">
+          All Channels
+        </span>
+      </div>
+      <ul>
+        {channels?.map(({id, name}) => (
+          <li key={id}>
+            <Link to={id}>
+              <div className="justify-left flex flex-col m-1">
+                <button>
+                  <ChannelButton name={`#${name}`} ></ChannelButton>
+                </button>
+              </div>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <div className="items-center align-center flex flex-col ml-1">
+        <button onClick={() => setDialogTypeAndOpen("Add Channel")}>
+          <IconButton icon={<FaRegPlusSquare size={30}/>} name="AddChannel"></IconButton>
+        </button>
+      </div>
+              <Routes>
+                <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg}/>} />
+              </Routes>
+      </div>
+      <button className="flex m-2 text-white font-semibold" onClick={() => setShowChannels(!showChannels)}>
+        PH Channel Group <IoMdArrowDropdown size='25' />
+      </button>
+      {showChannels && (
+        <ul>
+          {channels?.map(({ id, name }) => (
+            <li key={id}>
+              <Link to={id}>
+                <div className="justify-left flex flex-col m-1">
+                  <button>
+                    <ChannelButton name={`#${name}`}></ChannelButton>
+                  </button>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
       {showMembers && <ServerMembers />}
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType}/>
+      <Routes>
+        <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg} />} />
+      </Routes>
     </div>
   );
 }

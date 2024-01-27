@@ -6,6 +6,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import TextField from "@material-ui/core/TextField";
 import { Checkbox, FormControlLabel } from '@material-ui/core';
+import useAuth from '../Hooks/useAuth';
+import { createChannel, createServer } from "../Api/axios";
 
 /* Define the props for the CustomDialog component */
 interface DialogProps {
@@ -13,17 +15,20 @@ interface DialogProps {
   handleClose: () => void; /* Function to close the dialog */
   type?: string; /* Type of the dialog, we might change it to an enum later */
   actions?: React.ReactNode; /* Optional custom actions for the dialog */
+  currServerId?: string;
 }
 
 
 /* Define the CustomDialog component */
-const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, actions }) => {
+const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type,currServerId ,actions}) => {
   /* Add a state variable for the input field */
-  
+  const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [nameValue, setInputValue] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [isPublic, setIsPublic] = React.useState(false);
-
+  const isNameValueValid = nameValue.length < 32;
+  const isServerDescriptionValid = description.length < 128;
+  const isChannelDescriptionValid = description.length < 64;
   /* Add a function to handle input changes */
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -35,14 +40,52 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, actions 
     setIsPublic(event.target.checked);
   }
 
-  //this is how a confirm function will look like, all we need now is to connect it to the backend and validate the input
-  const handleCreateServer = () => {
-    console.log(nameValue);
-    console.log(description);
-    console.log(isPublic);
-    handleClose();
+  const serverCreate = async () => {
+    try {
+      const response = await createServer(auth.token, nameValue, description, isPublic);
+    } catch (error: any) {
+      //throw error
+      console.log("beep boop nie działa");
+    }
+  }
+  
+  const addChannel = async () => {
+    try {
+      const response = await createChannel(auth.token, nameValue, description, currServerId ?? '');
+    } catch (error: any) {
+      //throw error
+      console.log("beep boop nie działa");
+    }
   }
 
+  //this is how a confirm function will look like, all we need now is to connect it to the backend and validate the input
+  const handleCreateServer = () => {
+    if(isNameValueValid && isServerDescriptionValid){
+      serverCreate();
+    handleClose();
+    }else{
+      //throw error
+      console.log("Invalid input");
+    }
+  }
+
+  const handleAddChannel = () => {
+    if(isNameValueValid && isChannelDescriptionValid){
+      addChannel();
+      console.log("Channel created");
+    handleClose();
+    }else{
+      //throw error
+      console.log("Invalid input");
+    }
+  }
+  
+  const handleJoinServer = () => {
+    //here we will send the data to the backend
+    console.log("Server joined");
+    handleClose();
+  }
+  
 //WEEEEOOOOO 
 if (type === 'Create Server') {
   return (
@@ -59,6 +102,7 @@ if (type === 'Create Server') {
           fullWidth
           value={nameValue}
           onChange={handleInputChange}
+          helperText={!isNameValueValid ? "Name must be shorter than 32 characters" : ""}
         />
         <TextField
           autoFocus
@@ -69,6 +113,7 @@ if (type === 'Create Server') {
           fullWidth
           value={description}
           onChange={handleDescriptionChange}
+          helperText={!isServerDescriptionValid ? "Description must be shorter than 124 characters" : ""}
         />
         <FormControlLabel
             control={<Checkbox checked={isPublic} onChange={handleCheckboxChange} />}
@@ -110,6 +155,7 @@ if (type === 'Create Server') {
           fullWidth
           value={nameValue}
           onChange={handleInputChange}
+          helperText={!isNameValueValid ? "Name must be shorter than 32 characters" : ""}
         />
         <TextField
           autoFocus
@@ -120,6 +166,7 @@ if (type === 'Create Server') {
           fullWidth
           value={description}
           onChange={handleDescriptionChange}
+          helperText={!isServerDescriptionValid ? "Description must be shorter than 64 characters" : ""}
         />
       </DialogContent>
       {/* Actions of the dialog */}
@@ -127,13 +174,13 @@ if (type === 'Create Server') {
         {/* If custom actions are provided, use them, otherwise use default actions */}
         {actions ? actions : (
           <>
+            {/* Confirm button, closes the dialog */}
+            <Button onClick={handleAddChannel} color="primary">
+              Confirm
+            </Button>
             {/* Cancel button, closes the dialog */}
             <Button onClick={handleClose} color="primary">
               Cancel
-            </Button>
-            {/* Confirm button, closes the dialog */}
-            <Button onClick={handleClose} color="primary">
-              Confirm
             </Button>
           </>
         )}
@@ -161,14 +208,15 @@ if (type === 'Create Server') {
       <DialogActions>
         {actions ? actions : (
           <>
+            {/* Confirm button, closes the dialog */}
+            <Button onClick={handleJoinServer} color="primary">
+              Confirm
+            </Button>
             {/* Cancel button, closes the dialog */}
             <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-            {/* Confirm button, closes the dialog */}
-            <Button onClick={handleClose} color="primary">
-              Confirm
-            </Button>
+            
           </>
         )}
       </DialogActions>
