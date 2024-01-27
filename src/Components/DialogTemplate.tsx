@@ -267,7 +267,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         </DialogActions>
       </Dialog>
     );
-  } else if (type == "Join Server") {
+  } else if (type === "Join Server") {
     return (
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
         <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Type the server name to join</DialogTitle>

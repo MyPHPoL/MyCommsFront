@@ -7,7 +7,7 @@ import { MdRememberMe } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 import { FaRegPlusSquare } from "react-icons/fa";
 import { ChannelButton, IconButton } from "./IconLib";
-import { getChannels, getServer } from "../Api/axios";
+import { getChannels, getServer, getServerMembers } from "../Api/axios";
 import { enqueueSnackbar } from 'notistack';
 import { MdMoreHoriz } from "react-icons/md";
 import { IoMdArrowDropdown } from "react-icons/io";
@@ -17,6 +17,7 @@ import ServerDescDialog from './ServerDescDialog';
 import { deleteServer } from "../Api/axios";
 import CustomDialog from "./DialogTemplate";
 import { MdDeleteForever } from "react-icons/md";
+import { UserProps } from "./User";
 
 export interface ServerProps {
   id: string;
@@ -31,9 +32,9 @@ function Server() {
   const { ServerId } = useParams();
   const [server, setServer] = useState<ServerProps | undefined>();
   const [channels, setChannels] = useState<ChannelProps[] | undefined>();
+  const [serverMembers, setServerMembers] = useState<UserProps[]>([]);
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
-  // const Server = test12.find((server) => server.id === ServerId);
-  // const ServerOwner = users.find((user) => user.id === Server?.ownerId);
+
   const [showMembers, setShowMembers] = useState(false);
   const [widthmsg, setWidthmsg] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -55,9 +56,6 @@ function Server() {
     setPassedId(passedId);
     handleDialogOpen();
   }
-
-
-
 
   useEffect(() => {
     let isMounted = true; // something, something not to render when component is unmounted
@@ -81,8 +79,18 @@ function Server() {
       }
     }
 
+    const fetchServerMembers = async () => {
+      try {
+        const response = await getServerMembers(auth.token, ServerId || '');
+        isMounted && setServerMembers(response.data);
+      } catch (error: any) {
+        enqueueSnackbar("We couldn't load this servers member list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      }
+    }
+
     fetchServer();
     fetchChannels();
+    fetchServerMembers();
 
     return () => {
       isMounted = false;
@@ -101,7 +109,7 @@ function Server() {
           ) : null}
           {server?.name}
           <div className="flex items-center text-white  text-3xl m-2 mr-0 truncate h-10">
-            <div>
+            <div className="scale-75">
               <button
                 type="button"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -151,6 +159,7 @@ function Server() {
                       serverDescription={server?.description}
                     />
                   </button>
+                  {(auth.id === server?.ownerId) ?
                   <button
                     className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
                     role="menuitem"
@@ -158,6 +167,7 @@ function Server() {
                   >
                     <MdDeleteForever  size={25} /> Delete Server
                   </button>
+                  : null}
                 </div>
               </div>
             )}
@@ -170,22 +180,23 @@ function Server() {
               <FaSearch size={20} />
             </span>
           </div>
-          <button className="flex m-2 text-white font-semibold" onClick={() => setShowChannels(!showChannels)}>
-        PH Channel Group <IoMdArrowDropdown size='25' />
+          <button className="flex my-2 text-white font-semibold" onClick={() => setShowChannels(!showChannels)}>
+        All Channels <IoMdArrowDropdown size='25' />
       </button>
       {showChannels && (
         <ul>
           {channels?.map(({ id, name }) => (
             <li key={id}>
               <Link to={'' + id}>
-                <div className="justify-left flex m-1">{/* removed flex-col, ustaw jakoś ładnie dawix35 */}
+                <div className="justify-left flex mr-2">{/* removed flex-col, ustaw jakoś ładnie dawix35 */}
                   <button className="w-full">
                     <ChannelButton name={`#${name}`}></ChannelButton>
                   </button>
-                  <button className="px-4 py-2 text-sm text-white hover:bg-tertiary"
+                  {(auth.id === server?.ownerId) ?
+                  <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
                     onClick={() => setDialogTypeAndOpen("deleteChannel", id)}>
                   <MdDeleteForever  size={25} />
-                  </button>
+                  </button> : null}
                 </div>
               </Link>
             </li>
@@ -198,7 +209,7 @@ function Server() {
         </Routes>
       </div>
       
-      {showMembers && <ServerMembers />}
+      {showMembers && <ServerMembers serverMembers={serverMembers}/>}
       <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId}/>
     </div>
   );
