@@ -18,7 +18,8 @@ export const useStyles = makeStyles({
     backgroundColor: '#123456',
     fontWeight: 600,
     '&:hover': {
-      backgroundColor: '#789abc',
+      color: '#000000',
+      backgroundColor: '#EAB308',
     },
   },
   inputLabel: {

@@ -16,6 +16,7 @@ const CREATE_CHANNEL_URL = '/Channel/Add';
 const DELETE_CHANNEL_URL = '/Channel/Delete?channelId=';
 const JOIN_SERVER_URL = '/Server/JoinServer?name=';
 const DELETE_SERVER_URL = '/Server/DeleteServer?serverId=';
+const GET_SERVER_MEMBERS_URL = '/Server/GetUsers?id=';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -219,8 +220,10 @@ export const deleteChannel = async (token: string, id: string) => {
 export const joinServer = async (token: string, name: string) => {
     const response = await axios.post(
         BASE_URL+JOIN_SERVER_URL+name,
+        {},
         {
             headers: { 
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}` 
             }
         },
@@ -235,6 +238,19 @@ export const deleteServer = async (token: string, id: string) => {
             headers: { 
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+};
+
+export const getServerMembers = async (token: string, id: string) => {
+    const response = await axios.get(
+        BASE_URL+GET_SERVER_MEMBERS_URL+id,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
             }
         },
     );
