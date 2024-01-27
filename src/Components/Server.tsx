@@ -18,6 +18,7 @@ import { deleteServer } from "../Api/axios";
 import CustomDialog from "./DialogTemplate";
 import { MdDeleteForever } from "react-icons/md";
 import { UserProps } from "./User";
+import { IconContext } from 'react-icons';
 
 export interface ServerProps {
   id: string;
@@ -116,7 +117,7 @@ function Server() {
 
   return (
     <div>
-      <div className="md:flex h-full w-[15%] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary overflow-visible">
+      <div className="md:flex h-full w-[15%] min-w-[180px] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary overflow-visible">
         <div className="flex items-center  text-white text-3xl m-2 truncate h-10">
           <div className='w-[95%] overflow-hidden text-overflow ellipsis whitespace-nowrap'>
             {server?.picture ? (
@@ -197,7 +198,10 @@ function Server() {
             </div>
           </div>
           <button className="flex my-2 text-white font-semibold" onClick={() => setShowChannels(!showChannels)}>
-            All Channels <IoMdArrowDropdown size='25' />
+            All Channels
+            <IconContext.Provider value={{ className: showChannels ? 'rotate-180' : '' }}>
+              <IoMdArrowDropdown size='25' />
+            </IconContext.Provider>
           </button>
           {showChannels && (
             <ul>
