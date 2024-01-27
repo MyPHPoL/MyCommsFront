@@ -52,7 +52,7 @@ function Server() {
     setDialogOpen(false);
   };
   //changed to accept Id so it can be used for both channels and servers
-  const setDialogTypeAndOpen = (type: string, passedId:string) => {
+  const setDialogTypeAndOpen = (type: string, passedId: string) => {
     setDialogType(type);
     setPassedId(passedId);
     handleDialogOpen();
@@ -63,13 +63,12 @@ function Server() {
     console.log(channel)
   }
   useEffect(() => {
-    if(tmpChannel)
-    {
+    if (tmpChannel) {
       console.log(tmpChannel);
-    if (channels) {
-      setChannels([...channels, tmpChannel]);
+      if (channels) {
+        setChannels([...channels, tmpChannel]);
+      }
     }
-  }
   }, [tmpChannel])
 
   useEffect(() => {
@@ -118,11 +117,13 @@ function Server() {
   return (
     <div>
       <div className="md:flex h-full w-[300px] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary overflow-visible">
-        <div className="flex items-center text-white text-3xl m-2 truncate h-10">
-          {server?.picture ? (
-            <img src={server?.picture} alt="No img" className="w-10 h-10 mr-2" />
-          ) : null}
-          {server?.name}
+        <div className="flex items-center  text-white text-3xl m-2 truncate h-10">
+          <div className='w-[95%] overflow-hidden text-overflow ellipsis whitespace-nowrap'>
+            {server?.picture ? (
+              <img src={server?.picture} alt="No img" className="w-10 h-10 mr-2" />
+            ) : null}
+            {server?.name}
+          </div>
           <div className="flex items-center text-white  text-3xl m-2 mr-0 truncate h-10">
             <div className="scale-75">
               <button
@@ -137,7 +138,7 @@ function Server() {
             </div>
 
             {dropdownOpen && (
-              <div className="origin-top-right flex absolute h-auto right-[-300px] top-[-75px] mt-[76px] w-full rounded-md shadow-lg  bg-primary ring-1 ring-white ring-opacity-50 ">
+              <div className="origin-top-right flex absolute h-auto left-[100%] top-[-75px] mt-[76px] w-auto rounded-md shadow-lg  bg-primary ring-1 ring-white ring-opacity-50 ">
                 <div
                   className="py-1"
                   role="menu"
@@ -150,7 +151,7 @@ function Server() {
                     role="menuitem"
                     onClick={() => {
                       setShowMembers(!showMembers);
-                      setWidthmsg(widthmsg === 0 ? 8 : 0);
+                      setWidthmsg(widthmsg === 0 ? 15 : 0);
                     }}
                   >
                     <MdRememberMe size={25} /> Show Members
@@ -175,14 +176,14 @@ function Server() {
                     />
                   </button>
                   {(auth.id === server?.ownerId) ?
-                  <button
-                    className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
-                    role="menuitem"
-                    onClick={() => setDialogTypeAndOpen("deleteServer", ServerId ?? '')}
-                  >
-                    <MdDeleteForever  size={25} /> Delete Server
-                  </button>
-                  : null}
+                    <button
+                      className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
+                      role="menuitem"
+                      onClick={() => setDialogTypeAndOpen("deleteServer", ServerId ?? '')}
+                    >
+                      <MdDeleteForever size={25} /> Delete Server
+                    </button>
+                    : null}
                 </div>
               </div>
             )}
@@ -196,36 +197,36 @@ function Server() {
             </span>
           </div>
           <button className="flex my-2 text-white font-semibold" onClick={() => setShowChannels(!showChannels)}>
-        All Channels <IoMdArrowDropdown size='25' />
-      </button>
-      {showChannels && (
-        <ul>
-          {channels?.map(({ id, name }) => (
-            <li key={id}>
-              <Link to={'' + id}>
-                <div className="justify-left flex mr-2">{/* removed flex-col, ustaw jakoś ładnie dawix35 */}
-                  <button className="w-full">
-                    <ChannelButton name={`#${name}`}></ChannelButton>
-                  </button>
-                  {(auth.id === server?.ownerId) ?
-                  <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
-                    onClick={() => setDialogTypeAndOpen("deleteChannel", id)}>
-                  <MdDeleteForever  size={25} />
-                  </button> : null}
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
+            All Channels <IoMdArrowDropdown size='25' />
+          </button>
+          {showChannels && (
+            <ul>
+              {channels?.map(({ id, name }) => (
+                <li key={id}>
+                  <Link to={'' + id}>
+                    <div className="justify-left flex mr-2">{/* removed flex-col, ustaw jakoś ładnie dawix35 */}
+                      <button className="w-full">
+                        <ChannelButton name={`#${name}`}></ChannelButton>
+                      </button>
+                      {(auth.id === server?.ownerId) ?
+                        <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
+                          onClick={() => setDialogTypeAndOpen("deleteChannel", id)}>
+                          <MdDeleteForever size={25} />
+                        </button> : null}
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         <Routes>
           <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg} />} />
         </Routes>
       </div>
-      
-      {showMembers && <ServerMembers />}
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} newChannel={tmpChannel}  pushChannel={pushChannel} />
+
+      {showMembers && <ServerMembers serverMembers={serverMembers} />}
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} newChannel={tmpChannel} pushChannel={pushChannel} />
     </div>
   );
 }
