@@ -42,6 +42,7 @@ function Server() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("Add Channel");
   const [dialogId, setPassedId] = useState("");
+  const [tmpChannel, setTmpChannel] = useState<ChannelProps | undefined>();
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
@@ -56,6 +57,19 @@ function Server() {
     handleDialogOpen();
   }
 
+  const pushChannel = (channel: ChannelProps) => {
+    setTmpChannel(channel);
+    console.log(channel)
+  }
+  useEffect(() => {
+    if(tmpChannel)
+    {
+      console.log(tmpChannel);
+    if (channels) {
+      setChannels([...channels, tmpChannel]);
+    }
+  }
+  }, [tmpChannel])
 
   useEffect(() => {
     let isMounted = true; // something, something not to render when component is unmounted
@@ -197,7 +211,7 @@ function Server() {
       </div>
       
       {showMembers && <ServerMembers />}
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} />
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} newChannel={tmpChannel}  pushChannel={pushChannel} />
     </div>
   );
 }

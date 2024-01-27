@@ -34,12 +34,12 @@ function Channel({widthmsg}: {widthmsg:number}) {
   // will add message to the database and then to the messages array (if successful)
   const addMessage = async (body: string) => {
     try {
-    const respone = await sendMessage(auth.token, ChannelId || '', body, '0');
+    const response = await sendMessage(auth.token, ChannelId || '', body, '0');
     const newMessage: MessageProps = {
-      id: respone.data.id,
-      authorId: respone.data.authorId,
-      body: respone.data.body,
-      creationDate: respone.data.creationDate,
+      id: response.data.id,
+      authorId: response.data.authorId,
+      body: response.data.body,
+      creationDate: response.data.creationDate,
     };
     setMessages((messages) => [...messages, newMessage]);
     } catch (error: any) {
