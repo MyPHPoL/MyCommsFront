@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Route, Routes, useParams } from "react-router-dom";
 import "../index.css";
 import Channel, { ChannelProps } from "./Channel";
@@ -31,7 +31,6 @@ function Server() {
   const [server, setServer] = useState<ServerProps | undefined>();
   const [channels, setChannels] = useState<ChannelProps[] | undefined>();
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
-  console.log(ServerId);
   // const Server = test12.find((server) => server.id === ServerId);
   // const ServerOwner = users.find((user) => user.id === Server?.ownerId);
   const [showMembers, setShowMembers] = useState(false);

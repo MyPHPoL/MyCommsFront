@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { friends, messages } from "../fakedb";
+import { friends } from "../fakedb";
 import { RiAttachment2 } from "react-icons/ri";
 import { FaRegSmile } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
@@ -25,10 +25,10 @@ export interface MessageProps {
 function FriendMessage() {
     const { UserId } = useParams(); // userId is the name of the variable in the URL
     const User = friends.find((friend: FriendProps) => friend.id === UserId);
-    const [Messages, setMessages] = useState(messages || []);
+    const [Messages, setMessages] = useState([]);
     const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
     const addMessage = (newMessage: MessageProps) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      
     };
   
     useEffect(() => {
