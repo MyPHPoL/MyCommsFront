@@ -227,6 +227,7 @@ function Server() {
 
       {showMembers && <ServerMembers serverMembers={serverMembers} />}
       <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} newChannel={tmpChannel} pushChannel={pushChannel} />
+
     </div>
   );
 }
