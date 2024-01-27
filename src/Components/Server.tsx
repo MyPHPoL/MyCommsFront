@@ -38,11 +38,12 @@ function Server() {
   const [showMembers, setShowMembers] = useState(false);
   const [widthmsg, setWidthmsg] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showChannels, setShowChannels] = useState(false);
+  const [showChannels, setShowChannels] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("Add Channel");
   const [dialogId, setPassedId] = useState("");
+  const [tmpChannel, setTmpChannel] = useState<ChannelProps | undefined>();
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
@@ -56,6 +57,20 @@ function Server() {
     setPassedId(passedId);
     handleDialogOpen();
   }
+
+  const pushChannel = (channel: ChannelProps) => {
+    setTmpChannel(channel);
+    console.log(channel)
+  }
+  useEffect(() => {
+    if(tmpChannel)
+    {
+      console.log(tmpChannel);
+    if (channels) {
+      setChannels([...channels, tmpChannel]);
+    }
+  }
+  }, [tmpChannel])
 
   useEffect(() => {
     let isMounted = true; // something, something not to render when component is unmounted
@@ -209,8 +224,8 @@ function Server() {
         </Routes>
       </div>
       
-      {showMembers && <ServerMembers serverMembers={serverMembers}/>}
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId}/>
+      {showMembers && <ServerMembers />}
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} newChannel={tmpChannel}  pushChannel={pushChannel} />
     </div>
   );
 }
