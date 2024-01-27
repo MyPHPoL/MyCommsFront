@@ -7,9 +7,10 @@ import Button from '@material-ui/core/Button';
 import TextField from "@material-ui/core/TextField";
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import useAuth from '../Hooks/useAuth';
-import { createChannel, createServer } from "../Api/axios";
+import { createChannel, createServer, joinServer } from "../Api/axios";
 import { useStyles } from './DialogStyles';
 import { withStyles } from '@material-ui/core/styles';
+import { join } from 'path';
 
 /* Define the props for the CustomDialog component */
 interface DialogProps {
@@ -38,7 +39,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
   const [nameValue, setInputValue] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [isPublic, setIsPublic] = React.useState(false);
-  const isNameValueValid = nameValue.length < 32;
+  const isNameValueValid = (nameValue.length < 32) && (nameValue.length > 0);
   const isServerDescriptionValid = description.length < 128;
   const isChannelDescriptionValid = description.length < 64;
   const classes = useStyles();
@@ -71,6 +72,16 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
     }
   }
 
+  const serverJoin = async () => {
+    try {
+      const response = await joinServer(auth.token, nameValue);
+    } catch (error: any) {
+      //throw error
+      console.log("beep boop nie działa");
+    }
+  }
+
+
   //this is how a confirm function will look like, all we need now is to connect it to the backend and validate the input
   const handleCreateServer = () => {
     if (isNameValueValid && isServerDescriptionValid) {
@@ -94,9 +105,14 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
   }
 
   const handleJoinServer = () => {
-    //here we will send the data to the backend
+    if(isNameValueValid){
+    serverJoin();
     console.log("Server joined");
     handleClose();
+    }else{
+      //throw error
+      console.log("Invalid input");
+    }
   }
 
   //WEEEEOOOOO 
@@ -121,7 +137,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
             fullWidth
             value={nameValue}
             onChange={handleInputChange}
-            helperText={!isNameValueValid ? "Name must be shorter than 32 characters" : ""}
+            helperText={!isNameValueValid ? "Name must be shorter than 32 characters and cannot be empty" : ""}
           />
           <TextField
             InputProps={{
@@ -203,7 +219,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
             fullWidth
             value={description}
             onChange={handleDescriptionChange}
-            helperText={!isServerDescriptionValid ? "Description must be shorter than 64 characters" : ""}
+            helperText={!isChannelDescriptionValid ? "Description must be shorter than 64 characters" : ""}
           />
         </DialogContent>
         {/* Actions of the dialog */}

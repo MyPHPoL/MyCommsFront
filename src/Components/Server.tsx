@@ -14,8 +14,9 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { MdDescription } from "react-icons/md";
 import useAuth from "../Hooks/useAuth";
 import ServerDescDialog from './ServerDescDialog';
-
+import { deleteServer, deleteChannel } from "../Api/axios";
 import CustomDialog from "./DialogTemplate";
+import { GiBurningSkull } from "react-icons/gi";
 
 export interface ServerProps {
   id: string;
@@ -51,7 +52,24 @@ function Server() {
     setDialogType(type);
     handleDialogOpen();
   }
+  //needs to throw a dialog that will ask if you are sure you want to delete the server
+  const serverDelete = async () => {
+    try {
+      const response = await deleteServer(auth.token, ServerId ?? '');
+    } catch (error: any) {
+      //throw error
+      console.log("beep boop nie działa");
+    }
+  }
 
+  const channelDelete = async (channelId: string) => {
+    try {
+      const response = await deleteChannel(auth.token, channelId);
+    } catch (error: any) {
+      //throw error
+      console.log("beep boop nie działa");
+    }
+  }
 
   useEffect(() => {
     let isMounted = true; // something, something not to render when component is unmounted
@@ -108,7 +126,7 @@ function Server() {
             </div>
 
             {dropdownOpen && (
-              <div className="origin-top-right flex absolute h-auto right-[-300px]  mt-[76px] w-full rounded-md shadow-lg  bg-primary ring-1 ring-white ring-opacity-50 ">
+              <div className="origin-top-right flex absolute h-auto right-[-300px] top-[-75px] mt-[76px] w-full rounded-md shadow-lg  bg-primary ring-1 ring-white ring-opacity-50 ">
                 <div
                   className="py-1"
                   role="menu"
@@ -145,6 +163,13 @@ function Server() {
                       serverDescription={server?.description}
                     />
                   </button>
+                  <button
+                    className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
+                    role="menuitem"
+                    onClick={() => serverDelete()}
+                  >
+                    <GiBurningSkull  size={25} /> Delete Server
+                  </button>
                 </div>
               </div>
             )}
@@ -165,9 +190,13 @@ function Server() {
           {channels?.map(({ id, name }) => (
             <li key={id}>
               <Link to={'' + id}>
-                <div className="justify-left flex flex-col m-1">
-                  <button>
+                <div className="justify-left flex m-1">{/* removed flex-col, ustaw jakoś ładnie dawix35 */}
+                  <button className="w-full">
                     <ChannelButton name={`#${name}`}></ChannelButton>
+                  </button>
+                  <button className="px-4 py-2 text-sm text-white hover:bg-tertiary"
+                    onClick={() => channelDelete(id)}>
+                  <GiBurningSkull  size={25} />
                   </button>
                 </div>
               </Link>
@@ -182,7 +211,7 @@ function Server() {
       </div>
       
       {showMembers && <ServerMembers />}
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} />
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} currServerId={ServerId}/>
     </div>
   );
 }
