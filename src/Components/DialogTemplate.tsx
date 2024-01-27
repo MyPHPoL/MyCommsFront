@@ -7,10 +7,9 @@ import Button from '@material-ui/core/Button';
 import TextField from "@material-ui/core/TextField";
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import useAuth from '../Hooks/useAuth';
-import { createChannel, createServer, joinServer } from "../Api/axios";
+import { createChannel, createServer, deleteChannel, deleteServer, joinServer } from "../Api/axios";
 import { useStyles } from './DialogStyles';
 import { withStyles } from '@material-ui/core/styles';
-import { join } from 'path';
 
 /* Define the props for the CustomDialog component */
 interface DialogProps {
@@ -18,7 +17,7 @@ interface DialogProps {
   handleClose: () => void; /* Function to close the dialog */
   type?: string; /* Type of the dialog, we might change it to an enum later */
   actions?: React.ReactNode; /* Optional custom actions for the dialog */
-  currServerId?: string;
+  passedId?: string;
 }
 
 
@@ -33,7 +32,7 @@ const CustomCheckbox = withStyles({
 })(Checkbox);
 
 /* Define the CustomDialog component */
-const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServerId, actions }) => {
+const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions }) => {
   /* Add a state variable for the input field */
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [nameValue, setInputValue] = React.useState('');
@@ -63,9 +62,24 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
     }
   }
 
+  const handleDeleteServer = () => {
+    //needs to redirect to home here 
+    serverDelete();
+    handleClose();
+  }
+
+    const serverDelete = async () => {
+      try {
+        const response = await deleteServer(auth.token, passedId ?? '');
+      } catch (error: any) {
+        //throw error
+        console.log("beep boop nie działa");
+      }
+    }
+
   const addChannel = async () => {
     try {
-      const response = await createChannel(auth.token, nameValue, description, currServerId ?? '');
+      const response = await createChannel(auth.token, nameValue, description, passedId ?? '');
     } catch (error: any) {
       //throw error
       console.log("beep boop nie działa");
@@ -81,6 +95,19 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
     }
   }
 
+  const handleDeleteChannel = () =>{
+    //needs to redirect to server here 
+    channelDelete();
+    handleClose();
+  }
+  const channelDelete = async () => {
+    try {
+      const response = await deleteChannel(auth.token, passedId ?? '');
+    } catch (error: any) {
+      //throw error
+      console.log("beep boop nie działa");
+    }
+  }
 
   //this is how a confirm function will look like, all we need now is to connect it to the backend and validate the input
   const handleCreateServer = () => {
@@ -281,7 +308,52 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
         </DialogActions>
       </Dialog>
     );
-  } else
+  } else if(type=="deleteChannel"){
+    return (
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Are You sure You want to delete the channel?</DialogTitle>
+        <DialogContent>
+        </DialogContent>
+        {/* Actions of the dialog */}
+        <DialogActions>
+          {/* If custom actions are provided, use them, otherwise use default actions */}
+          {actions ? actions : (
+            <>
+            <Button onClick={handleDeleteChannel} className={classes.styleButton}>
+                Yes
+              </Button>
+              <Button onClick={handleClose} className={classes.styleButton}>
+                Cancel
+              </Button>
+            </>
+          )}
+        </DialogActions>
+      </Dialog>
+    );
+
+  }else if(type=="deleteServer"){
+    return (
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Are You sure You want to delete the server?</DialogTitle>
+        <DialogContent>
+        </DialogContent>
+        {/* Actions of the dialog */}
+        <DialogActions>
+          {/* If custom actions are provided, use them, otherwise use default actions */}
+          {actions ? actions : (
+            <>
+            <Button onClick={handleDeleteServer} className={classes.styleButton}>
+                Yes
+              </Button>
+              <Button onClick={handleClose} className={classes.styleButton}>
+                Cancel
+              </Button>
+            </>
+          )}
+        </DialogActions>
+      </Dialog>
+    );
+  }else
     //THIS IS THE DEFAULT TEMPLATE FOR DIALOGS, returned if the type is not specified, as for now its retruned if the type is not specified
     //in the future it might be changed to return an error, and the default template might be moved
     return (

@@ -14,7 +14,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { MdDescription } from "react-icons/md";
 import useAuth from "../Hooks/useAuth";
 import ServerDescDialog from './ServerDescDialog';
-import { deleteServer, deleteChannel } from "../Api/axios";
+import { deleteServer } from "../Api/axios";
 import CustomDialog from "./DialogTemplate";
 import { GiBurningSkull } from "react-icons/gi";
 
@@ -41,6 +41,7 @@ function Server() {
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("Add Channel");
+  const [dialogId, setPassedId] = useState("");
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
@@ -48,28 +49,15 @@ function Server() {
   const handleDialogClose = () => {
     setDialogOpen(false);
   };
-  const setDialogTypeAndOpen = (type: string) => {
+  //changed to accept Id so it can be used for both channels and servers
+  const setDialogTypeAndOpen = (type: string, passedId:string) => {
     setDialogType(type);
+    setPassedId(passedId);
     handleDialogOpen();
   }
-  //needs to throw a dialog that will ask if you are sure you want to delete the server
-  const serverDelete = async () => {
-    try {
-      const response = await deleteServer(auth.token, ServerId ?? '');
-    } catch (error: any) {
-      //throw error
-      console.log("beep boop nie działa");
-    }
-  }
 
-  const channelDelete = async (channelId: string) => {
-    try {
-      const response = await deleteChannel(auth.token, channelId);
-    } catch (error: any) {
-      //throw error
-      console.log("beep boop nie działa");
-    }
-  }
+
+
 
   useEffect(() => {
     let isMounted = true; // something, something not to render when component is unmounted
@@ -147,7 +135,7 @@ function Server() {
                   <button
                     className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
                     role="menuitem"
-                    onClick={() => setDialogTypeAndOpen("Add Channel")}
+                    onClick={() => setDialogTypeAndOpen("Add Channel", ServerId ?? '')}
                   >
                     <FaRegPlusSquare size={25} />  Add Channel
                   </button>
@@ -166,7 +154,7 @@ function Server() {
                   <button
                     className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
                     role="menuitem"
-                    onClick={() => serverDelete()}
+                    onClick={() => setDialogTypeAndOpen("deleteServer", ServerId ?? '')}
                   >
                     <GiBurningSkull  size={25} /> Delete Server
                   </button>
@@ -195,7 +183,7 @@ function Server() {
                     <ChannelButton name={`#${name}`}></ChannelButton>
                   </button>
                   <button className="px-4 py-2 text-sm text-white hover:bg-tertiary"
-                    onClick={() => channelDelete(id)}>
+                    onClick={() => setDialogTypeAndOpen("deleteChannel", id)}>
                   <GiBurningSkull  size={25} />
                   </button>
                 </div>
@@ -211,7 +199,7 @@ function Server() {
       </div>
       
       {showMembers && <ServerMembers />}
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} currServerId={ServerId}/>
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId}/>
     </div>
   );
 }
