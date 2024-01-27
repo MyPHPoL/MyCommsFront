@@ -16,7 +16,7 @@ import useAuth from "../Hooks/useAuth";
 import ServerDescDialog from './ServerDescDialog';
 import { deleteServer } from "../Api/axios";
 import CustomDialog from "./DialogTemplate";
-import { GiBurningSkull } from "react-icons/gi";
+import { MdDeleteForever } from "react-icons/md";
 
 export interface ServerProps {
   id: string;
@@ -156,7 +156,7 @@ function Server() {
                     role="menuitem"
                     onClick={() => setDialogTypeAndOpen("deleteServer", ServerId ?? '')}
                   >
-                    <GiBurningSkull  size={25} /> Delete Server
+                    <MdDeleteForever  size={25} /> Delete Server
                   </button>
                 </div>
               </div>
@@ -184,7 +184,7 @@ function Server() {
                   </button>
                   <button className="px-4 py-2 text-sm text-white hover:bg-tertiary"
                     onClick={() => setDialogTypeAndOpen("deleteChannel", id)}>
-                  <GiBurningSkull  size={25} />
+                  <MdDeleteForever  size={25} />
                   </button>
                 </div>
               </Link>

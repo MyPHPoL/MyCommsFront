@@ -310,9 +310,9 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     );
   } else if(type=="deleteChannel"){
     return (
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Are You sure You want to delete the channel?</DialogTitle>
-        <DialogContent>
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
+        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Are You sure You want to delete the channel?</DialogTitle>
+        <DialogContent className={classes.inputField}>
         </DialogContent>
         {/* Actions of the dialog */}
         <DialogActions>
