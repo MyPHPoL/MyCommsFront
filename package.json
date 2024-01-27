@@ -17,7 +17,7 @@
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
     "axios": "^1.6.5",
-    "emoji-picker-react": "^4.7.9",
+    "emoji-picker-react": "^4.7.10",
     "notistack": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

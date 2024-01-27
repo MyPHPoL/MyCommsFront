@@ -14,6 +14,8 @@ interface IconButtonProps {
   name: string;
 }
 
+
+
 export var colors = [
   "#d4ac0d",
   "#d35400",
@@ -29,13 +31,56 @@ export var colors = [
   "#2e86c1",
   "#FF5733",
   "#330045",
+  "#FFC300",
+  "#C70039",
+  "#900C3F",
+  "#581845",
+  "#e6b0aa",
+  "#f7dc6f",
+  "#f8c471",
+  "#f0b27a",
+  "#85c1e9",
+  "#5dade2",
+  "#aed6f1",
+  "#a569bd",
+  "#f1948a",
+  "#bb8fce",
 ];
+
+export const letterToColor: { [key: string]: string } = {
+  a: "#581845",
+  b: "#e6b0aa",
+  c: "#f7dc6f",
+  d: "#f8c471",
+  e: "#f0b27a",
+  f: "#85c1e9",
+  g: "#5dade2",
+  h: "#aed6f1",
+  i: "#a569bd",
+  j: "#f1948a",
+  k: "#bb8fce",
+  l: "#d4ac0d",
+  m: "#d35400",
+  n: "#a9cce3",
+  o: "#d7bde2",
+  p: "#28b463",
+  q: "#34495e",
+  r: "#abebc6",
+  s: "#eaecee",
+  t: "#633974",
+  u: "#ebdef0",
+  v: "#17a589",
+  w: "#2e86c1",
+  x: "#FF5733",
+  y: "#330045",
+  z: "#FFC300",
+};
 
 export const ServerButton = ({ name, picture }: ServerButtonProps) => (
   <div
     className='group font-semibold relative flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto text-primary hover:rounded-xl rounded-3xl transition-all duration-300 ease-linear cursor-pointer'
     style={{
-      backgroundColor: colors[Math.floor(Math.random() * colors.length)],
+      backgroundColor: letterToColor[name[0].toLowerCase()],
     }}>
     {picture ? (
       <picture
@@ -69,25 +114,26 @@ export const ChannelButton = ({ name }: { name: string }) => (
 );
 
 // same as channel button but with dashed border
-export const NewChannelButton = ({ text }: { text: string }) => (
-  <div className="bg-secondary hover:brightness-75 text-gray-300 font-semibold py-2 px-4 border border-dashed border-gray-300 rounded-full shadow w-full justify-self-center">
-    {text}
-  </div>
-);
+export const UserAvatar = ({ name, picture }: UserAvatarProps) => {
+  const defaultColor = "#039be5";
 
+  let backgroundColor = defaultColor;
+  if (name) {
+    const firstLetter = name[0].toLowerCase();
+    backgroundColor = letterToColor[firstLetter] || defaultColor;
+  }
 
-export const UserAvatar = ({ name, picture }: UserAvatarProps) => (
-  <div
-    className='group font-semibold relative flex items-center justify-center h-12 w-12 text-primary rounded-3xl duration-300'
-    style={{
-      backgroundColor: colors[Math.floor(Math.random() * colors.length)],
-    }}>
-    {picture ? (
-      <picture
-        className='group bg-center bg-cover w-full h-full rounded-full'
-        style={{ backgroundImage: `url(${picture})` }}></picture>
-    ) : (
-      name ? name[0].toUpperCase() : ''
-    )}
-  </div>
-);
+  return (
+    <div
+      className='group font-semibold relative flex items-center justify-center h-12 w-12 text-primary rounded-3xl duration-300'
+      style={{ backgroundColor }}>
+      {picture ? (
+        <picture
+          className='group bg-center bg-cover w-full h-full rounded-full'
+          style={{ backgroundImage: `url(${picture})` }}></picture>
+      ) : (
+        name ? name[0].toUpperCase() : ''
+      )}
+    </div>
+  );
+};
