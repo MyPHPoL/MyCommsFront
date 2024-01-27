@@ -246,7 +246,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
             fullWidth
             value={nameValue}
             onChange={handleInputChange}
-            helperText={!isNameValueValid ? "Name must be shorter than 32 characters" : ""}
+            helperText={!isNameValueValid ? "Name must b+e shorter than 32 characters" : ""}
           />
           <TextField
             InputProps={{
