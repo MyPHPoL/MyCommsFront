@@ -14,7 +14,6 @@ import { ServerProps } from "./Server";
 import { FriendProps } from "./FriendMessage";
 import { FaRegUser } from "react-icons/fa";
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
-import CustomDialog from './DialogTemplate';
 
 function Header() {
     const [activeTopbar, setActiveTopbar] = useState<string | null>(null);
@@ -85,9 +84,6 @@ function Header() {
           <li className="relative flex items-center justify-center mx-auto mr-1"><button onClick={() => setActiveTopbar('servers')}><IconButton icon={<IoServer size={30} />} name="ServerList"></IconButton></button></li>
           <li className="relative flex items-center justify-center mx-auto"><button onClick={() => setActiveTopbar('friends')}><IconButton icon={<FaUserFriends size={30} />} name="FriendList"></IconButton></button></li>
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
-          {/* basic dialog window usage */}
-          <button><IconButton icon={<IoMdSettings size={30} />} name="Dialog" ></IconButton></button>
-            {/* to change the type of the dialog used, please change type accordingly (future versions might change the call parameter) */}
         </ul>
         <div className="my-2 flex">
           <SidebarBasic />
