@@ -144,7 +144,6 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
             control={<CustomCheckbox checked={isPublic} onChange={handleCheckboxChange} />}
             label="Is Public"
           />
-
         </DialogContent>
         {/* Actions of the dialog */}
         <DialogActions>
@@ -294,6 +293,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, currServ
         </DialogActions>
       </Dialog>
     );
+
 }
 
 /* Export the CustomDialog component */
