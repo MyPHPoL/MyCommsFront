@@ -192,7 +192,7 @@ function Server() {
         <ul>
           {channels?.map(({ id, name }) => (
             <li key={id}>
-              <Link to={id}>
+              <Link to={''+id}>
                 <div className="justify-left flex flex-col m-1">
                   <button>
                     <ChannelButton name={`#${name}`}></ChannelButton>
@@ -205,9 +205,6 @@ function Server() {
       )}
       {showMembers && <ServerMembers />}
       <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType}/>
-      <Routes>
-        <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg} />} />
-      </Routes>
     </div>
   );
 }
