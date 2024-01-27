@@ -37,7 +37,7 @@ function Server() {
   const [showMembers, setShowMembers] = useState(false);
   const [widthmsg, setWidthmsg] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showChannels, setShowChannels] = useState(false);
+  const [showChannels, setShowChannels] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("Add Channel");
@@ -55,8 +55,6 @@ function Server() {
     setPassedId(passedId);
     handleDialogOpen();
   }
-
-
 
 
   useEffect(() => {
@@ -199,7 +197,7 @@ function Server() {
       </div>
       
       {showMembers && <ServerMembers />}
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId}/>
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} />
     </div>
   );
 }
