@@ -158,64 +158,13 @@ function Server() {
             </span>
           </div>
           <button className="flex m-2 text-white font-semibold" onClick={() => setShowChannels(!showChannels)}>
-            PH Channel Group <IoMdArrowDropdown size='25' />
-          </button>
-          {showChannels && (
-            <ul>
-              {channels?.map(({ id, name }) => (
-                <li key={id}>
-                  <Link to={id}>
-                    <div className="justify-left flex flex-col m-1">
-                      <button>
-                        <ChannelButton name={`#${name}`}></ChannelButton>
-                      </button>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <Routes>
-          <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg} />} />
-        </Routes>
-      </div>
-      <div className="inline-flex items-center justify-center w-full">
-        <hr className="w-64 h-1 mx-auto my-4 bg-gray-200 border-0"></hr>
-        <span className="absolute px-3 font-semibold text-gray-300 -translate-x-1/2 bg-tertiary left-1/2">
-          All Channels
-        </span>
-      </div>
-      <ul>
-        {channels?.map(({id, name}) => (
-          <li key={id}>
-            <Link to={id}>
-              <div className="justify-left flex flex-col m-1">
-                <button>
-                  <ChannelButton name={`#${name}`} ></ChannelButton>
-                </button>
-              </div>
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <div className="items-center align-center flex flex-col ml-1">
-        <button onClick={() => setDialogTypeAndOpen("Add Channel")}>
-          <IconButton icon={<FaRegPlusSquare size={30}/>} name="AddChannel"></IconButton>
-        </button>
-      </div>
-              <Routes>
-                <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg}/>} />
-              </Routes>
-      </div>
-      <button className="flex m-2 text-white font-semibold" onClick={() => setShowChannels(!showChannels)}>
         PH Channel Group <IoMdArrowDropdown size='25' />
       </button>
       {showChannels && (
         <ul>
           {channels?.map(({ id, name }) => (
             <li key={id}>
-              <Link to={''+id}>
+              <Link to={'' + id}>
                 <div className="justify-left flex flex-col m-1">
                   <button>
                     <ChannelButton name={`#${name}`}></ChannelButton>
@@ -226,12 +175,14 @@ function Server() {
           ))}
         </ul>
       )}
+        </div>
+        <Routes>
+          <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg} />} />
+        </Routes>
+      </div>
+      
       {showMembers && <ServerMembers />}
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType}/>
-
-      <Routes>
-        <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg} />} />
-      </Routes>
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} />
     </div>
   );
 }

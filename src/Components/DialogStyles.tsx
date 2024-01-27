@@ -22,9 +22,11 @@ export const useStyles = makeStyles({
     },
   },
   inputLabel: {
-    color: '#ffffff', // replace with your desired color
     "&.Mui-focused": {
-      color: '#ffffff'
+      color: '#ffffff' // replace with your desired color
+    },
+    "&.MuiInputLabel-root": {
+      color: '#ffffff' // replace with your desired color
     }
   },
   inputField: {
