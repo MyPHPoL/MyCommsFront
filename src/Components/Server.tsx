@@ -116,7 +116,7 @@ function Server() {
 
   return (
     <div>
-      <div className="md:flex h-full w-[300px] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary overflow-visible">
+      <div className="md:flex h-full w-[15%] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary overflow-visible">
         <div className="flex items-center  text-white text-3xl m-2 truncate h-10">
           <div className='w-[95%] overflow-hidden text-overflow ellipsis whitespace-nowrap'>
             {server?.picture ? (
@@ -191,10 +191,10 @@ function Server() {
         </div>
         <div className="my-1 ml-2 xl:w-auto">
           <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-            <input type="search" className="relative m-0 block flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal text-neutral-700 outline-none transition duration-200 dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200" placeholder="Search" />
-            <span className="flex items-center whitespace-nowrap rounded px-3 py-1.5 text-center text-base font-normal text-neutral-700 dark:text-neutral-200">
+            <input type="search" className="flex flex-grow w-[83%] m-0 rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal text-neutral-700 outline-none transition duration-200 dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200" placeholder="Search" />
+            <div className="flex-shrink-0 w-[17%] flex items-center whitespace-nowrap rounded px-3 py-1.5 text-center text-base font-normal text-neutral-700 dark:text-neutral-200">
               <FaSearch size={20} />
-            </span>
+            </div>
           </div>
           <button className="flex my-2 text-white font-semibold" onClick={() => setShowChannels(!showChannels)}>
             All Channels <IoMdArrowDropdown size='25' />
