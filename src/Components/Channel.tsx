@@ -88,11 +88,11 @@ function Channel({widthmsg}: {widthmsg:number}) {
   },);
 
   return (
-    <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[320px]' style={{ marginRight: `${widthmsg}%` }}>
-      <div className='text-5xl shadow-sg tracking-wider font-semibold text-white ml-2 pb-2'>
+    <div className='md:flex h-aut -z-20 flex-col fixed inset-y-0 top-20 left-[300px] w-full' style={{ marginRight: `${widthmsg}%` }}>
+      <div className='text-5xl shadow-sg tracking-wider font-semibold text-white w-full pl-5 h-[60px] bg-tertiary'>
         {channelInfo?.name} | {channelInfo?.description}
       </div>
-      <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16'>
+      <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 w-fullborder-tertiary w-full'>
         {messages?.map(({ id, authorId, body, creationDate }) => (
           <Message
             key={id}
@@ -102,7 +102,7 @@ function Channel({widthmsg}: {widthmsg:number}) {
             creationDate={creationDate}
           />
         ))}
-      <div ref={chatWindowRef}/>
+      <div ref={chatWindowRef} />
       </div>
       <TextBar
         refreshMessages={fetchAllMessages}
@@ -175,8 +175,8 @@ const Message = ({ authorId, body, creationDate }: MessageProps) => {
   });
 
   return(
-  <div className='w-full flex-row justify-evenly py-3 px-8 m-0 cursor-pointer'>
-    <div className='flex flex-col justify-start ml-auto;'>
+  <div className='w-full flex-row justify-evenly py-3 px-8 m-0 cursor-pointer border-tertiary border-[1px] hover:bg-tertiary'>
+    <div className='flex flex-col justify-start ml-autoborder-tertiary'>
       <p className='text-left font-semibold text-white mr-2 cursor-pointer'>
         {username}
         <small className='text-xs text-left font-semibold text-gray-500 ml-2'>

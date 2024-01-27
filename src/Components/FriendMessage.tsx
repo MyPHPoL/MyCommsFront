@@ -36,7 +36,7 @@ function FriendMessage() {
     },);
   
     return (
-      <div className='md:flex h-auto w-auto -z-20 flex-col fixed inset-y-0 top-20 left-[20px]'>
+      <div className='md:flex h-auto w-full -z-20 flex-col fixed inset-y-0 top-20 left-[20px]'>
         <div className='flex-row flex m-2  text-5xl shadow-sg tracking-wider font-semibold text-white ml-2 pb-2 items-center'>
           Chat with: 
           <div className='flex mx-2'>
@@ -90,7 +90,7 @@ const TextBar = ({ addMessage, name, }: { addMessage: (message: MessageProps) =>
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className='flex flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 left-[20px] shadow-lg bg-gray-600 px-2 h-12 m-2 mx-4'>
+    <form onSubmit={handleFormSubmit} className='flex flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 left-[20px] shadow-lg bg-secondary px-2 h-12 m-2 mx-4'>
       <button>
         <RiAttachment2 size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
@@ -120,7 +120,7 @@ const TextBar = ({ addMessage, name, }: { addMessage: (message: MessageProps) =>
 
 const Message = ({ author, content, timestamp }: MessageProps) => (
   <div className='w-full flex-row justify-evenly py-3 px-8 m-0 cursor-pointer'>
-    <div className='flex flex-col justify-start ml-auto;'>
+    <div className='flex flex-col justify-start ml-auto border-tertiary border-[1px] hover:bg-tertiary'>
       <p className='text-left font-semibold text-white mr-2 cursor-pointer'>
         {author}
         <small className='text-xs text-left font-semibold text-gray-500 ml-2'>
