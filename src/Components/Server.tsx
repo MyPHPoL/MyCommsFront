@@ -28,11 +28,10 @@ export interface ServerProps {
   picture?: string;
   ownerId: string;
 }
-interface TopBarProps {
-  handleAddServer: (server: ServerProps) => void;
+interface AdditionalProps {
   removeServer: (id: string) => void;
 }
-function Server() {
+function Server({ removeServer }: AdditionalProps) {
 
   const { ServerId } = useParams();
   const [server, setServer] = useState<ServerProps | undefined>();
@@ -250,7 +249,7 @@ function Server() {
       </div>
 
       {showMembers && <ServerMembers serverMembers={serverMembers} />}
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} pushChannel={pushChannel} removeChannel={removeChannel}/>
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} pushChannel={pushChannel} removeChannel={removeChannel} removeServer={removeServer}/>
 
     </div>
   );

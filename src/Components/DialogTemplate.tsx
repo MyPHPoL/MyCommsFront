@@ -90,8 +90,10 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     const serverDelete = async () => {
       try {
         const response = await deleteServer(auth.token, passedId ?? '');
-        if(removeServer)
+        if(removeServer){
         removeServer(passedId ?? '');
+        console.log("passed id: " + passedId)
+      }
         navigate("/home");
       } catch (error: any) {
         handleError(error.response.status);

@@ -25,6 +25,7 @@ function Header() {
     const [toRemoveId, setToRemoveId] = useState('');
     const removeServer = (id: string) => {
       setToRemoveId(id);
+      console.log('removed')
     }
     const pushServer = (server: ServerProps) => {
       setTmpServer(server);
@@ -37,11 +38,11 @@ function Header() {
       }
     }, [tmpServer])
 
-    // THIS IS NOT WORKING AS REACT DOES NOT RE-RENDER CHILD COMPONENT WHEN A PART OF AN ARRAY IS REMOVED AS IT TREATS IT LIKE A CHANGE IN THE FIELD, NOT REMOVAL
     useEffect(() => {
       if (servers) {
         if (toRemoveId) {
-          setServers(servers.filter((server) => server.id !== toRemoveId));
+          // toRemoveId is string but server.id is number thus != instead of !==
+          setServers(servers.filter((server) => server.id != toRemoveId)) 
         }
       }
     }, [toRemoveId])
@@ -109,8 +110,8 @@ function Header() {
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
         </ul>
         <div className="my-2 flex">
-          <SidebarBasic handleAddServer={pushServer} removeServer={removeServer}/>
-          {activeTopbar === 'servers' && <TopbarServer servers={servers} />}
+          <SidebarBasic handleAddServer={pushServer}/>
+          {activeTopbar === 'servers' && <TopbarServer servers={servers} removeServer={removeServer}/>}
           {activeTopbar === 'friends' && <TopbarFriend friends={friends} />}
         </div>
       </nav>
