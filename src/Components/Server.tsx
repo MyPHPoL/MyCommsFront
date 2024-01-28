@@ -206,7 +206,7 @@ function Server() {
           {showChannels && (
             <ul>
               {channels?.map(({ id, name }) => (
-                <li key={id}>
+                <li key={id} tabIndex={-1}>
                   <Link to={'' + id} tabIndex={-1}>
                     <div className="justify-left flex mr-2">{/* removed flex-col, ustaw jakoś ładnie dawix35 */}
                       <button className="w-full">
@@ -227,9 +227,11 @@ function Server() {
         <Routes>
           <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg} />} />
         </Routes>
-      </div
+      </div>
+
       {showMembers && <ServerMembers serverMembers={serverMembers} />}
       <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} newChannel={tmpChannel} pushChannel={pushChannel} />
+
     </div>
   );
 }
