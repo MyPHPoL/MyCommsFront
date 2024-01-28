@@ -119,6 +119,16 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   const serverJoin = async () => {
     try {
       const response = await joinServer(auth.token, nameValue);
+      const newServer = {
+        id: response.data.id,
+        name: response.data.name,
+        description: response.data.description,
+        isPublic: response.data.isPublic,
+        ownerId: response.data.ownerId,
+      };
+      if (handleAddServer) {
+        handleAddServer(newServer);
+      }
     } catch (error: any) {
       handleError(error.response.status);
       console.log("beep boop nie działa");
