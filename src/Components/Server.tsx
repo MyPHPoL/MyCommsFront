@@ -20,7 +20,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { UserProps } from "./User";
 import { IconContext } from 'react-icons';
 import { useTitle } from "../Hooks/useTitle";
-
+import { MdEdit } from "react-icons/md";
 export interface ServerProps {
   id: string;
   name: string;
@@ -49,6 +49,8 @@ function Server({ removeServer }: AdditionalProps) {
   const [dialogId, setPassedId] = useState("");
   const [tmpChannel, setTmpChannel] = useState<ChannelProps | undefined>();
   const [toBeRemovedId, settoBeRemoved] = useState('');
+  const [toBeEditedChannel, setToBeEditedChannel] = useState<ChannelProps | undefined>();
+  const [editedChannel, setEditedChannel] = useState<ChannelProps | undefined>();
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -61,6 +63,9 @@ function Server({ removeServer }: AdditionalProps) {
   const setDialogTypeAndOpen = (type: string, passedId: string) => {
     setDialogType(type);
     setPassedId(passedId);
+    if(type == "EditChannel"){
+      setToBeEditedChannel(channels?.find((channel) => channel.id === passedId));
+    }
     handleDialogOpen();
   }
 
@@ -71,6 +76,18 @@ function Server({ removeServer }: AdditionalProps) {
   const removeChannel = (id: string) => {
     settoBeRemoved(id);
   }
+
+  const setChannelEdit = (channel: ChannelProps) => {
+    setEditedChannel(channel);
+  }
+
+  useEffect(() => {
+    if (editedChannel) {
+      if (channels) {
+        setChannels(channels.map((channel) => channel.id === editedChannel.id ? editedChannel : channel));
+      }
+    }
+  }, [editedChannel])
 
   useEffect(() => {
     if (tmpChannel) {
@@ -138,13 +155,13 @@ function Server({ removeServer }: AdditionalProps) {
     <div>
       <div className="md:flex h-full w-[15%] min-w-[180px] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary overflow-visible">
         <div className="flex items-center  text-white text-3xl m-2 truncate h-10">
-          <div className='w-[95%] overflow-hidden text-overflow ellipsis whitespace-nowrap'>
+          <div className='w-[95%] overflow-hidden  text-ellipsis   whitespace-nowrap'>
             {server?.picture ? (
               <img src={server?.picture} alt="No img" className="w-10 h-10 mr-2" />
             ) : null}
             {server?.name}
           </div>
-          <div className="flex items-center text-white  text-3xl m-2 mr-0 truncate h-10">
+          <div className="flex items-center text-white  text-3xl m-2 mr-0 h-10">
             <div className="scale-75">
               <button
                 type="button"
@@ -163,38 +180,32 @@ function Server({ removeServer }: AdditionalProps) {
                   className="py-1"
                   role="menu"
                   aria-orientation="vertical"
-                  aria-labelledby="options-menu
-                "
-                >
+                  aria-labelledby="options-menu">
                   <button
                     className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
                     role="menuitem"
                     onClick={() => {
                       setShowMembers(!showMembers);
                       setWidthmsg(widthmsg === 0 ? 15 : 0);
-                    }}
-                  >
+                    }}>
                     <MdRememberMe size={25} /> Show Members
                   </button>
                   <button
                     className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
                     role="menuitem"
-                    onClick={() => setDialogTypeAndOpen("Add Channel", ServerId ?? '')}
-                  >
+                    onClick={() => setDialogTypeAndOpen("Add Channel", ServerId ?? '')}>
                     <FaRegPlusSquare size={25} />  Add Channel
                   </button>
-                  <button
+                  <div
                     className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
                     role="menuitem"
-                    onClick={() => setOpenDialog(true)}
-                  >
+                    onClick={() => setOpenDialog(true)}>
                     <MdDescription size={25} /><ServerDescDialog
                       open={openDialog}
                       handleClose={() => setOpenDialog(false)}
                       serverName={server?.name}
-                      serverDescription={server?.description}
-                    />
-                  </button>
+                      serverDescription={server?.description}/>
+                  </div>
                   {(auth.id === server?.ownerId) ?
                     <button
                       className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
@@ -232,6 +243,11 @@ function Server({ removeServer }: AdditionalProps) {
                         <ChannelButton name={`#${name}`}></ChannelButton>
                       </button>
                       {(auth.id === server?.ownerId) ?
+                      <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
+                          onClick={() => setDialogTypeAndOpen("EditChannel", id)}>
+                          <MdEdit  size={25} />
+                        </button> : null}
+                      {(auth.id === server?.ownerId) ? //narazie tak bd
                         <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
                           onClick={() => setDialogTypeAndOpen("deleteChannel", id)}>
                           <MdDeleteForever size={25} />
@@ -249,7 +265,7 @@ function Server({ removeServer }: AdditionalProps) {
       </div>
 
       {showMembers && <ServerMembers serverMembers={serverMembers} />}
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} pushChannel={pushChannel} removeChannel={removeChannel} removeServer={removeServer}/>
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} pushChannel={pushChannel} removeChannel={removeChannel} removeServer={removeServer} setChannelEdit={setChannelEdit} toBeEditedChannel={toBeEditedChannel}/>
 
     </div>
   );

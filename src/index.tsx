@@ -13,19 +13,17 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-    <React.StrictMode>
         <AuthProvider>
             <BrowserRouter>
                 <Routes>
                     <Route path='/' element={<App />}>
                         <Route path='register' element={<RegisterPage />} />
-                        <Route path='login' element={<LoginPage />} />
+                        <Route path='login/*' element={<LoginPage />} />
                         <Route path='home/*' element={<MainPage />} />
-                        <Route path='*' element={<MainPage />} />
                         <Route path='error/*' element={<ErrorPages />} />
+                        <Route path='*' element={<MainPage />} />
                     </Route>
                 </Routes>
             </BrowserRouter>
         </AuthProvider>
-    </React.StrictMode>
 );
