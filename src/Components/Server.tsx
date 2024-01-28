@@ -19,6 +19,7 @@ import CustomDialog from "./DialogTemplate";
 import { MdDeleteForever } from "react-icons/md";
 import { UserProps } from "./User";
 import { IconContext } from 'react-icons';
+import { useTitle } from "../Hooks/useTitle";
 
 export interface ServerProps {
   id: string;
@@ -61,7 +62,6 @@ function Server() {
 
   const pushChannel = (channel: ChannelProps) => {
     setTmpChannel(channel);
-    console.log(channel)
   }
   useEffect(() => {
     if (tmpChannel) {
@@ -114,6 +114,8 @@ function Server() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ServerId]);
+
+  useTitle(`MyCommsPoL | ${server?.name}`)
 
   return (
     <div>

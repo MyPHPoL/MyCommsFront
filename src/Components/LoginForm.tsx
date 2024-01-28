@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import RegisterPage from "../Pages/RegisterPage";
 import { loginUser } from "../Api/axios";
 import useAuth from "../Hooks/useAuth";
+import { useTitle } from "../Hooks/useTitle";
 
 const LoginForm = () => {
     
@@ -40,7 +41,9 @@ const LoginForm = () => {
                 setErrMsg("Something went wrong. Please try again later.");
             };
         } 
-    }; 
+    };
+
+    useTitle("MyCommsPoL - Login");
 
     return (
         <>
