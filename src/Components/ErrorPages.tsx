@@ -13,7 +13,7 @@ export default function ErrorPages () {
     return (
         <div className=' w-full h-full bg-gradient-to-r from-main to-second bg-cover flex justify-center items-center min-h-screen min-w-screen'>
             <Link to={'/home'} >
-            <img src={errorUrl} className= "w-screen h-screen">
+            <img src={errorUrl} alt={errorCode} className= "w-screen h-screen">
 
             </img>
             </Link>
