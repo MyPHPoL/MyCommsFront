@@ -76,8 +76,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         handleAddServer(newServer);
       }
     } catch (error: any) {
-      //throw error
-      console.log("beep boop nie działa");
+      handleError(error.response.status);
     }
   }
 
@@ -123,7 +122,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     try {
       const response = await joinServer(auth.token, nameValue);
     } catch (error: any) {
-      //throw error
+      handleError(error.response.status);
       console.log("beep boop nie działa");
     }
   }
@@ -141,7 +140,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
       }
       navigate("");
     } catch (error: any) {
-      //throw error
+      handleError(error.response.status);
       console.log("beep boop nie działa");
     }
   }
