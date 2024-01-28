@@ -6,9 +6,10 @@ import Server, { ServerProps } from "./Server";
 
 interface TopbarProps {
   servers?: ServerProps[];
+  removeServer: (id: string) => void;
 }
 
-export default function TopbarServer({ servers }: TopbarProps) {
+export default function TopbarServer({ servers, removeServer }: TopbarProps) {
 
   return (
     <div>
@@ -24,7 +25,7 @@ export default function TopbarServer({ servers }: TopbarProps) {
         </ul>
       </div>
       <Routes>
-        <Route path='/:ServerId/*' element={<Server />} />
+        <Route path='/:ServerId/*' element={<Server removeServer={removeServer}/>} />
       </Routes>
     </div>
   );

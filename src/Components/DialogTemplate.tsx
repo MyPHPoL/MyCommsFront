@@ -21,9 +21,10 @@ interface DialogProps {
   type?: string; /* Type of the dialog, we might change it to an enum later */
   actions?: React.ReactNode; /* Optional custom actions for the dialog */
   passedId?: string;
-  newChannel?: ChannelProps;
   pushChannel?:(channel:ChannelProps)=>void;
   handleAddServer?: (server: ServerProps) => void;
+  removeChannel?: (removeId: string) => void;
+  removeServer?: (toRemoveId: string) => void;
 }
 
 
@@ -38,7 +39,7 @@ const CustomCheckbox = withStyles({
 })(Checkbox);
 
 /* Define the CustomDialog component */
-const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, newChannel, handleAddServer, pushChannel }) => {
+const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, handleAddServer, pushChannel, removeChannel, removeServer }) => {
   /* Add a state variable for the input field */
   const navigate = useNavigate();
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
@@ -75,8 +76,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         handleAddServer(newServer);
       }
     } catch (error: any) {
-      //throw error
-      console.log("beep boop nie działa");
+      handleError(error.response.status);
     }
   }
 
@@ -89,16 +89,20 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     const serverDelete = async () => {
       try {
         const response = await deleteServer(auth.token, passedId ?? '');
+        if(removeServer){
+        removeServer(passedId ?? '');
+        console.log("passed id: " + passedId)
+      }
+        navigate("/home");
       } catch (error: any) {
-        //throw error
-        console.log("beep boop nie działa");
+        handleError(error.response.status);
       }
     }
 
   const addChannel = async () => {
     try {
       const response = await createChannel(auth.token, nameValue, description, passedId ?? '');
-        newChannel = {
+        const newChannel = {
         id: response.data.id,
         name: response.data.name,
         description: response.data.description,
@@ -109,7 +113,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
           pushChannel(newChannel);
         }
     } catch (error: any) {
-      //throw error
+      handleError(error.response.status);
       console.log("beep boop nie działa");
     }
   }
@@ -117,8 +121,18 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   const serverJoin = async () => {
     try {
       const response = await joinServer(auth.token, nameValue);
+      const newServer = {
+        id: response.data.id,
+        name: response.data.name,
+        description: response.data.description,
+        isPublic: response.data.isPublic,
+        ownerId: response.data.ownerId,
+      };
+      if (handleAddServer) {
+        handleAddServer(newServer);
+      }
     } catch (error: any) {
-      //throw error
+      handleError(error.response.status);
       console.log("beep boop nie działa");
     }
   }
@@ -131,9 +145,12 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   const channelDelete = async () => {
     try {
       const response = await deleteChannel(auth.token, passedId ?? '');
+      if (removeChannel) {
+        removeChannel(passedId ?? '');
+      }
       navigate("");
     } catch (error: any) {
-      //throw error
+      handleError(error.response.status);
       console.log("beep boop nie działa");
     }
   }
@@ -166,11 +183,12 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     console.log("Server joined");
     handleClose();
     }else{
-      //throw error
       console.log("Invalid input");
     }
   }
-
+  const handleError = (errorCode: string) => {
+    navigate(`/error/${errorCode}`);
+  }
   //WEEEEOOOOO 
   if (type === 'Create Server') {
     return (
@@ -258,7 +276,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
             fullWidth
             value={nameValue}
             onChange={handleInputChange}
-            helperText={!isNameValueValid ? "Name must b+e shorter than 32 characters" : ""}
+            helperText={!isNameValueValid ? "Name must be shorter than 32 characters" : ""}
           />
           <TextField
             InputProps={{
@@ -318,6 +336,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
             fullWidth
             value={nameValue}
             onChange={handleInputChange}
+            helperText={!isNameValueValid ? "Name must be between 0 and 32 characters long" : ""}
           />
         </DialogContent>
         <DialogActions>

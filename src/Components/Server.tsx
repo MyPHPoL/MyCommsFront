@@ -28,8 +28,10 @@ export interface ServerProps {
   picture?: string;
   ownerId: string;
 }
-
-function Server() {
+interface AdditionalProps {
+  removeServer: (id: string) => void;
+}
+function Server({ removeServer }: AdditionalProps) {
 
   const { ServerId } = useParams();
   const [server, setServer] = useState<ServerProps | undefined>();
@@ -46,6 +48,8 @@ function Server() {
   const [dialogType, setDialogType] = useState("Add Channel");
   const [dialogId, setPassedId] = useState("");
   const [tmpChannel, setTmpChannel] = useState<ChannelProps | undefined>();
+  const [toBeRemovedId, settoBeRemoved] = useState('');
+
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
@@ -63,6 +67,11 @@ function Server() {
   const pushChannel = (channel: ChannelProps) => {
     setTmpChannel(channel);
   }
+
+  const removeChannel = (id: string) => {
+    settoBeRemoved(id);
+  }
+
   useEffect(() => {
     if (tmpChannel) {
       console.log(tmpChannel);
@@ -71,6 +80,14 @@ function Server() {
       }
     }
   }, [tmpChannel])
+  
+  useEffect(() => {
+    if (toBeRemovedId) {
+      if (channels) {
+        setChannels(channels.filter((channel) => channel.id !== toBeRemovedId));
+      }
+    }
+  }, [toBeRemovedId])
 
   useEffect(() => {
     let isMounted = true; // something, something not to render when component is unmounted
@@ -208,7 +225,7 @@ function Server() {
           {showChannels && (
             <ul>
               {channels?.map(({ id, name }) => (
-                <li key={id}>
+                <li key={id} tabIndex={-1}>
                   <Link to={'' + id} tabIndex={-1}>
                     <div className="justify-left flex mr-2">{/* removed flex-col, ustaw jakoś ładnie dawix35 */}
                       <button className="w-full">
@@ -232,7 +249,7 @@ function Server() {
       </div>
 
       {showMembers && <ServerMembers serverMembers={serverMembers} />}
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} newChannel={tmpChannel} pushChannel={pushChannel} />
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} pushChannel={pushChannel} removeChannel={removeChannel} removeServer={removeServer}/>
 
     </div>
   );
