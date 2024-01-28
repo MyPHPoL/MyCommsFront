@@ -14,7 +14,6 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { MdDescription } from "react-icons/md";
 import useAuth from "../Hooks/useAuth";
 import ServerDescDialog from './ServerDescDialog';
-import { deleteServer } from "../Api/axios";
 import CustomDialog from "./DialogTemplate";
 import { MdDeleteForever } from "react-icons/md";
 import { UserProps } from "./User";
@@ -63,7 +62,7 @@ function Server({ removeServer }: AdditionalProps) {
   const setDialogTypeAndOpen = (type: string, passedId: string) => {
     setDialogType(type);
     setPassedId(passedId);
-    if(type == "EditChannel"){
+    if (type == "EditChannel") {
       setToBeEditedChannel(channels?.find((channel) => channel.id === passedId));
     }
     handleDialogOpen();
@@ -97,7 +96,7 @@ function Server({ removeServer }: AdditionalProps) {
       }
     }
   }, [tmpChannel])
-  
+
   useEffect(() => {
     if (toBeRemovedId) {
       if (channels) {
@@ -153,7 +152,7 @@ function Server({ removeServer }: AdditionalProps) {
 
   return (
     <div>
-      <div className="md:flex h-full w-[15%] min-w-[180px] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary overflow-visible">
+      <div className="md:flex h-full w-[15%] min-w-[230px] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary overflow-visible">
         <div className="flex items-center  text-white text-3xl m-2 truncate h-10">
           <div className='w-[95%] overflow-hidden  text-ellipsis   whitespace-nowrap'>
             {server?.picture ? (
@@ -191,13 +190,13 @@ function Server({ removeServer }: AdditionalProps) {
                     <MdRememberMe size={25} /> Show Members
                   </button>
                   {(auth.id === server?.ownerId) ?
-                  <button
-                    className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
-                    role="menuitem"
-                    onClick={() => setDialogTypeAndOpen("Add Channel", ServerId ?? '')}>
-                    <FaRegPlusSquare size={25} />  Add Channel
-                  </button>
-                  : null}
+                    <button
+                      className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
+                      role="menuitem"
+                      onClick={() => setDialogTypeAndOpen("Add Channel", ServerId ?? '')}>
+                      <FaRegPlusSquare size={25} />  Add Channel
+                    </button>
+                    : null}
                   <div
                     className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
                     role="menuitem"
@@ -206,11 +205,11 @@ function Server({ removeServer }: AdditionalProps) {
                       open={openDialog}
                       handleClose={() => setOpenDialog(false)}
                       serverName={server?.name}
-                      serverDescription={server?.description}/>
+                      serverDescription={server?.description} />
                   </div>
                   {(auth.id === server?.ownerId) ?
                     <button
-                      className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
+                      className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-red-600"
                       role="menuitem"
                       onClick={() => setDialogTypeAndOpen("deleteServer", ServerId ?? '')}
                     >
@@ -240,14 +239,14 @@ function Server({ removeServer }: AdditionalProps) {
               {channels?.map(({ id, name }) => (
                 <li key={id} tabIndex={-1}>
                   <Link to={'' + id} tabIndex={-1}>
-                    <div className="justify-left flex mr-2">{/* removed flex-col, ustaw jakoś ładnie dawix35 */}
+                    <div className="justify-left flex mr-2 mb-1">
                       <button className="w-full">
                         <ChannelButton name={`#${name}`}></ChannelButton>
                       </button>
                       {(auth.id === server?.ownerId) ?
-                      <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
+                        <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-yellow-600"
                           onClick={() => setDialogTypeAndOpen("EditChannel", id)}>
-                          <MdEdit  size={25} />
+                          <MdEdit size={25} />
                         </button> : null}
                       {(auth.id === server?.ownerId) ? //narazie tak bd
                         <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
@@ -267,7 +266,7 @@ function Server({ removeServer }: AdditionalProps) {
       </div>
 
       {showMembers && <ServerMembers serverMembers={serverMembers} />}
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} pushChannel={pushChannel} removeChannel={removeChannel} removeServer={removeServer} setChannelEdit={setChannelEdit} toBeEditedChannel={toBeEditedChannel}/>
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} pushChannel={pushChannel} removeChannel={removeChannel} removeServer={removeServer} setChannelEdit={setChannelEdit} toBeEditedChannel={toBeEditedChannel} />
 
     </div>
   );

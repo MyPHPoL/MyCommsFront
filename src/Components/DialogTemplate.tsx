@@ -11,7 +11,7 @@ import { createChannel, createServer, deleteChannel, deleteServer, editChannel, 
 import { useStyles } from './DialogStyles';
 import { withStyles } from '@material-ui/core/styles';
 import { ChannelProps } from './Channel';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ServerProps } from './Server';
 import { enqueueSnackbar } from 'notistack';
 
@@ -22,7 +22,7 @@ interface DialogProps {
   type?: string; /* Type of the dialog, we might change it to an enum later */
   actions?: React.ReactNode; /* Optional custom actions for the dialog */
   passedId?: string;
-  pushChannel?:(channel:ChannelProps)=>void;
+  pushChannel?: (channel: ChannelProps) => void;
   handleAddServer?: (server: ServerProps) => void;
   removeChannel?: (removeId: string) => void;
   removeServer?: (toRemoveId: string) => void;
@@ -42,7 +42,7 @@ const CustomCheckbox = withStyles({
 })(Checkbox);
 
 /* Define the CustomDialog component */
-const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, toBeEditedChannel , handleAddServer, pushChannel, removeChannel, removeServer,setChannelEdit }) => {
+const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, toBeEditedChannel, handleAddServer, pushChannel, removeChannel, removeServer, setChannelEdit }) => {
   /* Add a state variable for the input field */
   const navigate = useNavigate();
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
@@ -94,30 +94,30 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     handleClose();
   }
 
-    const serverDelete = async () => {
-      try {
-        const response = await deleteServer(auth.token, passedId ?? '');
-        if(removeServer){
+  const serverDelete = async () => {
+    try {
+      const response = await deleteServer(auth.token, passedId ?? '');
+      if (removeServer) {
         removeServer(passedId ?? '');
       }
-        navigate("/home");
-      } catch (error: any) {
-        handleError(error.response.status);
-      }
+      navigate("/home");
+    } catch (error: any) {
+      handleError(error.response.status);
     }
+  }
 
   const addChannel = async () => {
     try {
       const response = await createChannel(auth.token, nameValue, description, passedId ?? '');
-        const newChannel = {
+      const newChannel = {
         id: response.data.id,
         name: response.data.name,
         description: response.data.description,
         serverId: response.data.serverId,
-        };
-        if (pushChannel) {
-          pushChannel(newChannel);
-        }
+      };
+      if (pushChannel) {
+        pushChannel(newChannel);
+      }
     } catch (error: any) {
       if(error.response.status === 404){
         handleError(error.response.status);
@@ -157,7 +157,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     }
   }
 
-  const handleDeleteChannel = () =>{
+  const handleDeleteChannel = () => {
     //needs to redirect to server here 
     channelDelete();
     handleClose();
@@ -175,17 +175,17 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   }
   const channelEdit = async () => {
     try {
-      if(toBeEditedChannel){
-      var editedChannelId = toBeEditedChannel.id;
-      const response = await editChannel(auth.token, nameValue, description, editedChannelId);
-      const editedChannel = {
-        id: editedChannelId,
-        name: nameValue,
-        description: description,
-        serverId: toBeEditedChannel.serverId,
+      if (toBeEditedChannel) {
+        var editedChannelId = toBeEditedChannel.id;
+        const response = await editChannel(auth.token, nameValue, description, editedChannelId);
+        const editedChannel = {
+          id: editedChannelId,
+          name: nameValue,
+          description: description,
+          serverId: toBeEditedChannel.serverId,
         };
-      if(setChannelEdit)
-      setChannelEdit(editedChannel)
+        if (setChannelEdit)
+          setChannelEdit(editedChannel)
       }
     } catch (error: any) {
       if (error.response.status === 409) {
@@ -227,10 +227,10 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
 
 
   const handleJoinServer = () => {
-    if(isNameValueValid){
-    serverJoin();
-    handleClose();
-    }else{
+    if (isNameValueValid) {
+      serverJoin();
+      handleClose();
+    } else {
     }
   }
   const handleError = (errorCode: string) => {
@@ -398,10 +398,10 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         </DialogActions>
       </Dialog>
     );
-  } else if(type === "deleteChannel"){
+  } else if (type === "deleteChannel") {
     return (
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
-        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Are You sure You want to delete the channel?</DialogTitle>
+        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Are you sure you want to delete the channel?</DialogTitle>
         <DialogContent className={classes.inputField}>
         </DialogContent>
         {/* Actions of the dialog */}
@@ -409,7 +409,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
           {/* If custom actions are provided, use them, otherwise use default actions */}
           {actions ? actions : (
             <>
-            <Button onClick={handleDeleteChannel} className={classes.styleButton}>
+              <Button onClick={handleDeleteChannel} className={classes.styleButton}>
                 Yes
               </Button>
               <Button onClick={handleClose} className={classes.styleButton}>
@@ -421,18 +421,18 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
       </Dialog>
     );
 
-  }else if(type === "deleteServer"){
+  } else if (type === "deleteServer") {
     return (
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Are You sure You want to delete the server?</DialogTitle>
-        <DialogContent>
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
+        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Are you sure you want to delete the server?</DialogTitle>
+        <DialogContent className={classes.inputField}>
         </DialogContent>
         {/* Actions of the dialog */}
         <DialogActions>
           {/* If custom actions are provided, use them, otherwise use default actions */}
           {actions ? actions : (
             <>
-            <Button onClick={handleDeleteServer} className={classes.styleButton}>
+              <Button onClick={handleDeleteServer} className={classes.styleButton}>
                 Yes
               </Button>
               <Button onClick={handleClose} className={classes.styleButton}>
@@ -443,7 +443,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         </DialogActions>
       </Dialog>
     );
-  }else if (type === 'EditChannel') {
+  } else if (type === 'EditChannel') {
     return (
       /* Needs text labels and stuff*/
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
@@ -504,7 +504,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         </DialogActions>
       </Dialog>
     );
-  }else
+  } else
     //THIS IS THE DEFAULT TEMPLATE FOR DIALOGS, returned if the type is not specified, as for now its retruned if the type is not specified
     //in the future it might be changed to return an error, and the default template might be moved
     return (

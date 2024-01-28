@@ -9,7 +9,7 @@ import { enqueueSnackbar } from "notistack";
 import useAuth from "../Hooks/useAuth";
 import { getAllMessages, getChannelInfo, sendMessage } from "../Api/axios";
 import Picker from 'emoji-picker-react';
-import { EmojiStyle,Theme } from 'emoji-picker-react';
+import { EmojiStyle, Theme } from 'emoji-picker-react';
 import { Message } from "./Message";
 
 export interface ChannelProps {
@@ -26,25 +26,25 @@ export interface MessageProps {
   creationDate: string
 }
 
-function Channel({widthmsg}: {widthmsg:number}) {
+function Channel({ widthmsg }: { widthmsg: number }) {
 
   const { ChannelId } = useParams(); // ChannelId is the name of the variable in the URL
   const [channelInfo, setChannelInfo] = useState<ChannelProps | undefined>();
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
-  
+
   // will add message to the database and then to the messages array (if successful)
   const addMessage = async (body: string) => {
     try {
-    const response = await sendMessage(auth.token, ChannelId || '', body, '0');
-    const newMessage: MessageProps = {
-      id: response.data.id,
-      authorId: response.data.authorId,
-      body: response.data.body,
-      creationDate: response.data.creationDate,
-    };
-    setMessages((messages) => [...messages, newMessage]);
+      const response = await sendMessage(auth.token, ChannelId || '', body, '0');
+      const newMessage: MessageProps = {
+        id: response.data.id,
+        authorId: response.data.authorId,
+        body: response.data.body,
+        creationDate: response.data.creationDate,
+      };
+      setMessages((messages) => [...messages, newMessage]);
     } catch (error: any) {
       enqueueSnackbar("We couldn't send your message. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
     };
@@ -73,7 +73,7 @@ function Channel({widthmsg}: {widthmsg:number}) {
     let isMounted = true; // something, something not to render when component is unmounted
     const controller = new AbortController(); // cancels request when component unmounts
 
-    if(isMounted){
+    if (isMounted) {
       fetchAllMessages();
       fetchChannelInfo();
     };
@@ -91,7 +91,7 @@ function Channel({widthmsg}: {widthmsg:number}) {
   },);
 
   return (
-    <div className='md:flex h-auto  -z-20 flex-col fixed inset-y-0 top-20  w-full' style={{ left:`calc(max(180px,15%))`, marginRight: `${widthmsg}%` }}>
+    <div className='md:flex h-auto  -z-20 flex-col fixed inset-y-0 top-20  w-full' style={{ left: `calc(max(230px,15%))`, marginRight: `${widthmsg}%` }}>
       <div className='text-5xl shadow-sg tracking-wider font-semibold text-white w-full pl-5 h-[60px] bg-tertiary'>
         {channelInfo?.name} | {channelInfo?.description}
       </div>
@@ -104,12 +104,12 @@ function Channel({widthmsg}: {widthmsg:number}) {
             body={body}
             creationDate={creationDate} />
         ))}
-      <div ref={chatWindowRef} />
+        <div ref={chatWindowRef} />
       </div>
       <TextBar
         refreshMessages={fetchAllMessages}
         addMessage={addMessage}
-        name={channelInfo?.name || 'this channel' }
+        name={channelInfo?.name || 'this channel'}
         widthmsg={widthmsg}
       />
     </div>
@@ -140,14 +140,14 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className='flex w-auto flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 shadow-lg bg-secondary px-2 h-12 m-2 mx-4' style={{left:`calc(max(180px,15%))`, marginRight: `${widthmsg+1.5}%` }}>
+    <form onSubmit={handleFormSubmit} className='flex w-auto flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 shadow-lg bg-secondary px-2 h-12 m-2 mx-4' style={{ left: `calc(max(230px,15%))`, marginRight: `${widthmsg + 1.5}%` }}>
       {/* This is a button that will open file attachment menu */}
       <button tabIndex={0}>
-        <RiAttachment2  size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
+        <RiAttachment2 size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
       {/* This is a button to refresh all channel messages */}
       <button onClick={refreshMessages}>
-      <IoRefreshOutline size='22' className='text-gray-300 mx-2 hover:text-gray-200'/>
+        <IoRefreshOutline size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
       <input
         type='text'
@@ -161,11 +161,11 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
         <HiGif size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
       <div className="absolute bottom-full right-1 my-2">
-      {emojiMenuOpen && <Picker onEmojiClick={handleEmojiClick} theme={Theme.DARK} emojiStyle={EmojiStyle.NATIVE} skinTonesDisabled={true} />}
+        {emojiMenuOpen && <Picker onEmojiClick={handleEmojiClick} theme={Theme.DARK} emojiStyle={EmojiStyle.NATIVE} skinTonesDisabled={true} />}
       </div>
 
       {/* This is a button that opens emoji menu */}
-      <button type="button" onClick={()=> setEmojiMenuOpen(!emojiMenuOpen)}>
+      <button type="button" onClick={() => setEmojiMenuOpen(!emojiMenuOpen)}>
         <FaRegSmile size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
 
