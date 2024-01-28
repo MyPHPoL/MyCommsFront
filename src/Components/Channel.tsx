@@ -90,7 +90,7 @@ function Channel({widthmsg}: {widthmsg:number}) {
   },);
 
   return (
-    <div className='md:flex h-aut -z-20 flex-col fixed inset-y-0 top-20 left-[300px] w-full' style={{ marginRight: `${widthmsg}%` }}>
+    <div className='md:flex h-auto  -z-20 flex-col fixed inset-y-0 top-20  w-full' style={{ left:`calc(max(180px,15%))`, marginRight: `${widthmsg}%` }}>
       <div className='text-5xl shadow-sg tracking-wider font-semibold text-white w-full pl-5 h-[60px] bg-tertiary'>
         {channelInfo?.name} | {channelInfo?.description}
       </div>
@@ -140,7 +140,7 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className='flex flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 left-[320px] shadow-lg bg-secondary px-2 h-12 m-2 mx-4' style={{ marginRight: `${widthmsg+1.5}%` }}>
+    <form onSubmit={handleFormSubmit} className='flex w-auto flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 shadow-lg bg-secondary px-2 h-12 m-2 mx-4' style={{left:`calc(max(180px,15%))`, marginRight: `${widthmsg+1.5}%` }}>
       {/* This is a button that will open file attachment menu */}
       <button>
         <RiAttachment2 size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
