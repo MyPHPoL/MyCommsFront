@@ -1,8 +1,9 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 function App(){
     return (
         <div>
+          <Navigate to='/login' />
           <Outlet/>
         </div>
     );
