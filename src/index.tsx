@@ -7,6 +7,7 @@ import RegisterPage from './Pages/RegisterPage';
 import LoginPage from './Pages/LoginPage';
 import MainPage from './Pages/MainPage';
 import { AuthProvider } from './Context/AuthProvider';
+import ErrorPages from './Components/ErrorPages';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -21,6 +22,7 @@ root.render(
                         <Route path='login' element={<LoginPage />} />
                         <Route path='home/*' element={<MainPage />} />
                         <Route path='*' element={<App />} />
+                        <Route path='error/*' element={<ErrorPages />} />
                     </Route>
                 </Routes>
             </BrowserRouter>

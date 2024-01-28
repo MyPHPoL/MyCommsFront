@@ -28,7 +28,10 @@ export interface ServerProps {
   picture?: string;
   ownerId: string;
 }
-
+interface TopBarProps {
+  handleAddServer: (server: ServerProps) => void;
+  removeServer: (id: string) => void;
+}
 function Server() {
 
   const { ServerId } = useParams();
@@ -46,6 +49,8 @@ function Server() {
   const [dialogType, setDialogType] = useState("Add Channel");
   const [dialogId, setPassedId] = useState("");
   const [tmpChannel, setTmpChannel] = useState<ChannelProps | undefined>();
+  const [toBeRemovedId, settoBeRemoved] = useState('');
+
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
@@ -63,6 +68,11 @@ function Server() {
   const pushChannel = (channel: ChannelProps) => {
     setTmpChannel(channel);
   }
+
+  const removeChannel = (id: string) => {
+    settoBeRemoved(id);
+  }
+
   useEffect(() => {
     if (tmpChannel) {
       console.log(tmpChannel);
@@ -71,6 +81,14 @@ function Server() {
       }
     }
   }, [tmpChannel])
+  
+  useEffect(() => {
+    if (toBeRemovedId) {
+      if (channels) {
+        setChannels(channels.filter((channel) => channel.id !== toBeRemovedId));
+      }
+    }
+  }, [toBeRemovedId])
 
   useEffect(() => {
     let isMounted = true; // something, something not to render when component is unmounted
@@ -232,7 +250,7 @@ function Server() {
       </div>
 
       {showMembers && <ServerMembers serverMembers={serverMembers} />}
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} newChannel={tmpChannel} pushChannel={pushChannel} />
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} pushChannel={pushChannel} removeChannel={removeChannel}/>
 
     </div>
   );

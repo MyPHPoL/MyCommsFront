@@ -6,8 +6,9 @@ import { ServerProps } from "./Server";
 import { GiExitDoor } from "react-icons/gi";
 interface TopBarProps {
   handleAddServer: (server: ServerProps) => void;
+  removeServer: (id: string) => void;
 }
-export default function TopbarBasic ({ handleAddServer }: TopBarProps) {
+export default function TopbarBasic ({ handleAddServer, removeServer }: TopBarProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("Create Server"); 
 
@@ -36,7 +37,7 @@ export default function TopbarBasic ({ handleAddServer }: TopBarProps) {
           </i>
         </ul>
         </div>
-        <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} handleAddServer={handleAddServer}/>
+        <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} handleAddServer={handleAddServer} removeServer={removeServer}/>
     </div>
     
   );

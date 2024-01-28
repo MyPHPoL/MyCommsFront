@@ -22,8 +22,10 @@ function Header() {
     const [servers, setServers] = useState<ServerProps[] | undefined>();
     const [friends, setFriends] = useState<FriendProps[] | undefined>();
     const [tmpServer, setTmpServer] = useState<ServerProps | undefined>();
-    
-    
+    const [toRemoveId, setToRemoveId] = useState('');
+    const removeServer = (id: string) => {
+      setToRemoveId(id);
+    }
     const pushServer = (server: ServerProps) => {
       setTmpServer(server);
     }
@@ -34,6 +36,16 @@ function Header() {
         }
       }
     }, [tmpServer])
+
+    // THIS IS NOT WORKING AS REACT DOES NOT RE-RENDER CHILD COMPONENT WHEN A PART OF AN ARRAY IS REMOVED AS IT TREATS IT LIKE A CHANGE IN THE FIELD, NOT REMOVAL
+    useEffect(() => {
+      if (servers) {
+        if (toRemoveId) {
+          setServers(servers.filter((server) => server.id !== toRemoveId));
+        }
+      }
+    }, [toRemoveId])
+
     useEffect(() => {
       let isMounted = true; // something, something not to render when component is unmounted
       const controller = new AbortController(); // cancels request when component unmounts
@@ -97,7 +109,7 @@ function Header() {
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
         </ul>
         <div className="my-2 flex">
-          <SidebarBasic handleAddServer={pushServer}/>
+          <SidebarBasic handleAddServer={pushServer} removeServer={removeServer}/>
           {activeTopbar === 'servers' && <TopbarServer servers={servers} />}
           {activeTopbar === 'friends' && <TopbarFriend friends={friends} />}
         </div>

@@ -21,9 +21,10 @@ interface DialogProps {
   type?: string; /* Type of the dialog, we might change it to an enum later */
   actions?: React.ReactNode; /* Optional custom actions for the dialog */
   passedId?: string;
-  newChannel?: ChannelProps;
   pushChannel?:(channel:ChannelProps)=>void;
   handleAddServer?: (server: ServerProps) => void;
+  removeChannel?: (removeId: string) => void;
+  removeServer?: (toRemoveId: string) => void;
 }
 
 
@@ -38,7 +39,7 @@ const CustomCheckbox = withStyles({
 })(Checkbox);
 
 /* Define the CustomDialog component */
-const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, newChannel, handleAddServer, pushChannel }) => {
+const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, handleAddServer, pushChannel, removeChannel, removeServer }) => {
   /* Add a state variable for the input field */
   const navigate = useNavigate();
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
@@ -89,16 +90,18 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     const serverDelete = async () => {
       try {
         const response = await deleteServer(auth.token, passedId ?? '');
+        if(removeServer)
+        removeServer(passedId ?? '');
+        navigate("/home");
       } catch (error: any) {
-        //throw error
-        console.log("beep boop nie działa");
+        handleError(error.response.status);
       }
     }
 
   const addChannel = async () => {
     try {
       const response = await createChannel(auth.token, nameValue, description, passedId ?? '');
-        newChannel = {
+        const newChannel = {
         id: response.data.id,
         name: response.data.name,
         description: response.data.description,
@@ -109,7 +112,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
           pushChannel(newChannel);
         }
     } catch (error: any) {
-      //throw error
+      handleError(error.response.status);
       console.log("beep boop nie działa");
     }
   }
@@ -131,6 +134,9 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   const channelDelete = async () => {
     try {
       const response = await deleteChannel(auth.token, passedId ?? '');
+      if (removeChannel) {
+        removeChannel(passedId ?? '');
+      }
       navigate("");
     } catch (error: any) {
       //throw error
@@ -170,7 +176,9 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
       console.log("Invalid input");
     }
   }
-
+  const handleError = (errorCode: string) => {
+    navigate(`/error/${errorCode}`);
+  }
   //WEEEEOOOOO 
   if (type === 'Create Server') {
     return (
