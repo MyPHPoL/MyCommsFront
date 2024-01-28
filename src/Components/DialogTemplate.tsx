@@ -53,7 +53,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   const isServerDescriptionValid = description.length < 128;
   const isChannelDescriptionValid = description.length < 64;
   const classes = useStyles();
-  const currentPath = window.location.pathname;
+
   /* Add a function to handle input changes */
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -79,7 +79,12 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         handleAddServer(newServer);
       }
     } catch (error: any) {
-      handleError(error.response.status);
+      if(error.response.status === 409){
+        enqueueSnackbar("Server with this name already exists", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+      }
+      else{
+        enqueueSnackbar("There was an error while creating server", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+      }
     }
   }
 
@@ -114,7 +119,15 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         pushChannel(newChannel);
       }
     } catch (error: any) {
-      handleError(error.response.status);
+      if(error.response.status === 404){
+        handleError(error.response.status);
+      }
+      if(error.response.status === 409){
+        enqueueSnackbar("Channel with this name already exists", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+      }
+      else{
+        enqueueSnackbar("There was an error while creating channel", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+      }
     }
   }
 
@@ -132,7 +145,15 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         handleAddServer(newServer);
       }
     } catch (error: any) {
-      handleError(error.response.status);
+        if (error.response.status === 401) {
+          handleError(error.response.status);
+        }
+        if (error.response.status === 404) {
+          enqueueSnackbar("This server does not exist", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+        }
+        if (error.response.status === 400) {
+          enqueueSnackbar("You are already in this server", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+        }
     }
   }
 
@@ -149,7 +170,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
       }
       navigate("");
     } catch (error: any) {
-      handleError(error.response.status);
+      enqueueSnackbar("There was an error while deleting channel", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
     }
   }
   const channelEdit = async () => {
@@ -167,7 +188,12 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
           setChannelEdit(editedChannel)
       }
     } catch (error: any) {
-      enqueueSnackbar("jakiś error", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      if (error.response.status === 409) {
+        enqueueSnackbar("Channel name must be unique", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+      }
+      else {
+        enqueueSnackbar("There was an error while editing channel", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+      }
     }
   }
 
