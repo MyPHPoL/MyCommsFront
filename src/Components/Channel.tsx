@@ -102,8 +102,7 @@ function Channel({widthmsg}: {widthmsg:number}) {
             id={id}
             authorId={authorId}
             body={body}
-            creationDate={creationDate}
-          />
+            creationDate={creationDate} />
         ))}
       <div ref={chatWindowRef} />
       </div>

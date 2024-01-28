@@ -176,6 +176,7 @@ function Server({ removeServer }: AdditionalProps) {
                   >
                     <MdRememberMe size={25} /> Show Members
                   </button>
+                  {(auth.id === server?.ownerId) ?
                   <button
                     className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
                     role="menuitem"
@@ -183,6 +184,7 @@ function Server({ removeServer }: AdditionalProps) {
                   >
                     <FaRegPlusSquare size={25} />  Add Channel
                   </button>
+                  : null}
                   <button
                     className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-tertiary"
                     role="menuitem"
