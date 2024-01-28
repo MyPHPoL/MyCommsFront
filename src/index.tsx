@@ -21,7 +21,7 @@ root.render(
                         <Route path='register' element={<RegisterPage />} />
                         <Route path='login' element={<LoginPage />} />
                         <Route path='home/*' element={<MainPage />} />
-                        <Route path='*' element={<App />} />
+                        <Route path='*' element={<MainPage />} />
                         <Route path='error/*' element={<ErrorPages />} />
                     </Route>
                 </Routes>
