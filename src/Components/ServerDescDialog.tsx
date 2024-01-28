@@ -58,8 +58,7 @@ const ServerDescDialog: React.FC<ServerDescDialogProps> = ({ serverName, serverD
             <Dialog
                 open={open}
                 onClose={handleClose}
-                classes={{ paper: classes.dialogPaper }} // apply the custom styles here
-            >
+                classes={{ paper: classes.dialogPaper }}>
                 <DialogTitle classes={{ root: classes.title }}>{serverName}</DialogTitle>
                 <DialogContent>
                     <DialogContentText classes={{ root: classes.description }}>
@@ -67,9 +66,9 @@ const ServerDescDialog: React.FC<ServerDescDialogProps> = ({ serverName, serverD
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                <Button onClick={handleClose} className={classes.closeButton}>
-  Close
-</Button>
+                    <Button onClick={handleClose} className={classes.closeButton}>
+                        Close
+                    </Button>
                 </DialogActions>
             </Dialog>
         </div>
