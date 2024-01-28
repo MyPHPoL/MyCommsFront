@@ -34,8 +34,8 @@ function FriendMessage() {
     },);
   
     return (
-      <div className='md:flex h-auto w-full -z-20 flex-col fixed inset-y-0 top-20 left-[20px]'>
-        <div className='flex-row flex m-2  text-5xl shadow-sg tracking-wider font-semibold text-white ml-2 pb-2 items-center'>
+      <div className='md:flex h-auto w-full -z-20 flex-col fixed inset-y-0 top-20 left-0'>
+        <div className='flex-row flex w-full pt-2 pb-4 pl-[20px] bg-tertiary h-auto text-5xl shadow-sg tracking-wider font-semibold text-white items-center'>
           Chat with: 
           <div className='flex mx-2'>
             <UserAvatar name={User?.username} picture={User?.email}/>
@@ -88,7 +88,7 @@ const TextBar = ({ addMessage, name, }: { addMessage: (message: MessageProps) =>
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className='flex flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 left-[20px] shadow-lg bg-secondary px-2 h-12 m-2 mx-4'>
+    <form onSubmit={handleFormSubmit} className='flex flex-row items-center justify-between fixed bottom-3 rounded-lg right-[20px] left-[20px] shadow-lg bg-secondary px-2 h-12 m-2 mx-4'>
       <button>
         <RiAttachment2 size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>

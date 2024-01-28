@@ -143,8 +143,8 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
   return (
     <form onSubmit={handleFormSubmit} className='flex w-auto flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 shadow-lg bg-secondary px-2 h-12 m-2 mx-4' style={{left:`calc(max(180px,15%))`, marginRight: `${widthmsg+1.5}%` }}>
       {/* This is a button that will open file attachment menu */}
-      <button>
-        <RiAttachment2 size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
+      <button tabIndex={0}>
+        <RiAttachment2  size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
       {/* This is a button to refresh all channel messages */}
       <button onClick={refreshMessages}>

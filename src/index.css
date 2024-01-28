@@ -20,5 +20,8 @@ body {
 
 .rotate-180 {
   transform: rotate(180deg);
+}
+
+.IoMdArrowDropdown {
   transition: transform 0.3s ease-in-out;
 }
