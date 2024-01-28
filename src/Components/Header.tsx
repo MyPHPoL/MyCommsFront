@@ -13,6 +13,7 @@ import { ServerProps } from "./Server";
 import { FriendProps } from "./FriendMessage";
 import { FaRegUser } from "react-icons/fa";
 import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+import { useTitle } from '../Hooks/useTitle';
 
 function Header() {
     const [activeTopbar, setActiveTopbar] = useState<string | null>(null);
@@ -71,7 +72,7 @@ function Header() {
     <Navigate to='/home' />;
   };
 
-
+  useTitle('MyCommsPoL - Home');
 
   return (
     <div>
@@ -91,8 +92,8 @@ function Header() {
             </div>
           </li>
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
-          <li className="relative flex items-center justify-center mx-auto mr-1"><button onClick={() => setActiveTopbar('servers')}><IconButton icon={<IoServer size={30} />} name="ServerList"></IconButton></button></li>
-          <li className="relative flex items-center justify-center mx-auto"><button onClick={() => setActiveTopbar('friends')}><IconButton icon={<FaUserFriends size={30} />} name="FriendList"></IconButton></button></li>
+          <li className="relative flex items-center justify-center mx-auto mr-1"><button onClick={() => setActiveTopbar('servers')}><IconButton icon={<IoServer size={30} />} name="Server List"></IconButton></button></li>
+          <li className="relative flex items-center justify-center mx-auto"><button onClick={() => setActiveTopbar('friends')}><IconButton icon={<FaUserFriends size={30} />} name="Friend List"></IconButton></button></li>
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
         </ul>
         <div className="my-2 flex">

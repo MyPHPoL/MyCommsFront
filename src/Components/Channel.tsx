@@ -7,9 +7,10 @@ import { useParams } from "react-router-dom";
 import { IoRefreshOutline } from "react-icons/io5";
 import { enqueueSnackbar } from "notistack";
 import useAuth from "../Hooks/useAuth";
-import { getAllMessages, getChannelInfo, getUsername, sendMessage } from "../Api/axios";
+import { getAllMessages, getChannelInfo, sendMessage } from "../Api/axios";
 import Picker from 'emoji-picker-react';
 import { EmojiStyle,Theme } from 'emoji-picker-react';
+import { Message } from "./Message";
 
 export interface ChannelProps {
   id: string;
@@ -161,7 +162,7 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
         <HiGif size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
       <div className="absolute bottom-full right-1 my-2">
-      {emojiMenuOpen && <Picker onEmojiClick={handleEmojiClick} theme={Theme.DARK} emojiStyle={EmojiStyle.NATIVE} />}
+      {emojiMenuOpen && <Picker onEmojiClick={handleEmojiClick} theme={Theme.DARK} emojiStyle={EmojiStyle.NATIVE} skinTonesDisabled={true} />}
       </div>
 
       {/* This is a button that opens emoji menu */}
@@ -175,33 +176,6 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
       </button>
     </form>
   );
-};
-
-const Message = ({ authorId, body, creationDate }: MessageProps) => {
-  const [username, setUsername] = useState('');
-  const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
-
-  // get username from authorId
-  getUsername(auth.token, authorId).then((res) => {
-    const username: string = res;
-    setUsername(username);
-  });
-
-  return(
-  <div className='w-full flex-row justify-evenly py-3 px-8 m-0 cursor-pointer border-tertiary border-[1px] hover:bg-tertiary'>
-    <div className='flex flex-col justify-start ml-autoborder-tertiary'>
-      <p className='text-left font-semibold text-white mr-2 cursor-pointer'>
-        {username}
-        <small className='text-xs text-left font-semibold text-gray-500 ml-2'>
-          {new Date(creationDate).toLocaleDateString()} {new Date(creationDate).toLocaleTimeString()}
-        </small>
-      </p>
-      <p className='text-lg text-left text-white mr-auto whitespace-normal'>
-        {body}
-      </p>
-    </div>
-  </div>
-  )
 };
 
 export default Channel;

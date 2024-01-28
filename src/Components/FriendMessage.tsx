@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { friends } from "../fakedb";
+import { friends, messages } from "../fakedb";
 import { RiAttachment2 } from "react-icons/ri";
 import { FaRegSmile } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
@@ -7,6 +7,8 @@ import { HiGif } from "react-icons/hi2";
 import { useParams } from "react-router-dom";
 import { IoRefreshOutline } from "react-icons/io5";
 import { UserAvatar } from "./IconLib";
+import { MessageProps } from "./Channel";
+import { Message } from "./Message";
 
 export interface FriendProps {
   id: string;
@@ -14,22 +16,18 @@ export interface FriendProps {
   picture?: string;
 }
 
-// for testing purposes (interface may change when we will connect app to the backend)
-export interface MessageProps {
-  id: string,
-  author: string,
-  content: string,
-  timestamp: string
-}
-
 function FriendMessage() {
     const { UserId } = useParams(); // userId is the name of the variable in the URL
     const User = friends.find((friend: FriendProps) => friend.id === UserId);
-    const [Messages, setMessages] = useState([]);
+    const [Messages, setMessages] = useState<MessageProps[]>([]);
     const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
     const addMessage = (newMessage: MessageProps) => {
       
     };
+
+    useEffect(() => {
+      setMessages(messages);
+    }, [UserId]);
   
     useEffect(() => {
       chatWindowRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -44,14 +42,14 @@ function FriendMessage() {
           </div>
           {User?.username}
         </div>
-        <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16'>
-          {Messages.map(({ id, author, content, timestamp }) => (
+        <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 border-tertiary w-full'>
+          {Messages.map(({ id, authorId, body, creationDate }: MessageProps) => (
             <Message
               key={id}
               id={id}
-              author={author}
-              content={content}
-              timestamp={timestamp}
+              authorId={authorId}
+              body={body}
+              creationDate={creationDate}
             />
           ))}
       <div ref={chatWindowRef}/>
@@ -79,9 +77,9 @@ const TextBar = ({ addMessage, name, }: { addMessage: (message: MessageProps) =>
     // Create a new message object
     const newMessage: MessageProps = {
       id: 'newid', // replace with a real id
-      author: 'current user', // replace with the current username
-      content: inputValue,
-      timestamp: new Date().toDateString(),
+      authorId: 'current user', // replace with the current username
+      body: inputValue,
+      creationDate: new Date().toDateString(),
     };
 
     // Clear the input field and add the new message
@@ -117,21 +115,5 @@ const TextBar = ({ addMessage, name, }: { addMessage: (message: MessageProps) =>
     </form>
   );
 };
-
-const Message = ({ author, content, timestamp }: MessageProps) => (
-  <div className='w-full flex-row justify-evenly py-3 px-8 m-0 cursor-pointer'>
-    <div className='flex flex-col justify-start ml-auto border-tertiary border-[1px] hover:bg-tertiary'>
-      <p className='text-left font-semibold text-white mr-2 cursor-pointer'>
-        {author}
-        <small className='text-xs text-left font-semibold text-gray-500 ml-2'>
-          {timestamp}
-        </small>
-      </p>
-      <p className='text-lg text-left text-white mr-auto whitespace-normal'>
-        {content}
-      </p>
-    </div>
-  </div>
-);
 
 export default FriendMessage;
