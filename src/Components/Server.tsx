@@ -200,14 +200,14 @@ function Server() {
           <button className="flex my-2 text-white font-semibold" onClick={() => setShowChannels(!showChannels)}>
             All Channels
             <IconContext.Provider value={{ className: showChannels ? 'rotate-180' : '' }}>
-              <IoMdArrowDropdown size='25' />
+              <IoMdArrowDropdown className="transition-transform duration-300 ease-in-out" size='25' />
             </IconContext.Provider>
           </button>
           {showChannels && (
             <ul>
               {channels?.map(({ id, name }) => (
                 <li key={id}>
-                  <Link to={'' + id}>
+                  <Link to={'' + id} tabIndex={-1}>
                     <div className="justify-left flex mr-2">{/* removed flex-col, ustaw jakoś ładnie dawix35 */}
                       <button className="w-full">
                         <ChannelButton name={`#${name}`}></ChannelButton>
