@@ -227,11 +227,9 @@ function Server() {
         <Routes>
           <Route path="/:ChannelId/*" element={<Channel widthmsg={widthmsg} />} />
         </Routes>
-      </div>
-
+      </div
       {showMembers && <ServerMembers serverMembers={serverMembers} />}
       <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} newChannel={tmpChannel} pushChannel={pushChannel} />
-
     </div>
   );
 }
