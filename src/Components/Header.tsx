@@ -18,54 +18,67 @@ import { FaUserCog } from "react-icons/fa";
 import { IoLogInOutline } from "react-icons/io5";
 
 function Header() {
-  const [activeTopbar, setActiveTopbar] = useState<string | null>(null);
-  const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
-  const { setAuth }: { setAuth: any } = useAuth();
-  const [servers, setServers] = useState<ServerProps[] | undefined>();
-  const [friends, setFriends] = useState<FriendProps[] | undefined>();
-  const [tmpServer, setTmpServer] = useState<ServerProps | undefined>();
-
-
-  const pushServer = (server: ServerProps) => {
-    setTmpServer(server);
-  }
-  useEffect(() => {
-    if (tmpServer) {
-      if (servers) {
-        setServers([...servers, tmpServer]);
-      }
+    const [activeTopbar, setActiveTopbar] = useState<string | null>(null);
+    const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
+    const { setAuth }: { setAuth: any } = useAuth();
+    const [servers, setServers] = useState<ServerProps[] | undefined>();
+    const [friends, setFriends] = useState<FriendProps[] | undefined>();
+    const [tmpServer, setTmpServer] = useState<ServerProps | undefined>();
+    const [toRemoveId, setToRemoveId] = useState('');
+    const removeServer = (id: string) => {
+      setToRemoveId(id);
+      console.log('removed')
     }
-  }, [tmpServer])
-  useEffect(() => {
-    let isMounted = true; // something, something not to render when component is unmounted
-    const controller = new AbortController(); // cancels request when component unmounts
-
-    const fetchServers = async () => {
-      try {
-        const response = await getServers(auth.token);
-        isMounted && setServers(response.data);
-      } catch (error: any) {
-        enqueueSnackbar("We couldn't load your server list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+    const pushServer = (server: ServerProps) => {
+      setTmpServer(server);
+    }
+    useEffect(() => {
+      if (tmpServer) {
+        if (servers) {
+          setServers([...servers, tmpServer]);
+        }
       }
-    };
+    }, [tmpServer])
 
-    const fetchFriends = async () => {
-      try {
-        const response = await getFriends(auth.token);
-        isMounted && setFriends(response.data);
-      } catch (error: any) {
-        enqueueSnackbar("We couldn't load your friend list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+    useEffect(() => {
+      if (servers) {
+        if (toRemoveId) {
+          // toRemoveId is string but server.id is number thus != instead of !==
+          setServers(servers.filter((server) => server.id != toRemoveId)) 
+        }
       }
-    };
+    }, [toRemoveId])
 
-    fetchServers();
-    fetchFriends();
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-
+    useEffect(() => {
+      let isMounted = true; // something, something not to render when component is unmounted
+      const controller = new AbortController(); // cancels request when component unmounts
+    
+      const fetchServers = async () => {
+          try {
+              const response = await getServers(auth.token);
+              isMounted && setServers(response.data);
+          } catch (error: any) {
+              enqueueSnackbar("We couldn't load your server list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+          }
+      };
+    
+      const fetchFriends = async () => {
+          try {
+              const response = await getFriends(auth.token);
+              isMounted && setFriends(response.data);
+          } catch (error: any) {
+              enqueueSnackbar("We couldn't load your friend list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+          }
+      };
+    
+      fetchServers();
+      fetchFriends();
+    
+      return () => {
+          isMounted = false;
+          controller.abort();
+      };
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -105,8 +118,8 @@ function Header() {
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
         </ul>
         <div className="my-2 flex">
-          <SidebarBasic handleAddServer={pushServer} />
-          {activeTopbar === 'servers' && <TopbarServer servers={servers} />}
+          <SidebarBasic handleAddServer={pushServer}/>
+          {activeTopbar === 'servers' && <TopbarServer servers={servers} removeServer={removeServer}/>}
           {activeTopbar === 'friends' && <TopbarFriend friends={friends} />}
         </div>
       </nav>

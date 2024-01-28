@@ -13,6 +13,7 @@ const CHANNEL_INFO_URL = '/Channel/Get?id=';
 const SEND_MESSAGE_URL = '/Message/Create';
 const CREATE_SERVER_URL = '/Server/Create';
 const CREATE_CHANNEL_URL = '/Channel/Add';
+const EDIT_CHANNEL_URL = '/Channel/Edit?channelId=';
 const DELETE_CHANNEL_URL = '/Channel/Delete?channelId=';
 const JOIN_SERVER_URL = '/Server/JoinServer?name=';
 const DELETE_SERVER_URL = '/Server/DeleteServer?serverId=';
@@ -203,6 +204,23 @@ export const createChannel = async (token: string, channelName: string, channelD
     );
     return response;
 };
+
+export const editChannel = async (token: string, channelName: string, channelDescription: string, channelId: string) => {
+    const response = await axios.patch(
+        BASE_URL+EDIT_CHANNEL_URL+channelId,
+        JSON.stringify({
+            name: channelName,
+            description: channelDescription,
+        }),
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+}
 
 export const deleteChannel = async (token: string, id: string) => {
     const response = await axios.delete(

@@ -7,6 +7,7 @@ import { FaDoorOpen } from "react-icons/fa6";
 
 interface TopBarProps {
   handleAddServer: (server: ServerProps) => void;
+
 }
 export default function TopbarBasic ({ handleAddServer }: TopBarProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -37,7 +38,7 @@ export default function TopbarBasic ({ handleAddServer }: TopBarProps) {
           </i>
         </ul>
         </div>
-        <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} handleAddServer={handleAddServer}/>
+        <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} handleAddServer={handleAddServer} />
     </div>
     
   );
