@@ -14,25 +14,25 @@ export const friends: UserProps[] = [
 export const messages: MessageProps[] = [
     {
       id: '1',
-      authorId: 'test1',
+      authorId: '6c2e2119-91d9-4c06-b7c5-d6226237698a',
       body: 'Hello world!',
       creationDate: new Date().toDateString(),
     },
     {
       id: '2',
-      authorId: 'test1',
+      authorId: '6c2e2119-91d9-4c06-b7c5-d6226237698a',
       body: 'This is a test message',
       creationDate: new Date().toDateString(),
     },
     {
       id: '3',
-      authorId: 'test1',
+      authorId: '6c2e2119-91d9-4c06-b7c5-d6226237698a',
       body: 'This is another test message',
       creationDate: new Date().toDateString(),
     },
     {
       id: '4',
-      authorId: 'test1',
+      authorId: '6c2e2119-91d9-4c06-b7c5-d6226237698a',
       body: 'This is a test message from a different user',
       creationDate: new Date().toDateString(),
     },

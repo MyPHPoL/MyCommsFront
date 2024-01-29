@@ -52,6 +52,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   const isNameValueValid = (nameValue.length < 32) && (nameValue.length > 0);
   const isServerDescriptionValid = description.length < 128;
   const isChannelDescriptionValid = description.length < 64;
+  const didNameValueChange = nameValue !== toBeEditedChannel?.name;
   const classes = useStyles();
 
   /* Add a function to handle input changes */
@@ -217,10 +218,11 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   }
 
   const handleEditChannel = () => {
-    if (isNameValueValid && isChannelDescriptionValid) {
+    if (isNameValueValid && isChannelDescriptionValid && didNameValueChange) {
       channelEdit();
       handleClose();
     } else {
+      enqueueSnackbar("You cannot use the same channel name", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
       //throw error
     }
   }

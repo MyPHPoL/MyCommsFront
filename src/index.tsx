@@ -17,7 +17,7 @@ root.render(
             <BrowserRouter>
                 <Routes>
                     <Route path='/' element={<App />}>
-                        <Route path='register' element={<RegisterPage />} />
+                        <Route path='register/*' element={<RegisterPage />} />
                         <Route path='login/*' element={<LoginPage />} />
                         <Route path='home/*' element={<MainPage />} />
                         <Route path='error/*' element={<ErrorPages />} />

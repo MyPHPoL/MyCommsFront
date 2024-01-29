@@ -95,7 +95,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
       <div className='text-5xl shadow-sg tracking-wider font-semibold text-white w-full pl-5 h-[60px] bg-tertiary'>
         {channelInfo?.name} | {channelInfo?.description}
       </div>
-      <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 border-tertiary w-full'>
+      <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto  mb-16 border-tertiary w-full'>
         {messages?.map(({ id, authorId, body, creationDate }) => (
           <Message
             key={id}
@@ -104,7 +104,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
             body={body}
             creationDate={creationDate} />
         ))}
-        <div ref={chatWindowRef} />
+        <div className='max-w-[95%] overflow-wrap text-wrap h-auto break-words' ref={chatWindowRef} />
       </div>
       <TextBar
         refreshMessages={fetchAllMessages}
