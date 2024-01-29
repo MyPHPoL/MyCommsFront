@@ -108,7 +108,7 @@ export const IconButton = ({ icon, name }: IconButtonProps) => (
 );
 
 export const ChannelButton = ({ name }: { name: string }) => (
-  <div className="bg-secondary hover:brightness-75 text-gray-300 font-semibold py-2 px-4 rounded-lg radius-10 w-full justify-self-center text-left">
+  <div className="bg-secondary hover:brightness-75 text-gray-300 font-semibold py-2 px-4 rounded-lg w-auto radius-10 justify-self-center text-left overflow-hidden  text-ellipsis   whitespace-nowrap">
     {name}
   </div>
 );

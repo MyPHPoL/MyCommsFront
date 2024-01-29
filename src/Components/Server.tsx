@@ -240,7 +240,7 @@ function Server({ removeServer }: AdditionalProps) {
                 <li key={id} tabIndex={-1}>
                   <Link to={'' + id} tabIndex={-1}>
                     <div className="justify-left flex mr-2 mb-1">
-                      <button className="w-full">
+                      <button className="w-full max-w-[9.3rem]">
                         <ChannelButton name={`#${name}`}></ChannelButton>
                       </button>
                       {(auth.id === server?.ownerId) ?
