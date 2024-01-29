@@ -34,7 +34,7 @@ const LoginForm = () => {
             if(!error?.response){
                 setErrMsg("No server response. Please try again later.");
             }
-            else if(error.response?.status === 401){
+            else if(error.response?.status === 400){
                 setErrMsg("Invalid e-mail or password!");
             }
             else{
