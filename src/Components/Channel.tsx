@@ -92,7 +92,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
 
   return (
     <div className='md:flex h-auto  -z-20 flex-col fixed inset-y-0 top-20  w-full' style={{ left: `calc(max(230px,15%))`, marginRight: `${widthmsg}%` }}>
-      <div className='text-5xl shadow-sg tracking-wider font-semibold text-white w-full pl-5 h-[60px] bg-tertiary'>
+      <div className='text-5xl shadow-sg whitespace-nowrap tracking-wider font-semibold text-white w-full pl-5 h-[60px] bg-tertiary'>
         {channelInfo?.name} | {channelInfo?.description}
       </div>
       <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto  mb-16 border-tertiary w-full'>
