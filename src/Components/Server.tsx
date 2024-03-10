@@ -265,7 +265,7 @@ function Server({ removeServer }: AdditionalProps) {
         </Routes>
       </div>
 
-      {showMembers && <ServerMembers serverMembers={serverMembers} />}
+      {showMembers && <ServerMembers serverMembers={serverMembers} ownerId={server?.ownerId} serverId={server?.id}/>}
       <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} pushChannel={pushChannel} removeChannel={removeChannel} removeServer={removeServer} setChannelEdit={setChannelEdit} toBeEditedChannel={toBeEditedChannel} />
 
     </div>
