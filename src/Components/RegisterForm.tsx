@@ -5,11 +5,11 @@ import LoginPage from "../Pages/LoginPage";
 import { registerUser } from "../Api/axios";
 import { useTitle } from "../Hooks/useTitle";
 
-const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/; // 3 to 23 characters, letters, numbers, underscores, hyphens allowed
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,32}$/; // 8 to 32 characters, must include uppercase and lowercase letters, a number and a special character
+export const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/; // 3 to 23 characters, letters, numbers, underscores, hyphens allowed
+export const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,32}$/; // 8 to 32 characters, must include uppercase and lowercase letters, a number and a special character
 
 // eslint-disable-next-line no-useless-escape
-const MAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/; // email regex
+export const MAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/; // email regex
 
 const RegisterForm = () => {
 

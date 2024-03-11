@@ -24,6 +24,8 @@ function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps)
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [dialogOpen, setDialogOpen] = useState(false);
   const [toBeRemovedId, settoBeRemoved] = useState('');
+  const [selectedUser, setSelectedUser] = useState({id: '', username: ''});
+
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
@@ -31,6 +33,8 @@ function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps)
   const handleDialogClose = () => {
     setDialogOpen(false);
   };
+
+
   return (
     <div className="flex flex-col items-start">
       <div className="md:flex h-auto w-[300px] -z-20 flex-col text-sm fixed inset-y-0 top-20 right-0 bg-tertiary align:right">
@@ -49,19 +53,19 @@ function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps)
               <div className="text-lg flex flex-col my-1 mb-2 font-semibold text-white mr-2 pl-2 py-2 px-4 justify-center">
               {((auth.id === ownerId) && (auth.id !== user.id)) ? //narazie tak bd
                         <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
-                        onClick={() => setDialogOpen(true)}>
+                        onClick={() => { setSelectedUser({ id: user.id, username: user.username }); setDialogOpen(true)} }>
                           <MdDeleteForever size={25} />
                         </button> : null}
               </div>
-              <KickConfirmation
-                open={dialogOpen}
-                handleClose={handleDialogClose}
-                userId={user.id}
-                userName={user.username}
-                currServerId={serverId} />
             </li>
           ))}
         </ul>
+        <KickConfirmation
+                open={dialogOpen}
+                handleClose={handleDialogClose}
+                userId={selectedUser.id}
+                userName={selectedUser.username}
+                currServerId={serverId} />
       </div>
       
     </div>
@@ -81,7 +85,6 @@ const KickConfirmation: React.FC<KickUserProps> = ({open,handleClose,userId, cur
     handleClose();
   }
   return (
-    <React.Fragment>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -99,7 +102,6 @@ const KickConfirmation: React.FC<KickUserProps> = ({open,handleClose,userId, cur
           </Button>
         </DialogActions>
       </Dialog>
-    </React.Fragment>
   );
 }
 export default ServerMembers;
