@@ -5,6 +5,8 @@ import { UserProps } from "./User";
 import useAuth from "../Hooks/useAuth";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@material-ui/core";
 import { MdDeleteForever } from "react-icons/md";
+import { kickUser } from "../Api/axios";
+import { enqueueSnackbar } from "notistack";
 
 interface ServerMembersProps {
   serverMembers: UserProps[];
@@ -14,12 +16,14 @@ interface ServerMembersProps {
 interface KickUserProps {
   open: boolean;
   handleClose: () => void;
-  userName: string;
+  userId: string;
   currServerId?: string;
+  userName?: string;
 }
 function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps) {
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [toBeRemovedId, settoBeRemoved] = useState('');
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
@@ -27,7 +31,6 @@ function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps)
   const handleDialogClose = () => {
     setDialogOpen(false);
   };
-
   return (
     <div className="flex flex-col items-start">
       <div className="md:flex h-auto w-[300px] -z-20 flex-col text-sm fixed inset-y-0 top-20 right-0 bg-tertiary align:right">
@@ -44,15 +47,16 @@ function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps)
                 </div>
               </div>
               <div className="text-lg flex flex-col my-1 mb-2 font-semibold text-white mr-2 pl-2 py-2 px-4 justify-center">
-              {(auth.id === ownerId) ? //narazie tak bd
+              {((auth.id === ownerId) && (auth.id !== user.id)) ? //narazie tak bd
                         <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
-                        onClick={() => handleDialogOpen}>
+                        onClick={() => setDialogOpen(true)}>
                           <MdDeleteForever size={25} />
                         </button> : null}
               </div>
               <KickConfirmation
                 open={dialogOpen}
                 handleClose={handleDialogClose}
+                userId={user.id}
                 userName={user.username}
                 currServerId={serverId} />
             </li>
@@ -63,10 +67,19 @@ function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps)
     </div>
   );
 }
-const KickConfirmation: React.FC<KickUserProps> = ({open,handleClose,userName, currServerId}) => {
-
-
-
+const KickConfirmation: React.FC<KickUserProps> = ({open,handleClose,userId, currServerId, userName}) => {
+  const { auth }: { auth: any } = useAuth();
+  const handleKick = async () => {
+    try {
+      if (currServerId) {
+        const response = await kickUser(auth.token, currServerId, userId);
+        console.log(response.data)
+      }
+    } catch (error: any) {
+      enqueueSnackbar("Something went wrong", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+    }
+    handleClose();
+  }
   return (
     <React.Fragment>
       <Dialog
@@ -76,17 +89,13 @@ const KickConfirmation: React.FC<KickUserProps> = ({open,handleClose,userName, c
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
+          {"Are you sure you want to kick " + userName + " from the server?"}
         </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            tu bd zapytanko czy chcesz wyrzucic usera, ale narazie nie chce mi sie otworzyc dialog :DDDDDDDD
-          </DialogContentText>
-        </DialogContent>
+        
         <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={handleKick}>Yes</Button>
           <Button onClick={handleClose} autoFocus>
-            Agree
+            No
           </Button>
         </DialogActions>
       </Dialog>
