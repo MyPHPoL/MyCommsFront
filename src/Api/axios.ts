@@ -19,6 +19,8 @@ const JOIN_SERVER_URL = '/Server/JoinServer?name=';
 const DELETE_SERVER_URL = '/Server/DeleteServer?serverId=';
 const GET_SERVER_MEMBERS_URL = '/Server/GetUsers?id=';
 const KICK_USER_URL = '/Server/KickUser?serverId=';
+const EDIT_USER = '/User/Edit';
+
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
         BASE_URL+REGISTER_URL,
@@ -281,6 +283,25 @@ export const kickUser = async (token: string, serverId: string, userId: string) 
         JSON.stringify({
             serverId: serverId,
             userId: userId,
+        }),
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+}
+
+export const editUser = async (token: string, username: string, email: string, newPassword: string | null, password: string) => {
+    const response = await axios.patch(
+        BASE_URL+EDIT_USER,
+        JSON.stringify({
+            username: username,
+            email: email,
+            newPassword: newPassword,
+            password: password,
         }),
         {
             headers: { 
