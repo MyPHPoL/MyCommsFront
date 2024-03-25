@@ -48,7 +48,9 @@ function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps)
             <li key={user.id} className="w-full flex border-[1px] shadow border-tertiary hover:bg-secondary">
               <div className="text-lg flex flex-col my-1 mb-2 font-semibold text-white mr-2 pl-2   py-2 px-4 w-full items-start">
                 <div className="flex justify-start items-center w-full">
-                  <div className="scale-75"><UserAvatar name={user.username} /></div>
+                  <div className="scale-75">
+                    {user.avatar ? <UserAvatar name={user.username} picture={"https://localhost:7031/file/"+ user.avatar} /> : <UserAvatar name={user.username} />}
+                    </div>
                   <span className="ml-2">{user.username}</span>
                 </div>
               </div>
