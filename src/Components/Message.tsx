@@ -2,15 +2,10 @@ import { getUsername } from "../Api/axios";
 import useAuth from "../Hooks/useAuth";
 import { MessageProps } from "./Channel";
 import React, { useState } from "react";
-import { MdDeleteForever } from "react-icons/md";
-import CustomDialog from "./DialogTemplate";
 
-export const Message = ({ id, authorId, body, creationDate }: MessageProps) => {
+export const Message = ({ authorId, body, creationDate }: MessageProps) => {
   const [username, setUsername] = useState('');
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState("Add Channel");
-  const [dialogId, setPassedId] = useState("");
 
   // get username from authorId
   getUsername(auth.token, authorId).then((res) => {
@@ -18,23 +13,6 @@ export const Message = ({ id, authorId, body, creationDate }: MessageProps) => {
     setUsername(username);
   });
 
-  const handleDialogOpen = () => {
-    setDialogOpen(true);
-  };
-
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-  };
-  //changed to accept Id so it can be used for both channels and servers
-  const setDialogTypeAndOpen = (type: string, passedId: string) => {
-    setDialogType(type);
-    setPassedId(passedId);
-    handleDialogOpen();
-  }
-
-  const removeMessage = (id: string) => {
-    // remove message
-  };
 
 
   return (
@@ -46,19 +24,11 @@ export const Message = ({ id, authorId, body, creationDate }: MessageProps) => {
           <small className='text-xs text-left font-semibold text-gray-500 ml-2'>
             {new Date(creationDate).toLocaleDateString()} {new Date(creationDate).toLocaleTimeString()}
           </small>
-
-
-          {(auth.id === authorId) ?
-            <button className="ml-2 text-xs text-white rounded-lg radius-10 hover:bg-red-600"
-              onClick={() => setDialogTypeAndOpen("deleteMessage", id)}>
-              <MdDeleteForever size={25} />
-            </button> : null}
         </p>
         <p className='text-lg float-left text-white mr-auto whitespace-normal'>
           {body}
         </p>
       </div>
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} removeMessage={removeMessage} />
     </div>
   )
 };
