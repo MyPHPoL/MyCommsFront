@@ -27,7 +27,9 @@ const LoginForm = () => {
             const id = response?.data?.user.id;
             const username = response?.data?.user.username;
             const token = response?.data?.token;
-            setAuth({ id, username, email, password, token});
+            const avatar = response?.data?.user.avatar;
+            console.log(response.data)
+            setAuth({ id, username, email, password, token, avatar});
             setSuccess(true);
             
         } catch (error: any) {

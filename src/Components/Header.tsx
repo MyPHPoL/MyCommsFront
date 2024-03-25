@@ -1,14 +1,14 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
 import TopbarServer from "./TopbarServer";
-import { IconButton } from "./IconLib";
+import { IconButton, UserAvatar } from "./IconLib";
 import { IoServer } from "react-icons/io5";
 import { FaEnvelope, FaEye, FaLock, FaUser, FaUserFriends } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import SidebarBasic from "./TopbarBasic";
 import TopbarFriend from "./TopbarFriend";
 import useAuth from '../Hooks/useAuth';
-import { editUser, getFriends, getServers, registerUser } from "../Api/axios";
+import { editUser, getFriends, getServers, getCurrent } from "../Api/axios";
 import { ServerProps } from "./Server";
 import { FriendProps } from "./FriendMessage";
 import { FaRegUser } from "react-icons/fa";
@@ -23,6 +23,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useStyles } from './DialogStyles';
 import { MAIL_REGEX, PWD_REGEX, USER_REGEX } from './RegisterForm';
+import { MuiFileInput } from 'mui-file-input'
+import CloseIcon from '@mui/icons-material/Close'
 
 function Header() {
   const [activeTopbar, setActiveTopbar] = useState<string | null>(null);
@@ -57,7 +59,7 @@ function Header() {
     if (servers) {
       if (toRemoveId) {
         // toRemoveId is string but server.id is number thus != instead of !==
-        setServers(servers.filter((server) => server.id != toRemoveId))
+        setServers(servers.filter((server) => server.id !== toRemoveId))
       }
     }
   }, [toRemoveId])
@@ -95,13 +97,23 @@ function Header() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const logout = async () => {
+  const navigate = useNavigate();
+  const logout = () => {
+    navigate('/login')
     setAuth({}); // clear auth context
-    <Navigate to='/home' />;
   };
 
-  const changeAuth = (id: string, email: string, username: string, password: string, token: string) => {
-    setAuth({ id, email, username, password, token });
+  const changeAuth = async (token: string) => {
+    try {
+      const response = await getCurrent(token);
+      const id = response?.data?.id;
+      const username = response?.data?.username;
+      const avatar = response?.data?.avatar;
+      const email = response?.data?.email;
+      setAuth({ id, username, email, token, avatar });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   useTitle('MyCommsPoL - Home');
@@ -111,6 +123,9 @@ function Header() {
       <nav className="float-left h-20 w-full fixed bg-primary">
         <ul className="float-left  flex leading-[80px] text-white uppercase">
           <li className="float-left text-white text-3xl font-bold leading-[80px] pl-12">{auth.username}</li>
+          <li className="relative flex items-center justify-center ml-3" >
+          {auth.avatar ? <UserAvatar name={auth.username} picture={"https://localhost:7031/file/" + auth.avatar} /> : <div></div>}
+          </li>
           <li className="relative flex items-center justify-center ml-3">
             <button onClick={toggleDropdown}>
               <IconButton icon={<FaRegUser size={30} />} name="UserSettings" ></IconButton>
@@ -158,7 +173,7 @@ function Header() {
 }
 
 // copied 90% from RegisterForm.tsx works, so i dont care, maybe refactor later, but probably not
-const SettingsDialog = ({open, handleClose, userData, changeAuth}: {open: boolean, handleClose: () => void, userData: {}, changeAuth: (id: string, email: string, username: string, password: string, token: string) => void })  => {
+const SettingsDialog = ({open, handleClose, userData, changeAuth}: {open: boolean, handleClose: () => void, userData: {}, changeAuth: (token: string) => void })  => {
   let classes = useStyles();
   const [email, setEmail] = useState((userData as { email: string }).email);
   const [validEmail, setValidEmail] = useState(false);
@@ -168,24 +183,33 @@ const SettingsDialog = ({open, handleClose, userData, changeAuth}: {open: boolea
   const [validUsername, setValidUsername] = useState(false);
   const [usernameFocus, setUsernameFocus] = useState(false);
 
-  const [newPassword, setPassword] = useState((userData as { password: string }).password);
+  const [oldPassword, setOldPassword] = useState("");
+  const [oldvalidPassword, oldsetValidPassword] = useState(false);
+  const [oldpasswordFocus, oldsetPasswordFocus] = useState(false);
+
+  const [newPassword, setPassword] = useState("");
   const [validPassword, setValidPassword] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
 
-  const [repeatPassword, setRepeatPassword] = useState((userData as { password: string }).password);
+  const [repeatPassword, setRepeatPassword] = useState("");
   const [validRepeatPassword, setValidRepeatPassword] = useState(false);
   const [repeatPasswordFocus, setRepeatPasswordFocus] = useState(false);
 
   const [errMsg, setErrMsg] = useState("");
+  const [file, setFile] = React.useState<File | null>(null);
+
+  const handlePictureChange = (newFile: File | null): void => {
+    setFile(newFile);
+  }
 
   // check if username is valid
   useEffect(() => {
-      setValidUsername(USER_REGEX.test(username));
+    setValidUsername(USER_REGEX.test(username));
   }, [username]);
 
   // check if email is valid
   useEffect(() => {
-      setValidEmail(MAIL_REGEX.test(email));
+    setValidEmail(MAIL_REGEX.test(email));
   }, [email]);
 
   // check if password and repeat password are valid
@@ -193,6 +217,13 @@ const SettingsDialog = ({open, handleClose, userData, changeAuth}: {open: boolea
       setValidPassword(PWD_REGEX.test(newPassword));
       setValidRepeatPassword(newPassword === repeatPassword);
   }, [newPassword, repeatPassword]);
+
+  // check if old password is valid
+  useEffect(() => {
+      if (oldPassword) {
+          setValidPassword(PWD_REGEX.test(oldPassword));
+      }
+  }, [oldPassword]);
 
   // clear error message
   useEffect(() => {
@@ -207,36 +238,28 @@ const SettingsDialog = ({open, handleClose, userData, changeAuth}: {open: boolea
   const resetSettings = () => {
       setEmail((userData as { email: string }).email);
       setUsername((userData as { username: string }).username);
-      setPassword((userData as { password: string }).password);
-      setRepeatPassword((userData as { password: string }).password);
+      setPassword("");
+      setOldPassword("");
+      setRepeatPassword("");
+      setFile(null);
   };
 
   const handleSubmit = async (e: any) => {
       e.preventDefault();
 
-      // incase JS hack check again if all data is valid
-      const v1 = USER_REGEX.test(username);
-      const v2 = MAIL_REGEX.test(email);
-      const v3 = PWD_REGEX.test(newPassword);
-      const v4 = newPassword === repeatPassword;
-      if (!v1 || !v2 || !v3 || !v4) {
-          setErrMsg("Not all data is valid.");
-          return;
-      }
-      if (username === (userData as { username: string }).username && email === (userData as { email: string }).email && newPassword === (userData as { password: string }).password && repeatPassword === (userData as { password: string }).password) {
+      if (username === (userData as { username: string }).username && email === (userData as { email: string }).email && !oldPassword && !newPassword && !repeatPassword && !file) {
           handleClose();
           return;
       }
       try {
         if (newPassword === (userData as { password: string }).password) {
-          await editUser((userData as { token: string }).token, username, email, null, (userData as { password: string }).password);
-          changeAuth((userData as { id: string }).id, email, username, (userData as { password: string }).password, (userData as { token: string }).token);
-          handleClose();
+          await editUser((userData as { token: string }).token, username, email, null, oldPassword, file);
         } else {
-          await editUser((userData as { token: string }).token, username, email, newPassword, (userData as { password: string }).password);
-          changeAuth((userData as { id: string }).id, email, username, newPassword, (userData as { token: string }).token);
-          handleClose();
+          await editUser((userData as { token: string }).token, username, email, newPassword, oldPassword, file);
         }
+        changeAuth((userData as { token: string }).token);
+        setFile(null);
+        handleClose();
       } catch (error: any) {
           if (!error?.response) {
               setErrMsg("No server response. Please try again later.");
@@ -320,8 +343,28 @@ const SettingsDialog = ({open, handleClose, userData, changeAuth}: {open: boolea
                       </p>
                       <FaUser className='text-base -translate-y-1/2 top-1/2 right-5 absolute' />
                   </div>
-                  <label className='text-white mt-7'>Password</label>
-                  <div className='relative w-[500px] h-12 mb-7'>
+                  <label className='text-white mt-7'>Old Password</label>
+                  <div className='relative h-12 mb-7'>
+                      <input
+                          value={oldPassword}
+                          type={passwordShown ? "text" : "password"}
+                          required
+                          placeholder='Password'
+                          autoComplete='off'
+                          onChange={(e) => setOldPassword(e.target.value)}
+                          aria-invalid={oldvalidPassword ? "false" : "true"}
+                          aria-describedby='pwdnote'
+                          onFocus={() => oldsetPasswordFocus(true)}
+                          onBlur={() => oldsetPasswordFocus(false)}
+                          className='placeholder:color-white w-full h-full border-2 border-solid border-slate-600 bg-transparent outline-none color-white rounded-s-3xl rounded-e-3xl pt-5 pr-11 pb-5 pl-5'
+                      />
+                      <FaEye
+                          className='text-base -translate-y-1/2 top-1/2 right-5 absolute cursor-pointer'
+                          onClick={togglePasswordVisiblity}
+                      />
+                  </div>
+                  <label className='text-white mt-7'>New Password</label>
+                  <div className='relative h-12 mb-7'>
                       <input
                           value={newPassword}
                           type={passwordShown ? "text" : "password"}
@@ -385,6 +428,17 @@ const SettingsDialog = ({open, handleClose, userData, changeAuth}: {open: boolea
                           Must match the password above.
                       </p>
                       <FaLock className='text-base -translate-y-1/2 top-1/2 right-5 absolute' />
+                  </div>
+                  <label className='text-white mt-7'>Change Avatar</label>
+                  <div className='relative w-full h-12 mb-7 border-white'>
+                    <MuiFileInput value={file} inputProps={{ accept: '.png, .jpeg .jpg' }}  onChange={handlePictureChange} 
+                    clearIconButtonProps={{
+                      title: "Remove",
+                      children: <CloseIcon fontSize="small" />
+                    }}
+                    placeholder="Insert a file"
+                    className={classes.inputField}
+                    />
                   </div>
               </DialogContent>
               <DialogActions>

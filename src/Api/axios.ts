@@ -19,7 +19,7 @@ const JOIN_SERVER_URL = '/Server/JoinServer?name=';
 const DELETE_SERVER_URL = '/Server/DeleteServer?serverId=';
 const GET_SERVER_MEMBERS_URL = '/Server/GetUsers?id=';
 const KICK_USER_URL = '/Server/KickUser?serverId=';
-const EDIT_USER = '/User/Edit';
+const EDIT_USER = '/User/EditForm';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -294,19 +294,40 @@ export const kickUser = async (token: string, serverId: string, userId: string) 
     return response;
 }
 
-export const editUser = async (token: string, username: string, email: string, newPassword: string | null, password: string) => {
-    const response = await axios.patch(
+export const editUser = async (token: string, username: string, email: string, newPassword: string | null, password: string | null, avatar: File | null) => {
+    const formData = new FormData();
+    formData.append('Username', username);
+    formData.append('Email', email);
+    if (newPassword) {
+        formData.append('NewPassword', newPassword);
+    }
+    if (password) {
+    formData.append('Password', password);
+    }
+    if (avatar) {
+        formData.append('Picture', avatar);
+    }
+
+    const response = await axios.post(
         BASE_URL+EDIT_USER,
-        JSON.stringify({
-            username: username,
-            email: email,
-            newPassword: newPassword,
-            password: password,
-        }),
+        formData,
+        {
+            headers: { 
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+}
+
+export const getCurrent = async (token: string) => {
+    const response = await axios.get(
+        BASE_URL+'/User/GetCurrent',
         {
             headers: { 
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}` 
+                Authorization: `Bearer ${token}`,
             }
         },
     );

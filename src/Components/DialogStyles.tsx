@@ -31,7 +31,8 @@ export const useStyles = makeStyles({
     }
   },
   inputField: {
-    '& input': {
+    color: '#ffffff',
+    '& input + span': {
       color: '#ffffff',
     },
     '& label.Mui-focused': {
@@ -54,6 +55,5 @@ export const useStyles = makeStyles({
         borderColor: '#ffffff',
       },
     },
-    color: '#ffffff', // replace with your desired color
   },
 });
