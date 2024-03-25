@@ -114,7 +114,6 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
       if (removeMessage) {
         removeMessage(passedId ?? '');
       }
-      navigate("/home");
     } catch (error: any) {
       handleError(error.response.status);
     }
