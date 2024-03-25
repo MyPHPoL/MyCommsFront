@@ -19,8 +19,7 @@ const JOIN_SERVER_URL = '/Server/JoinServer?name=';
 const DELETE_SERVER_URL = '/Server/DeleteServer?serverId=';
 const GET_SERVER_MEMBERS_URL = '/Server/GetUsers?id=';
 const KICK_USER_URL = '/Server/KickUser?serverId=';
-
-const EDIT_USER = '/User/Edit';
+const EDIT_USER = '/User/EditForm';
 const DELETE_MESSAGE_URL = '/Message/Delete?id=';
 
 
