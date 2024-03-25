@@ -46,10 +46,13 @@ export const Message = ({ id, authorId, body, creationDate }: MessageProps) => {
           <small className='text-xs text-left font-semibold text-gray-500 ml-2'>
             {new Date(creationDate).toLocaleDateString()} {new Date(creationDate).toLocaleTimeString()}
           </small>
-          <button className="ml-2 text-xs text-white rounded-lg radius-10 hover:bg-red-600"
-            onClick={() => setDialogTypeAndOpen("deleteMessage", id)}>
-            <MdDeleteForever size={25} />
-          </button>
+
+
+          {(auth.id === authorId) ?
+            <button className="ml-2 text-xs text-white rounded-lg radius-10 hover:bg-red-600"
+              onClick={() => setDialogTypeAndOpen("deleteMessage", id)}>
+              <MdDeleteForever size={25} />
+            </button> : null}
         </p>
         <p className='text-lg float-left text-white mr-auto whitespace-normal'>
           {body}
