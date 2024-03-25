@@ -11,6 +11,8 @@ import { getAllMessages, getChannelInfo, sendMessage } from "../Api/axios";
 import Picker from 'emoji-picker-react';
 import { EmojiStyle, Theme } from 'emoji-picker-react';
 import { Message } from "./Message";
+import CustomDialog from "./DialogTemplate";
+import { MdDeleteForever } from "react-icons/md";
 
 export interface ChannelProps {
   id: string;
@@ -33,6 +35,10 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState("Add Channel");
+  const [dialogId, setPassedId] = useState("");
+  const [toBeRemovedId, settoBeRemoved] = useState('');
 
   // will add message to the database and then to the messages array (if successful)
   const addMessage = async (body: string) => {
@@ -69,6 +75,32 @@ function Channel({ widthmsg }: { widthmsg: number }) {
     }
   }
 
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+  //changed to accept Id so it can be used for both channels and servers
+  const setDialogTypeAndOpen = (type: string, passedId: string) => {
+    setDialogType(type);
+    setPassedId(passedId);
+    handleDialogOpen();
+  }
+
+  const removeMessage = (id: string) => {
+    settoBeRemoved(id);
+  }
+
+  useEffect(() => {
+    if (toBeRemovedId) {
+      if (messages) {
+        setMessages(messages.filter((message) => message.id !== toBeRemovedId));
+      }
+    }
+  }, [toBeRemovedId])
+
   useEffect(() => {
     let isMounted = true; // something, something not to render when component is unmounted
     const controller = new AbortController(); // cancels request when component unmounts
@@ -95,15 +127,25 @@ function Channel({ widthmsg }: { widthmsg: number }) {
       <div className='text-5xl shadow-sg whitespace-nowrap tracking-wider font-semibold text-white w-full pl-5 h-[60px] bg-tertiary'>
         {channelInfo?.name} | {channelInfo?.description}
       </div>
-      <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto  mb-16 border-tertiary w-full'>
+      <div className='mt-0 ml-0 mx-auto px-0 overflow-y-auto  mb-16  w-full'>
         {messages?.map(({ id, authorId, body, creationDate }) => (
-          <Message
-            key={id}
-            id={id}
-            authorId={authorId}
-            body={body}
-            creationDate={creationDate} />
+          <div key={id} className='align-left grid grid-cols-12 border-tertiary'>
+            <div className='col-span-10'>
+              <Message
+                id={id}
+                authorId={authorId}
+                body={body}
+                creationDate={creationDate}
+              />
+            </div>
+            {(auth.id === authorId) ?
+              <button className="col-span-1 w-7 h-7 ml-2 text-xs text-white rounded-lg radius-10 hover:bg-red-600 "
+                onClick={() => setDialogTypeAndOpen("deleteMessage", id)}>
+                <MdDeleteForever size={25} />
+              </button> : null}
+          </div>
         ))}
+
         <div className='max-w-[95%] overflow-wrap text-wrap h-auto break-words' ref={chatWindowRef} />
       </div>
       <TextBar
@@ -112,6 +154,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
         name={channelInfo?.name || 'this channel'}
         widthmsg={widthmsg}
       />
+      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} removeMessage={removeMessage} />
     </div>
   );
 }

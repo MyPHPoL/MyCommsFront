@@ -7,6 +7,8 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { MdDeleteForever } from "react-icons/md";
 import { kickUser } from "../Api/axios";
 import { enqueueSnackbar } from "notistack";
+import { useStyles } from './DialogStyles';
+import { withStyles } from '@material-ui/core/styles';
 
 interface ServerMembersProps {
   serverMembers: UserProps[];
@@ -24,7 +26,7 @@ function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps)
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [dialogOpen, setDialogOpen] = useState(false);
   const [toBeRemovedId, settoBeRemoved] = useState('');
-  const [selectedUser, setSelectedUser] = useState({id: '', username: ''});
+  const [selectedUser, setSelectedUser] = useState({ id: '', username: '' });
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -53,28 +55,29 @@ function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps)
                 </div>
               </div>
               <div className="text-lg flex flex-col my-1 mb-2 font-semibold text-white mr-2 pl-2 py-2 px-4 justify-center">
-              {((auth.id === ownerId) && (auth.id !== user.id)) ? //narazie tak bd
-                        <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
-                        onClick={() => { setSelectedUser({ id: user.id, username: user.username }); setDialogOpen(true)} }>
-                          <MdDeleteForever size={25} />
-                        </button> : null}
+                {((auth.id === ownerId) && (auth.id !== user.id)) ? //narazie tak bd
+                  <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
+                    onClick={() => { setSelectedUser({ id: user.id, username: user.username }); setDialogOpen(true) }}>
+                    <MdDeleteForever size={25} />
+                  </button> : null}
               </div>
             </li>
           ))}
         </ul>
         <KickConfirmation
-                open={dialogOpen}
-                handleClose={handleDialogClose}
-                userId={selectedUser.id}
-                userName={selectedUser.username}
-                currServerId={serverId} />
+          open={dialogOpen}
+          handleClose={handleDialogClose}
+          userId={selectedUser.id}
+          userName={selectedUser.username}
+          currServerId={serverId} />
       </div>
-      
+
     </div>
   );
 }
-const KickConfirmation: React.FC<KickUserProps> = ({open,handleClose,userId, currServerId, userName}) => {
+const KickConfirmation: React.FC<KickUserProps> = ({ open, handleClose, userId, currServerId, userName }) => {
   const { auth }: { auth: any } = useAuth();
+  const classes = useStyles();
   const handleKick = async () => {
     try {
       if (currServerId) {
@@ -82,28 +85,30 @@ const KickConfirmation: React.FC<KickUserProps> = ({open,handleClose,userId, cur
         console.log(response.data)
       }
     } catch (error: any) {
-      enqueueSnackbar("Something went wrong", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+      enqueueSnackbar("Something went wrong", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
     }
     handleClose();
   }
   return (
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Are you sure you want to kick " + userName + " from the server?"}
-        </DialogTitle>
-        
-        <DialogActions>
-          <Button onClick={handleKick}>Yes</Button>
-          <Button onClick={handleClose} autoFocus>
-            No
-          </Button>
-        </DialogActions>
-      </Dialog>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+      classes={{ paper: classes.dialogPaper }}
+    >
+      <DialogTitle id="alert-dialog-title" classes={{ root: classes.title }}>
+
+        {"Are you sure you want to kick " + userName + " from the server?"}
+      </DialogTitle>
+
+      <DialogActions>
+        <Button onClick={handleKick} className={classes.styleButton}>Yes</Button>
+        <Button onClick={handleClose} className={classes.styleButton} autoFocus>
+          No
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 export default ServerMembers;
