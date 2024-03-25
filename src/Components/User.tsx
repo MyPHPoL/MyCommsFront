@@ -4,4 +4,5 @@ export interface UserProps {
     username: string;
     email: string;
     creationDate: Date;
+    avatar?: string;
 }

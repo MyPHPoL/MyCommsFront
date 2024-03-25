@@ -1,4 +1,3 @@
-import { MdDelete } from "react-icons/md";
 import { getUsername } from "../Api/axios";
 import useAuth from "../Hooks/useAuth";
 import { MessageProps } from "./Channel";
