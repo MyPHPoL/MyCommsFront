@@ -3,18 +3,16 @@ import { getUsername } from "../Api/axios";
 
 import useAuth from "../Hooks/useAuth";
 import { MessageProps } from "./Channel";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { MdDeleteForever } from "react-icons/md";
 import CustomDialog from "./DialogTemplate";
 
 export const Message = ({ id, authorId, body, creationDate }: MessageProps) => {
   const [username, setUsername] = useState('');
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
-  const [openDialog, setOpenDialog] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("Add Channel");
   const [dialogId, setPassedId] = useState("");
-  const [toBeRemovedId, settoBeRemoved] = useState('');
 
   // get username from authorId
   getUsername(auth.token, authorId).then((res) => {
@@ -37,8 +35,8 @@ export const Message = ({ id, authorId, body, creationDate }: MessageProps) => {
   }
 
   const removeMessage = (id: string) => {
-    settoBeRemoved(id);
-  }
+    // remove message
+  };
 
 
   return (
