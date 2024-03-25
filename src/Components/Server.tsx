@@ -239,8 +239,8 @@ function Server({ removeServer }: AdditionalProps) {
               {channels?.map(({ id, name }) => (
                 <li key={id} tabIndex={-1}>
                   <Link to={'' + id} tabIndex={-1}>
-                    <div className="justify-left flex mr-2 mb-1">
-                      <button className="w-full">
+                    <div className="justify-left flex mr-2 mb-1 max-w-[280px]">
+                      <button className={`w-full min-w-[80px] ${auth.id === server?.ownerId ? 'max-w-[9.3rem]' : ''}`}>
                         <ChannelButton name={`#${name}`}></ChannelButton>
                       </button>
                       {(auth.id === server?.ownerId) ?
@@ -265,7 +265,7 @@ function Server({ removeServer }: AdditionalProps) {
         </Routes>
       </div>
 
-      {showMembers && <ServerMembers serverMembers={serverMembers} />}
+      {showMembers && <ServerMembers serverMembers={serverMembers} ownerId={server?.ownerId} serverId={server?.id}/>}
       <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} pushChannel={pushChannel} removeChannel={removeChannel} removeServer={removeServer} setChannelEdit={setChannelEdit} toBeEditedChannel={toBeEditedChannel} />
 
     </div>

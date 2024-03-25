@@ -18,6 +18,8 @@ const DELETE_CHANNEL_URL = '/Channel/Delete?channelId=';
 const JOIN_SERVER_URL = '/Server/JoinServer?name=';
 const DELETE_SERVER_URL = '/Server/DeleteServer?serverId=';
 const GET_SERVER_MEMBERS_URL = '/Server/GetUsers?id=';
+const KICK_USER_URL = '/Server/KickUser?serverId=';
+const EDIT_USER = '/User/Edit';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -274,3 +276,39 @@ export const getServerMembers = async (token: string, id: string) => {
     );
     return response;
 };
+
+export const kickUser = async (token: string, serverId: string, userId: string) => {
+    const response = await axios.post(
+        BASE_URL+KICK_USER_URL+serverId+'&userId='+userId,
+        JSON.stringify({
+            serverId: serverId,
+            userId: userId,
+        }),
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+}
+
+export const editUser = async (token: string, username: string, email: string, newPassword: string | null, password: string) => {
+    const response = await axios.patch(
+        BASE_URL+EDIT_USER,
+        JSON.stringify({
+            username: username,
+            email: email,
+            newPassword: newPassword,
+            password: password,
+        }),
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+}

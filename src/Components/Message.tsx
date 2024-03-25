@@ -1,3 +1,4 @@
+import { MdDelete } from "react-icons/md";
 import { getUsername } from "../Api/axios";
 import useAuth from "../Hooks/useAuth";
 import { MessageProps } from "./Channel";
@@ -23,7 +24,7 @@ export const Message = ({ authorId, body, creationDate }: MessageProps) => {
             {new Date(creationDate).toLocaleDateString()} {new Date(creationDate).toLocaleTimeString()}
           </small>
         </p>
-        <p className='text-lg text-left text-white mr-auto whitespace-normal'>
+        <p className='text-lg float-left text-white mr-auto whitespace-normal'>
           {body}
         </p>
       </div>
