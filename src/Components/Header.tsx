@@ -100,8 +100,8 @@ function Header() {
     <Navigate to='/home' />;
   };
 
-  const changeAuth = (email: string, username: string, password: string) => {
-    setAuth({ email, username, password });
+  const changeAuth = (id: string, email: string, username: string, password: string, token: string) => {
+    setAuth({ id, email, username, password, token });
   }
 
   useTitle('MyCommsPoL - Home');
@@ -158,7 +158,7 @@ function Header() {
 }
 
 // copied 90% from RegisterForm.tsx works, so i dont care, maybe refactor later, but probably not
-const SettingsDialog = ({open, handleClose, userData, changeAuth}: {open: boolean, handleClose: () => void, userData: {}, changeAuth: (email: string, username: string, password: string) => void })  => {
+const SettingsDialog = ({open, handleClose, userData, changeAuth}: {open: boolean, handleClose: () => void, userData: {}, changeAuth: (id: string, email: string, username: string, password: string, token: string) => void })  => {
   let classes = useStyles();
   const [email, setEmail] = useState((userData as { email: string }).email);
   const [validEmail, setValidEmail] = useState(false);
@@ -230,11 +230,11 @@ const SettingsDialog = ({open, handleClose, userData, changeAuth}: {open: boolea
       try {
         if (newPassword === (userData as { password: string }).password) {
           await editUser((userData as { token: string }).token, username, email, null, (userData as { password: string }).password);
-          changeAuth(email, username, (userData as { password: string }).password);
+          changeAuth((userData as { id: string }).id, email, username, (userData as { password: string }).password, (userData as { token: string }).token);
           handleClose();
         } else {
           await editUser((userData as { token: string }).token, username, email, newPassword, (userData as { password: string }).password);
-          changeAuth(email, username, newPassword);
+          changeAuth((userData as { id: string }).id, email, username, newPassword, (userData as { token: string }).token);
           handleClose();
         }
       } catch (error: any) {
