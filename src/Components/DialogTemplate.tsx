@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import TextField from "@material-ui/core/TextField";
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import useAuth from '../Hooks/useAuth';
-import { createChannel, createServer, deleteChannel, deleteServer, editChannel, joinServer } from "../Api/axios";
+import { createChannel, createServer, deleteChannel, deleteServer, editChannel, joinServer, deleteMessage } from "../Api/axios";
 import { useStyles } from './DialogStyles';
 import { withStyles } from '@material-ui/core/styles';
 import { ChannelProps } from './Channel';
@@ -25,6 +25,7 @@ interface DialogProps {
   pushChannel?: (channel: ChannelProps) => void;
   handleAddServer?: (server: ServerProps) => void;
   removeChannel?: (removeId: string) => void;
+  removeMessage?: (removeId: string) => void;
   removeServer?: (toRemoveId: string) => void;
   toBeEditedChannel?: ChannelProps;
   setChannelEdit?: (editedChannel: ChannelProps) => void;
@@ -42,7 +43,7 @@ const CustomCheckbox = withStyles({
 })(Checkbox);
 
 /* Define the CustomDialog component */
-const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, toBeEditedChannel, handleAddServer, pushChannel, removeChannel, removeServer, setChannelEdit }) => {
+const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, toBeEditedChannel, handleAddServer, pushChannel, removeChannel, removeServer, removeMessage, setChannelEdit }) => {
   /* Add a state variable for the input field */
   const navigate = useNavigate();
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
@@ -80,11 +81,11 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         handleAddServer(newServer);
       }
     } catch (error: any) {
-      if(error.response.status === 409){
-        enqueueSnackbar("Server with this name already exists", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+      if (error.response.status === 409) {
+        enqueueSnackbar("Server with this name already exists", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
-      else{
-        enqueueSnackbar("There was an error while creating server", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+      else {
+        enqueueSnackbar("There was an error while creating server", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
     }
   }
@@ -107,6 +108,23 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     }
   }
 
+  const messageDelete = async () => {
+    try {
+      const response = await deleteMessage(auth.token, passedId ?? '');
+      if (removeMessage) {
+        removeMessage(passedId ?? '');
+      }
+      navigate("/home");
+    } catch (error: any) {
+      handleError(error.response.status);
+    }
+  }
+
+  const handleDeleteMessage = () => {
+    //needs to redirect to home here 
+    messageDelete();
+    handleClose();
+  }
   const addChannel = async () => {
     try {
       const response = await createChannel(auth.token, nameValue, description, passedId ?? '');
@@ -120,14 +138,14 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         pushChannel(newChannel);
       }
     } catch (error: any) {
-      if(error.response.status === 404){
+      if (error.response.status === 404) {
         handleError(error.response.status);
       }
-      if(error.response.status === 409){
-        enqueueSnackbar("Channel with this name already exists", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+      if (error.response.status === 409) {
+        enqueueSnackbar("Channel with this name already exists", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
-      else{
-        enqueueSnackbar("There was an error while creating channel", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+      else {
+        enqueueSnackbar("There was an error while creating channel", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
     }
   }
@@ -146,15 +164,15 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         handleAddServer(newServer);
       }
     } catch (error: any) {
-        if (error.response.status === 401) {
-          handleError(error.response.status);
-        }
-        if (error.response.status === 404) {
-          enqueueSnackbar("This server does not exist", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
-        }
-        if (error.response.status === 400) {
-          enqueueSnackbar("You are already in this server", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
-        }
+      if (error.response.status === 401) {
+        handleError(error.response.status);
+      }
+      if (error.response.status === 404) {
+        enqueueSnackbar("This server does not exist", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      }
+      if (error.response.status === 400) {
+        enqueueSnackbar("You are already in this server", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      }
     }
   }
 
@@ -171,7 +189,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
       }
       navigate("");
     } catch (error: any) {
-      enqueueSnackbar("There was an error while deleting channel", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+      enqueueSnackbar("There was an error while deleting channel", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
     }
   }
   const channelEdit = async () => {
@@ -190,10 +208,10 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
       }
     } catch (error: any) {
       if (error.response.status === 409) {
-        enqueueSnackbar("Channel name must be unique", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+        enqueueSnackbar("Channel name must be unique", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
       else {
-        enqueueSnackbar("There was an error while editing channel", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+        enqueueSnackbar("There was an error while editing channel", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
     }
   }
@@ -222,7 +240,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
       channelEdit();
       handleClose();
     } else {
-      enqueueSnackbar("You cannot use the same channel name", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }});
+      enqueueSnackbar("You cannot use the same channel name", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       //throw error
     }
   }
@@ -412,6 +430,29 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
           {actions ? actions : (
             <>
               <Button onClick={handleDeleteChannel} className={classes.styleButton}>
+                Yes
+              </Button>
+              <Button onClick={handleClose} className={classes.styleButton}>
+                Cancel
+              </Button>
+            </>
+          )}
+        </DialogActions>
+      </Dialog>
+    );
+
+  } else if (type === "deleteMessage") {
+    return (
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
+        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Are you sure you want to delete the message?</DialogTitle>
+        <DialogContent className={classes.inputField}>
+        </DialogContent>
+        {/* Actions of the dialog */}
+        <DialogActions>
+          {/* If custom actions are provided, use them, otherwise use default actions */}
+          {actions ? actions : (
+            <>
+              <Button onClick={handleDeleteMessage} className={classes.styleButton}>
                 Yes
               </Button>
               <Button onClick={handleClose} className={classes.styleButton}>

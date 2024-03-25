@@ -20,6 +20,7 @@ const DELETE_SERVER_URL = '/Server/DeleteServer?serverId=';
 const GET_SERVER_MEMBERS_URL = '/Server/GetUsers?id=';
 const KICK_USER_URL = '/Server/KickUser?serverId=';
 const EDIT_USER = '/User/Edit';
+const DELETE_MESSAGE_URL = '/Message/Delete?id=';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -138,6 +139,7 @@ export const getUsername = async (token: string, id: string) => {
     };
 };
 
+
 export const getChannelInfo = async (token: string, id: string) => {
     const response = await axios.post(
         BASE_URL+CHANNEL_INFO_URL+id,
@@ -200,7 +202,7 @@ export const createChannel = async (token: string, channelName: string, channelD
         {
             headers: { 
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}` 
+                Authorization: `Bearer ${token}`
             }
         },
     );
@@ -227,6 +229,19 @@ export const editChannel = async (token: string, channelName: string, channelDes
 export const deleteChannel = async (token: string, id: string) => {
     const response = await axios.delete(
         BASE_URL+DELETE_CHANNEL_URL+id,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+};
+
+export const deleteMessage = async (token: string, id: string) => {
+    const response = await axios.delete(
+        BASE_URL+DELETE_MESSAGE_URL+id,
         {
             headers: { 
                 'Content-Type': 'application/json',
