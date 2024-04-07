@@ -5,7 +5,6 @@ import { IconButton, UserAvatar } from "./IconLib";
 import { IoServer } from "react-icons/io5";
 import { FaEnvelope, FaEye, FaLock, FaUser, FaUserFriends } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
-import SidebarBasic from "./TopbarBasic";
 import TopbarFriend from "./TopbarFriend";
 import useAuth from '../Hooks/useAuth';
 import { editUser, getFriends, getServers, getCurrent } from "../Api/axios";
@@ -150,8 +149,7 @@ function Header() {
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
         </ul>
         <div className="my-2 flex">
-          <SidebarBasic handleAddServer={pushServer} />
-          {activeTopbar === 'servers' && <TopbarServer servers={servers} removeServer={removeServer} />}
+          {activeTopbar === 'servers' && <TopbarServer handleAddServer={pushServer} servers={servers} removeServer={removeServer} />}
           {activeTopbar === 'friends' && <TopbarFriend friends={friends} />}
         </div>
       </nav>
