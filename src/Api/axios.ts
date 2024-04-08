@@ -312,7 +312,7 @@ export const kickUser = async (token: string, serverId: string, userId: string) 
     return response;
 }
 
-export const editUser = async (token: string, username: string, email: string, newPassword: string | null, password: string | null, avatar: File | null) => {
+export const editUser = async (token: string, email: string, username: string, newPassword: string | null, password: string | null, avatar: File | null) => {
     const formData = new FormData();
     formData.append('Username', username);
     formData.append('Email', email);

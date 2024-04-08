@@ -28,8 +28,8 @@ const LoginForm = () => {
             const username = response?.data?.user.username;
             const token = response?.data?.token;
             const avatar = response?.data?.user.avatar;
-            console.log(response.data)
-            setAuth({ id, username, email, password, token, avatar});
+            setAuth({ id, username, email, token, avatar});
+            localStorage.setItem("auth", JSON.stringify({ id, username, email, token, avatar}));
             setSuccess(true);
             
         } catch (error: any) {
