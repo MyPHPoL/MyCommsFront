@@ -13,6 +13,7 @@ import { EmojiStyle, Theme } from 'emoji-picker-react';
 import { Message } from "./Message";
 import CustomDialog from "./DialogTemplate";
 import { MdDeleteForever } from "react-icons/md";
+import DeleteMessageConfirmation  from "./DeleteMessageConfirmation";
 
 export interface ChannelProps {
   id: string;
@@ -36,10 +37,10 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState("Add Channel");
   const [dialogId, setPassedId] = useState("");
   const [toBeRemovedId, settoBeRemoved] = useState('');
 
+  
   // will add message to the database and then to the messages array (if successful)
   const addMessage = async (body: string) => {
     try {
@@ -83,8 +84,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
     setDialogOpen(false);
   };
   //changed to accept Id so it can be used for both channels and servers
-  const setDialogTypeAndOpen = (type: string, passedId: string) => {
-    setDialogType(type);
+  const openDialog = (passedId: string) => {
     setPassedId(passedId);
     handleDialogOpen();
   }
@@ -140,7 +140,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
             </div>
             {(auth.id === authorId) ?
               <button className="col-span-1 w-7 h-7 ml-2 text-xs text-white rounded-lg radius-10 hover:bg-red-600 "
-                onClick={() => setDialogTypeAndOpen("deleteMessage", id)}>
+                onClick={() => openDialog(id)}>
                 <MdDeleteForever size={25} />
               </button> : null}
           </div>
@@ -154,7 +154,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
         name={channelInfo?.name || 'this channel'}
         widthmsg={widthmsg}
       />
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} removeMessage={removeMessage} />
+      <DeleteMessageConfirmation open={dialogOpen} handleClose={handleDialogClose} passedId={dialogId} removeMessage={removeMessage} />
     </div>
   );
 }

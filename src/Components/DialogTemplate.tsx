@@ -107,23 +107,6 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
       handleError(error.response.status);
     }
   }
-
-  const messageDelete = async () => {
-    try {
-      const response = await deleteMessage(auth.token, passedId ?? '');
-      if (removeMessage) {
-        removeMessage(passedId ?? '');
-      }
-    } catch (error: any) {
-      handleError(error.response.status);
-    }
-  }
-
-  const handleDeleteMessage = () => {
-    //needs to redirect to home here 
-    messageDelete();
-    handleClose();
-  }
   const addChannel = async () => {
     try {
       const response = await createChannel(auth.token, nameValue, description, passedId ?? '');
@@ -439,30 +422,6 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         </DialogActions>
       </Dialog>
     );
-
-  } else if (type === "deleteMessage") {
-    return (
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
-        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Are you sure you want to delete the message?</DialogTitle>
-        <DialogContent className={classes.inputField}>
-        </DialogContent>
-        {/* Actions of the dialog */}
-        <DialogActions>
-          {/* If custom actions are provided, use them, otherwise use default actions */}
-          {actions ? actions : (
-            <>
-              <Button onClick={handleDeleteMessage} className={classes.styleButton}>
-                Yes
-              </Button>
-              <Button onClick={handleClose} className={classes.styleButton}>
-                Cancel
-              </Button>
-            </>
-          )}
-        </DialogActions>
-      </Dialog>
-    );
-
   } else if (type === "deleteServer") {
     return (
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
