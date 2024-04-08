@@ -20,6 +20,8 @@ import { UserProps } from "./User";
 import { IconContext } from 'react-icons';
 import { useTitle } from "../Hooks/useTitle";
 import { MdEdit } from "react-icons/md";
+import DeleteChannelConfirmation from "./DialogPopups/DeleteChannelConfirmation";
+import { channel } from "diagnostics_channel";
 export interface ServerProps {
   id: string;
   name: string;
@@ -50,6 +52,15 @@ function Server({ removeServer }: AdditionalProps) {
   const [toBeRemovedId, settoBeRemoved] = useState('');
   const [toBeEditedChannel, setToBeEditedChannel] = useState<ChannelProps | undefined>();
   const [editedChannel, setEditedChannel] = useState<ChannelProps | undefined>();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const handleDeleteOpen = () => {
+    setDeleteDialogOpen(true);
+  }
+  
+  const handleDeleteClose = () => {
+    setDeleteDialogOpen(false);
+  }
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -79,7 +90,10 @@ function Server({ removeServer }: AdditionalProps) {
   const setChannelEdit = (channel: ChannelProps) => {
     setEditedChannel(channel);
   }
-
+  const handleDelete = (channelId: string) => {
+    setPassedId(channelId);
+    handleDeleteOpen();
+  }
   useEffect(() => {
     if (editedChannel) {
       if (channels) {
@@ -250,7 +264,7 @@ function Server({ removeServer }: AdditionalProps) {
                         </button> : null}
                       {(auth.id === server?.ownerId) ? //narazie tak bd
                         <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
-                          onClick={() => setDialogTypeAndOpen("deleteChannel", id)}>
+                          onClick={() =>  handleDelete(id)}>
                           <MdDeleteForever size={25} />
                         </button> : null}
                     </div>
@@ -266,6 +280,7 @@ function Server({ removeServer }: AdditionalProps) {
       </div>
 
       {showMembers && <ServerMembers serverMembers={serverMembers} ownerId={server?.ownerId} serverId={server?.id}/>}
+      <DeleteChannelConfirmation open={deleteDialogOpen} handleClose={handleDeleteClose} removeChannel={removeChannel} passedId={dialogId} />
       <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} pushChannel={pushChannel} removeChannel={removeChannel} removeServer={removeServer} setChannelEdit={setChannelEdit} toBeEditedChannel={toBeEditedChannel} />
 
     </div>
