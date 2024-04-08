@@ -21,7 +21,8 @@ const GET_SERVER_MEMBERS_URL = '/Server/GetUsers?id=';
 const KICK_USER_URL = '/Server/KickUser?serverId=';
 const EDIT_USER = '/User/EditForm';
 const DELETE_MESSAGE_URL = '/Message/Delete?id=';
-
+const ADD_PICTURE = '/Server/AddPicture?serverId=';
+const SERVER_EDIT = '/Server/Edit?serverId=';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -94,6 +95,7 @@ export const getServer = async (token: string, id: string) => {
             }
         },
     );
+    console.log(response)
     return response;
 };
 
@@ -336,6 +338,40 @@ export const editUser = async (token: string, username: string, email: string, n
     );
     return response;
 }
+export const editServer = async (token: string, serverId: string ,name:string, description:string, avatar: File | null) => {
+    console.log(token, serverId, name, description, avatar)
+    if (avatar) {
+        const formData = new FormData();
+        formData.append('File', avatar);
+        const response = await axios.post(
+            BASE_URL+ADD_PICTURE+serverId,
+            formData,
+            {
+                headers: { 
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`,
+                }
+            },
+        );
+    }
+    const response = await axios.patch(
+        BASE_URL+SERVER_EDIT+serverId,
+        JSON.stringify({
+            name: name,
+            description: description,
+        }),
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    
+    return response;
+
+}
+
 
 export const getCurrent = async (token: string) => {
     const response = await axios.get(

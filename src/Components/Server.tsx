@@ -23,6 +23,7 @@ import { MdEdit } from "react-icons/md";
 import DeleteChannelConfirmation from "./DialogPopups/DeleteChannelConfirmation";
 import { channel } from "diagnostics_channel";
 import DeleteServerConfirmation from "./DialogPopups/DeleteServerConfirmation";
+import EditServerDialog from "./DialogPopups/EditServerDialog";
 export interface ServerProps {
   id: string;
   name: string;
@@ -55,6 +56,15 @@ function Server({ removeServer }: AdditionalProps) {
   const [editedChannel, setEditedChannel] = useState<ChannelProps | undefined>();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [serverDeleteOpen, setServerDeleteOpen] = useState(false);
+  const [serverEditOpen, setServerEditOpen] = useState(false);
+  const [editDesc, setEditDesc] = useState(server?.description ?? "");
+  const [editName, setEditName] = useState(server?.name ?? "");
+  const handleServerEditOpen = () => {
+    setServerEditOpen(true);
+  }
+  const handleServerEditClose = () => {
+    setServerEditOpen(false);
+  }
   const handleServerDeleteOpen = () => {
     setServerDeleteOpen(true);
   }
@@ -98,6 +108,10 @@ function Server({ removeServer }: AdditionalProps) {
   const handleRemoveServer = (id: string) => {
     setPassedId(id);
     handleServerDeleteOpen();
+  }
+  const handleEditServer = (id: string) => {
+    setPassedId(id);
+    handleServerEditOpen();
   }
 
   const setChannelEdit = (channel: ChannelProps) => {
@@ -183,7 +197,7 @@ function Server({ removeServer }: AdditionalProps) {
         <div className="flex items-center  text-white text-3xl m-2 truncate h-10">
           <div className='w-[95%] overflow-hidden  text-ellipsis   whitespace-nowrap'>
             {server?.picture ? (
-              <img src={server?.picture} alt="No img" className="w-10 h-10 mr-2" />
+              <img src={"https://localhost:7031/file/"+ server.picture} alt="No img" className="w-10 h-10 mr-2" />
             ) : null}
             {server?.name}
           </div>
@@ -234,6 +248,15 @@ function Server({ removeServer }: AdditionalProps) {
                       serverName={server?.name}
                       serverDescription={server?.description} />
                   </div>
+                  {(auth.id === server?.ownerId) ?
+                    <button
+                      className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-red-600"
+                      role="menuitem"
+                      onClick={() => handleEditServer(ServerId ?? '')}
+                    >
+                      <MdEdit size={25} /> Edit server
+                    </button>
+                    : null}
                   {(auth.id === server?.ownerId) ?
                     <button
                       className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-red-600"
@@ -293,6 +316,7 @@ function Server({ removeServer }: AdditionalProps) {
       </div>
 
       {showMembers && <ServerMembers serverMembers={serverMembers} ownerId={server?.ownerId} serverId={server?.id}/>}
+      <EditServerDialog open={serverEditOpen} handleClose={handleServerEditClose} serverId={dialogId} passedDesc={editDesc} passedName={editName} />
       <DeleteChannelConfirmation open={deleteDialogOpen} handleClose={handleDeleteClose} removeChannel={removeChannel} passedId={dialogId} />
       <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} pushChannel={pushChannel} setChannelEdit={setChannelEdit} toBeEditedChannel={toBeEditedChannel} />
       <DeleteServerConfirmation open={serverDeleteOpen} handleClose={handleServerDeleteClose} removeServer={removeServer} passedId={dialogId} />
