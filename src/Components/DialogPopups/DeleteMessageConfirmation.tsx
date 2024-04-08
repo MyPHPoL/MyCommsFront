@@ -1,8 +1,8 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@material-ui/core";
 import { useStyles } from "./DialogStyles";
 import { useState } from "react";
-import useAuth from "../Hooks/useAuth";
-import { deleteMessage } from "../Api/axios";
+import useAuth from "../../Hooks/useAuth";
+import { deleteMessage } from "../../Api/axios";
 import { useNavigate } from 'react-router-dom';
 
 interface DialogProps {

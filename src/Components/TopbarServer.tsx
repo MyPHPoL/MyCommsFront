@@ -5,10 +5,9 @@ import { ServerButton } from "./IconLib";
 import { FaDoorOpen } from "react-icons/fa6";
 import { IconButton } from "./IconLib";
 import { IoMdAdd } from "react-icons/io";
-
-import CustomDialog from "./DialogTemplate";
-
 import Server, { ServerProps } from "./Server";
+import CreateServerDialog from "./DialogPopups/CreateServerDialog";
+import JoinServerDialog from "./DialogPopups/JoinServerDialog";
 
 interface TopbarProps {
   servers?: ServerProps[];
@@ -21,17 +20,23 @@ export default function TopbarServer({
   removeServer,
   handleAddServer,
 }: TopbarProps) {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [joinOpen, setJoinOpen] = useState(false);
   const [dialogType, setDialogType] = useState("Create Server");
-
+  const [createOpen, setCreateOpen] = useState(false);
   const handleDialogOpen = () => {
-    setDialogOpen(true);
+    setJoinOpen(true);
   };
 
-  const handleDialogClose = () => {
-    setDialogOpen(false);
+  const handleJoinClose = () => {
+    setJoinOpen(false);
+  };
+  const handleCreateOpen = () => {
+    setCreateOpen(true);
   };
 
+  const handleCreateClose = () => {
+    setCreateOpen(false);
+  };
   const setDialogTypeAndOpen = (type: string) => {
     setDialogType(type);
     handleDialogOpen();
@@ -47,17 +52,21 @@ export default function TopbarServer({
           >
             <IconButton icon={<FaDoorOpen size="25" />} name={"Join Server"} />
           </i>
-          <i onClick={() => setDialogTypeAndOpen("Create Server")}>
+          <i onClick={() => handleCreateOpen()}>
             <IconButton icon={<IoMdAdd size="25" />} name={"Create Server"} />
           </i>
         </ul>
-        <CustomDialog
-          open={dialogOpen}
-          handleClose={handleDialogClose}
-          type={dialogType}
-          handleAddServer={handleAddServer}
+        <CreateServerDialog
+        open={createOpen}
+        handleClose={handleCreateClose}
+        handleAddServer={handleAddServer}
         />
-
+        <JoinServerDialog
+        open={joinOpen}
+        handleClose={handleJoinClose}
+        handleJoinServer={handleAddServer}
+        />
+        {/*tu dodac nowy dialog na join */}
         <ul className="m-4 first:my-0 last:my-0 flex flex-row">
           {servers?.map(({ id, name, picture }) => (
             <li className="mr-2" key={id}>
