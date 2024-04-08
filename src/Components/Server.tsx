@@ -75,7 +75,7 @@ function Server({ removeServer }: AdditionalProps) {
   const handleDeleteOpen = () => {
     setDeleteDialogOpen(true);
   }
-  
+
   const handleDeleteClose = () => {
     setDeleteDialogOpen(false);
   }
@@ -194,14 +194,14 @@ function Server({ removeServer }: AdditionalProps) {
   return (
     <div>
       <div className="md:flex h-full w-[15%] min-w-[230px] -z-20 flex-col fixed inset-y-0 top-20 left-0 bg-tertiary overflow-visible">
-        <div className="flex items-center  text-white text-3xl m-2 truncate h-10">
-          <div className='w-[95%] overflow-hidden  text-ellipsis   whitespace-nowrap'>
+        <div className="flex items-center text-white text-3xl m-2 h-10">
+          <div className='flex items-center overflow-hidden text-ellipsis whitespace-nowrap'>
             {server?.picture ? (
-              <img src={"https://localhost:7031/file/"+ server.picture} alt="No img" className="w-10 h-10 mr-2" />
+              <img src={"https://localhost:7031/file/" + server.picture} alt="No img" className="w-10 h-10 mr-2" />
             ) : null}
-            {server?.name}
+            <div>{server?.name}</div>
           </div>
-          <div className="flex items-center text-white  text-3xl m-2 mr-0 h-10">
+          <div className="flex items-center text-white text-3xl m-2 mr-0 h-10">
             <div className="scale-75">
               <button
                 type="button"
@@ -215,7 +215,7 @@ function Server({ removeServer }: AdditionalProps) {
             </div>
 
             {dropdownOpen && (
-              <div className="origin-top-right flex absolute h-auto left-[100%] top-[-75px] mt-[76px] w-auto rounded-md shadow-lg  bg-primary ring-1 ring-white ring-opacity-50 ">
+              <div className="origin-top-right flex absolute h-auto left-[100%] top-[-75px] mt-[76px] w-auto rounded-md shadow-lg bg-primary ring-1 ring-white ring-opacity-50 ">
                 <div
                   className="py-1"
                   role="menu"
@@ -300,7 +300,7 @@ function Server({ removeServer }: AdditionalProps) {
                         </button> : null}
                       {(auth.id === server?.ownerId) ? //narazie tak bd
                         <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
-                          onClick={() =>  handleDelete(id)}>
+                          onClick={() => handleDelete(id)}>
                           <MdDeleteForever size={25} />
                         </button> : null}
                     </div>
@@ -315,7 +315,7 @@ function Server({ removeServer }: AdditionalProps) {
         </Routes>
       </div>
 
-      {showMembers && <ServerMembers serverMembers={serverMembers} ownerId={server?.ownerId} serverId={server?.id}/>}
+      {showMembers && <ServerMembers serverMembers={serverMembers} ownerId={server?.ownerId} serverId={server?.id} />}
       <EditServerDialog open={serverEditOpen} handleClose={handleServerEditClose} serverId={dialogId} passedDesc={editDesc} passedName={editName} />
       <DeleteChannelConfirmation open={deleteDialogOpen} handleClose={handleDeleteClose} removeChannel={removeChannel} passedId={dialogId} />
       <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} pushChannel={pushChannel} setChannelEdit={setChannelEdit} toBeEditedChannel={toBeEditedChannel} />
