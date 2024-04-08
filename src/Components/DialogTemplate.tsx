@@ -23,7 +23,6 @@ interface DialogProps {
   actions?: React.ReactNode; /* Optional custom actions for the dialog */
   passedId?: string;
   pushChannel?: (channel: ChannelProps) => void;
-  handleAddServer?: (server: ServerProps) => void;
   removeChannel?: (removeId: string) => void;
   removeMessage?: (removeId: string) => void;
   removeServer?: (toRemoveId: string) => void;
@@ -32,7 +31,7 @@ interface DialogProps {
 }
 
 /* Define the CustomDialog component */
-const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, toBeEditedChannel, handleAddServer, pushChannel, removeChannel, removeServer, removeMessage, setChannelEdit }) => {
+const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, toBeEditedChannel, pushChannel, removeChannel, removeServer, removeMessage, setChannelEdit }) => {
   /* Add a state variable for the input field */
   const navigate = useNavigate();
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
@@ -93,32 +92,6 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     }
   }
 
-  const serverJoin = async () => {
-    try {
-      const response = await joinServer(auth.token, nameValue);
-      const newServer = {
-        id: response.data.id,
-        name: response.data.name,
-        description: response.data.description,
-        isPublic: response.data.isPublic,
-        ownerId: response.data.ownerId,
-      };
-      if (handleAddServer) {
-        handleAddServer(newServer);
-      }
-    } catch (error: any) {
-      if (error.response.status === 401) {
-        handleError(error.response.status);
-      }
-      if (error.response.status === 404) {
-        enqueueSnackbar("This server does not exist", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
-      }
-      if (error.response.status === 400) {
-        enqueueSnackbar("You are already in this server", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
-      }
-    }
-  }
-
   const handleDeleteChannel = () => {
     //needs to redirect to server here 
     channelDelete();
@@ -175,15 +148,6 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     } else {
       enqueueSnackbar("You cannot use the same channel name", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       //throw error
-    }
-  }
-
-
-  const handleJoinServer = () => {
-    if (isNameValueValid) {
-      serverJoin();
-      handleClose();
-    } else {
     }
   }
 
@@ -252,47 +216,6 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
               <Button onClick={handleClose} className={classes.styleButton}>
                 Cancel
               </Button>
-            </>
-          )}
-        </DialogActions>
-      </Dialog>
-    );
-  } else if (type === "Join Server") {
-    return (
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
-        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Type the server name to join</DialogTitle>
-        <DialogContent className={classes.inputField}>
-          {/* Currently joining server is based on typing its name into the join, it will probably be changed in the future */}
-          {/* once more, the server name value is used, poggies */}
-          <TextField
-            InputProps={{
-              className: classes.inputField
-            }}
-            InputLabelProps={{
-              className: classes.inputLabel
-            }}
-            autoFocus
-            margin="dense"
-            id="JoinServerName"
-            label="Server name"
-            type="text"
-            fullWidth
-            value={nameValue}
-            onChange={handleInputChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          {actions ? actions : (
-            <>
-              {/* Confirm button, closes the dialog */}
-              <Button onClick={handleJoinServer} className={classes.styleButton}>
-                Confirm
-              </Button>
-              {/* Cancel button, closes the dialog */}
-              <Button onClick={handleClose} className={classes.styleButton}>
-                Cancel
-              </Button>
-
             </>
           )}
         </DialogActions>

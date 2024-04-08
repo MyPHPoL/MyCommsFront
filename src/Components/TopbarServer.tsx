@@ -5,11 +5,9 @@ import { ServerButton } from "./IconLib";
 import { FaDoorOpen } from "react-icons/fa6";
 import { IconButton } from "./IconLib";
 import { IoMdAdd } from "react-icons/io";
-
-import CustomDialog from "./DialogTemplate";
-
 import Server, { ServerProps } from "./Server";
 import CreateServerDialog from "./DialogPopups/CreateServerDialog";
+import JoinServerDialog from "./DialogPopups/JoinServerDialog";
 
 interface TopbarProps {
   servers?: ServerProps[];
@@ -29,7 +27,7 @@ export default function TopbarServer({
     setJoinOpen(true);
   };
 
-  const handleDialogClose = () => {
+  const handleJoinClose = () => {
     setJoinOpen(false);
   };
   const handleCreateOpen = () => {
@@ -62,6 +60,11 @@ export default function TopbarServer({
         open={createOpen}
         handleClose={handleCreateClose}
         handleAddServer={handleAddServer}
+        />
+        <JoinServerDialog
+        open={joinOpen}
+        handleClose={handleJoinClose}
+        handleJoinServer={handleAddServer}
         />
         {/*tu dodac nowy dialog na join */}
         <ul className="m-4 first:my-0 last:my-0 flex flex-row">
