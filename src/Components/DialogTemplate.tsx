@@ -6,7 +6,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import TextField from "@material-ui/core/TextField";
 import useAuth from '../Hooks/useAuth';
-import { createChannel, deleteChannel, deleteServer, editChannel } from "../Api/axios";
+import { createChannel, editChannel } from "../Api/axios";
 import { useStyles } from './DialogPopups/DialogStyles';
 import { ChannelProps } from './Channel';
 import { useNavigate } from 'react-router-dom';
@@ -20,13 +20,12 @@ interface DialogProps {
   actions?: React.ReactNode; /* Optional custom actions for the dialog */
   passedId?: string;
   pushChannel?: (channel: ChannelProps) => void;
-  removeServer?: (toRemoveId: string) => void;
   toBeEditedChannel?: ChannelProps;
   setChannelEdit?: (editedChannel: ChannelProps) => void;
 }
 
 /* Define the CustomDialog component */
-const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, toBeEditedChannel, pushChannel, removeServer, setChannelEdit }) => {
+const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, toBeEditedChannel, pushChannel, setChannelEdit }) => {
   /* Add a state variable for the input field */
   const navigate = useNavigate();
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
@@ -45,23 +44,6 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     setDescription(event.target.value);
   }
 
-  const handleDeleteServer = () => {
-    //needs to redirect to home here 
-    serverDelete();
-    handleClose();
-  }
-
-  const serverDelete = async () => {
-    try {
-      const response = await deleteServer(auth.token, passedId ?? '');
-      if (removeServer) {
-        removeServer(passedId ?? '');
-      }
-      navigate("/home");
-    } catch (error: any) {
-      handleError(error.response.status);
-    }
-  }
   const addChannel = async () => {
     try {
       const response = await createChannel(auth.token, nameValue, description, passedId ?? '');
@@ -235,89 +217,6 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
                 Cancel
               </Button>
 
-            </>
-          )}
-        </DialogActions>
-      </Dialog>
-    );
-  } else if (type === "deleteServer") {
-    return (
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
-        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Are you sure you want to delete the server?</DialogTitle>
-        <DialogContent className={classes.inputField}>
-        </DialogContent>
-        {/* Actions of the dialog */}
-        <DialogActions>
-          {/* If custom actions are provided, use them, otherwise use default actions */}
-          {actions ? actions : (
-            <>
-              <Button onClick={handleDeleteServer} className={classes.styleButton}>
-                Yes
-              </Button>
-              <Button onClick={handleClose} className={classes.styleButton}>
-                Cancel
-              </Button>
-            </>
-          )}
-        </DialogActions>
-      </Dialog>
-    );
-  } else if (type === 'EditChannel') {
-    return (
-      /* Needs text labels and stuff*/
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
-        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Edit channel</DialogTitle>
-        <DialogContent className={classes.inputField}>
-          {/* for now the values used in both server and channel creation are the same in order not to create thousands of variables */}
-          {/* as for now I am not familiar with the required validation, this might force us to create a new set of variables, or handle the validation differently */}
-          <TextField
-            InputProps={{
-              className: classes.inputField
-            }}
-            InputLabelProps={{
-              className: classes.inputLabel
-            }}
-            autoFocus
-            margin="dense"
-            id="AddChannelName"
-            label="Channel name"
-            type="text"
-            fullWidth
-            value={nameValue}
-            placeholder={toBeEditedChannel?.name}
-            onChange={handleInputChange}
-          />
-          <TextField
-            InputProps={{
-              className: classes.inputField
-            }}
-            InputLabelProps={{
-              className: classes.inputLabel
-            }}
-            autoFocus
-            margin="dense"
-            id="AddChannelDescription"
-            label="Channel description"
-            type="text"
-            fullWidth
-            value={description}
-            placeholder={toBeEditedChannel?.description}
-            onChange={handleDescriptionChange}
-          />
-        </DialogContent>
-        {/* Actions of the dialog */}
-        <DialogActions>
-          {/* If custom actions are provided, use them, otherwise use default actions */}
-          {actions ? actions : (
-            <>
-              {/* Confirm button, closes the dialog */}
-              <Button onClick={handleEditChannel} className={classes.styleButton}>
-                Confirm
-              </Button>
-              {/* Cancel button, closes the dialog */}
-              <Button onClick={handleClose} className={classes.styleButton}>
-                Cancel
-              </Button>
             </>
           )}
         </DialogActions>
