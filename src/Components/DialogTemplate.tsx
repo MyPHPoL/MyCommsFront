@@ -235,6 +235,14 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     } else {
     }
   }
+
+  const handleAddFriend = () => {
+    if (isNameValueValid) {
+      handleClose();
+    } else {
+    }
+  }
+
   const handleError = (errorCode: string) => {
     navigate(`/error/${errorCode}`);
   }
@@ -400,6 +408,47 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         </DialogActions>
       </Dialog>
     );
+  } else if (type === "Add Friend") {
+    return (
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
+        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Type the username to add</DialogTitle>
+        <DialogContent className={classes.inputField}>
+          {/* Currently joining server is based on typing its name into the join, it will probably be changed in the future */}
+          {/* once more, the server name value is used, poggies */}
+          <TextField
+            InputProps={{
+              className: classes.inputField
+            }}
+            InputLabelProps={{
+              className: classes.inputLabel
+            }}
+            autoFocus
+            margin="dense"
+            id="AddFriendUsermame"
+            label="Friend Username"
+            type="text"
+            fullWidth
+            value={nameValue}
+            onChange={handleInputChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          {actions ? actions : (
+            <>
+              {/* Confirm button, closes the dialog */}
+              <Button onClick={handleAddFriend} className={classes.styleButton}>
+                Confirm
+              </Button>
+              {/* Cancel button, closes the dialog */}
+              <Button onClick={handleClose} className={classes.styleButton}>
+                Cancel
+              </Button>
+
+            </>
+          )}
+        </DialogActions>
+      </Dialog>
+    );
   } else if (type === "deleteChannel") {
     return (
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
@@ -422,6 +471,8 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
         </DialogActions>
       </Dialog>
     );
+
+
   } else if (type === "deleteServer") {
     return (
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
