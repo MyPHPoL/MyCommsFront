@@ -38,7 +38,7 @@ export default function TopbarFriend({ friends }: TopbarProps) {
         <ul className="first:my-0 last:my-0 flex flex-row">
           <i
             className="mr-1"
-            onClick={() => setDialogTypeAndOpen("Join Server")}
+            onClick={() => setDialogTypeAndOpen("Add Friend")}
           >
             <IconButton icon={<TiUserAdd size="30" />} name={"Add Friend"} />
           </i>
@@ -47,7 +47,7 @@ export default function TopbarFriend({ friends }: TopbarProps) {
           open={dialogOpen}
           handleClose={handleDialogClose}
           type={dialogType}
-          //handleAddFriend={handleAddFriend}
+        //handleAddFriend={handleAddFriend}
         />
         <ul className="m-4 first:my-0 last:my-0 flex flex-row">
           {friends?.map(({ id, username, picture }) => (
