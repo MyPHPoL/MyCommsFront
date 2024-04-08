@@ -8,7 +8,7 @@ import TextField from "@material-ui/core/TextField";
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import useAuth from '../Hooks/useAuth';
 import { createChannel, createServer, deleteChannel, deleteServer, editChannel, joinServer, deleteMessage } from "../Api/axios";
-import { useStyles } from './DialogStyles';
+import { useStyles } from './DialogPopups/DialogStyles';
 import { withStyles } from '@material-ui/core/styles';
 import { ChannelProps } from './Channel';
 import { useNavigate } from 'react-router-dom';
@@ -31,17 +31,6 @@ interface DialogProps {
   setChannelEdit?: (editedChannel: ChannelProps) => void;
 }
 
-
-const CustomCheckbox = withStyles({
-  root: {
-    color: '#ffffff', // replace with your desired color
-    '&$checked': {
-      color: '#FBC02D', // replace with your desired color
-    },
-  },
-  checked: {},
-})(Checkbox);
-
 /* Define the CustomDialog component */
 const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId, actions, toBeEditedChannel, handleAddServer, pushChannel, removeChannel, removeServer, removeMessage, setChannelEdit }) => {
   /* Add a state variable for the input field */
@@ -49,9 +38,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [nameValue, setInputValue] = React.useState('');
   const [description, setDescription] = React.useState('');
-  const [isPublic, setIsPublic] = React.useState(false);
   const isNameValueValid = (nameValue.length < 32) && (nameValue.length > 0);
-  const isServerDescriptionValid = description.length < 128;
   const isChannelDescriptionValid = description.length < 64;
   const didNameValueChange = nameValue !== toBeEditedChannel?.name;
   const classes = useStyles();
@@ -62,32 +49,6 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   };
   const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value);
-  }
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsPublic(event.target.checked);
-  }
-
-  const serverCreate = async () => {
-    try {
-      const response = await createServer(auth.token, nameValue, description, isPublic);
-      const newServer = {
-        id: response.data.id,
-        name: response.data.name,
-        description: response.data.description,
-        isPublic: response.data.isPublic,
-        ownerId: response.data.ownerId,
-      };
-      if (handleAddServer) {
-        handleAddServer(newServer);
-      }
-    } catch (error: any) {
-      if (error.response.status === 409) {
-        enqueueSnackbar("Server with this name already exists", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
-      }
-      else {
-        enqueueSnackbar("There was an error while creating server", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
-      }
-    }
   }
 
   const handleDeleteServer = () => {
@@ -198,16 +159,6 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     }
   }
 
-  //this is how a confirm function will look like, all we need now is to connect it to the backend and validate the input
-  const handleCreateServer = () => {
-    if (isNameValueValid && isServerDescriptionValid) {
-      serverCreate();
-      handleClose();
-    } else {
-      //throw error
-    }
-  }
-
   const handleAddChannel = () => {
     if (isNameValueValid && isChannelDescriptionValid) {
       addChannel();
@@ -247,68 +198,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     navigate(`/error/${errorCode}`);
   }
   //WEEEEOOOOO 
-  if (type === 'Create Server') {
-    return (
-      /* Dialog component from Material UI */
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
-        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Server Creation</DialogTitle>
-        <DialogContent className={classes.inputField}>
-          <TextField
-            InputProps={{
-              className: classes.inputField
-            }}
-            InputLabelProps={{
-              className: classes.inputLabel
-            }}
-            autoFocus
-            margin="dense"
-            id="CreateServerName"
-            label="Server name"
-            type="text"
-            fullWidth
-            value={nameValue}
-            onChange={handleInputChange}
-          />
-          <TextField
-            InputProps={{
-              className: classes.inputField
-            }}
-            InputLabelProps={{
-              className: classes.inputLabel
-            }}
-            autoFocus
-            margin="dense"
-            id="CreateServerDescription"
-            label="Server description"
-            type="text"
-            fullWidth
-            value={description}
-            onChange={handleDescriptionChange}
-          />
-          <FormControlLabel
-            control={<CustomCheckbox checked={isPublic} onChange={handleCheckboxChange} />}
-            label="Is Public"
-          />
-        </DialogContent>
-        {/* Actions of the dialog */}
-        <DialogActions>
-          {/* If custom actions are provided, use them, otherwise use default actions */}
-          {actions ? actions : (
-            <>
-              {/* Confirm button, closes the dialog */}
-              <Button onClick={handleCreateServer} className={classes.styleButton}>
-                Confirm
-              </Button>
-              {/* Cancel button, closes the dialog */}
-              <Button onClick={handleClose} className={classes.styleButton}>
-                Cancel
-              </Button>
-            </>
-          )}
-        </DialogActions>
-      </Dialog>
-    );
-  } else if (type === 'Add Channel') {
+  if (type === 'Add Channel') {
     return (
       /* Needs text labels and stuff*/
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>

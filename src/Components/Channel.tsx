@@ -13,7 +13,7 @@ import { EmojiStyle, Theme } from 'emoji-picker-react';
 import { Message } from "./Message";
 import CustomDialog from "./DialogTemplate";
 import { MdDeleteForever } from "react-icons/md";
-import DeleteMessageConfirmation  from "./DeleteMessageConfirmation";
+import DeleteMessageConfirmation  from "./DialogPopups/DeleteMessageConfirmation";
 
 export interface ChannelProps {
   id: string;

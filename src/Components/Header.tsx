@@ -20,7 +20,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { useStyles } from './DialogStyles';
+import { useStyles } from './DialogPopups/DialogStyles';
 import { MAIL_REGEX, PWD_REGEX, USER_REGEX } from './RegisterForm';
 import { MuiFileInput } from 'mui-file-input'
 import CloseIcon from '@mui/icons-material/Close'

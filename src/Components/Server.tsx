@@ -13,7 +13,7 @@ import { MdMoreHoriz } from "react-icons/md";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { MdDescription } from "react-icons/md";
 import useAuth from "../Hooks/useAuth";
-import ServerDescDialog from './ServerDescDialog';
+import ServerDescDialog from './DialogPopups/ServerDescDialog';
 import CustomDialog from "./DialogTemplate";
 import { MdDeleteForever } from "react-icons/md";
 import { UserProps } from "./User";

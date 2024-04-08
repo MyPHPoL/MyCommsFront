@@ -7,7 +7,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { MdDeleteForever } from "react-icons/md";
 import { kickUser } from "../Api/axios";
 import { enqueueSnackbar } from "notistack";
-import { useStyles } from './DialogStyles';
+import { useStyles } from './DialogPopups/DialogStyles';
 import { withStyles } from '@material-ui/core/styles';
 
 interface ServerMembersProps {
