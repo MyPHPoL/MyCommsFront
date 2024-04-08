@@ -21,9 +21,8 @@ export default function TopbarServer({
   handleAddServer,
 }: TopbarProps) {
   const [joinOpen, setJoinOpen] = useState(false);
-  const [dialogType, setDialogType] = useState("Create Server");
   const [createOpen, setCreateOpen] = useState(false);
-  const handleDialogOpen = () => {
+  const handleJoinOpen = () => {
     setJoinOpen(true);
   };
 
@@ -37,10 +36,6 @@ export default function TopbarServer({
   const handleCreateClose = () => {
     setCreateOpen(false);
   };
-  const setDialogTypeAndOpen = (type: string) => {
-    setDialogType(type);
-    handleDialogOpen();
-  };
 
   return (
     <div>
@@ -48,7 +43,7 @@ export default function TopbarServer({
         <ul className="first:my-0 last:my-0 flex flex-row">
           <i
             className="mr-1"
-            onClick={() => setDialogTypeAndOpen("Join Server")}
+            onClick={() => handleJoinOpen()}
           >
             <IconButton icon={<FaDoorOpen size="25" />} name={"Join Server"} />
           </i>
@@ -71,7 +66,7 @@ export default function TopbarServer({
           {servers?.map(({ id, name, picture }) => (
             <li className="mr-2" key={id}>
               <Link to={"/home/" + id}>
-                <ServerButton name={name} picture={picture} />
+                <ServerButton name={name} picture={"https://localhost:7031/file/"+picture} />
               </Link>
             </li>
           ))}
