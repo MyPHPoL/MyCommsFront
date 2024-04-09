@@ -34,7 +34,7 @@ const EditServerDialog: React.FC<DialogProps> = ({open, handleClose, actions, pa
     const [descriptionFocus, setDescriptionFocus] = useState(false);
     const [file, setFile] = React.useState<File | null>(null);
     const [errMsg, setErrMsg] = useState("");
-
+    const [editedName, setEditedName] = useState(passedName);
     const handlePictureChange = (newFile: File | null): void => {
         setFile(newFile);
       }
@@ -51,6 +51,9 @@ const handleSubmit = async (e: any) => {
         return;
     }
     try {
+        if(name !== ""){
+            setEditedName(name);
+        }
       if (description === passedDesc) {
         await editServer(auth.token, serverId, name, passedDesc, file);
       } else {
