@@ -22,7 +22,7 @@ interface DialogProps {
   setChannelEdit?: (editedChannel: ChannelProps) => void;
 }
 const EditServerDialog: React.FC<DialogProps> = ({open, handleClose, actions, passedName, passedDesc, serverId}) => {
-    const nameRegex = /^.{1,32}$/;
+    const nameRegex = /^.{1,32}$/; //using the regex does not work, currently using a temp fix
     const descRegex = /^.{0,128}$/;
     const { auth }: { auth: any } = useAuth();
     const classes = useStyles();
@@ -34,7 +34,6 @@ const EditServerDialog: React.FC<DialogProps> = ({open, handleClose, actions, pa
     const [descriptionFocus, setDescriptionFocus] = useState(false);
     const [file, setFile] = React.useState<File | null>(null);
     const [errMsg, setErrMsg] = useState("");
-    const [editedName, setEditedName] = useState(passedName);
     const handlePictureChange = (newFile: File | null): void => {
         setFile(newFile);
       }
@@ -50,15 +49,25 @@ const handleSubmit = async (e: any) => {
         handleClose();
         return;
     }
-    try {
-        if(name !== ""){
-            setEditedName(name);
-        }
+    try {   
       if (description === passedDesc) {
-        await editServer(auth.token, serverId, name, passedDesc, file);
+        if(name !== passedName && name !== "") {
+            await editServer(auth.token, serverId, name, passedDesc, file);
+            } else {
+                await editServer(auth.token, serverId, passedName, passedDesc, file);
+            }
       } else {
-        await editServer(auth.token, serverId, name, description, file);
-      }
+        if(name !== passedName && name !== "") {
+            if(description === "") {
+            await editServer(auth.token, serverId, name, passedDesc, file);
+            }
+            else {
+            await editServer(auth.token, serverId, name, description, file);
+            }
+        } else {
+        await editServer(auth.token, serverId, passedName, description, file);
+        }
+    }
       setFile(null);
       handleClose();
     } catch (error: any) {
@@ -101,7 +110,7 @@ const handleSubmit = async (e: any) => {
                         <input
                             type='text'
                             required
-                            placeholder='Server name'
+                            placeholder={passedName}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             aria-invalid={validName ? "false" : "true"}
@@ -127,7 +136,7 @@ const handleSubmit = async (e: any) => {
                             value={description}
                             type='text'
                             required
-                            placeholder='Description'
+                            placeholder={passedDesc}
                             autoComplete='off'
                             onChange={(e) => setDescription(e.target.value)}
                             onFocus={() => setDescriptionFocus(true)}

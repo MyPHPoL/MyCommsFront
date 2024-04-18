@@ -110,6 +110,8 @@ function Server({ removeServer }: AdditionalProps) {
     handleServerDeleteOpen();
   }
   const handleEditServer = (id: string) => {
+    setEditName(server?.name ?? "");
+    setEditDesc(server?.description ?? "");
     setPassedId(id);
     handleServerEditOpen();
   }
