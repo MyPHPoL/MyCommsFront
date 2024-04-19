@@ -1,19 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { RiAttachment2 } from "react-icons/ri";
-import { FaRegSmile } from "react-icons/fa";
-import { IoSend } from "react-icons/io5";
-import { HiGif } from "react-icons/hi2";
 import { useParams } from "react-router-dom";
-import { IoRefreshOutline } from "react-icons/io5";
 import { enqueueSnackbar } from "notistack";
 import useAuth from "../Hooks/useAuth";
 import { getAllMessages, getChannelInfo, sendMessage } from "../Api/axios";
-import Picker from 'emoji-picker-react';
-import { EmojiStyle, Theme } from 'emoji-picker-react';
 import { Message } from "./Message";
-import CustomDialog from "./DialogTemplate";
 import { MdDeleteForever } from "react-icons/md";
 import DeleteMessageConfirmation  from "./DialogPopups/DeleteMessageConfirmation";
+import TextBar from "./TextBar";
 
 export interface ChannelProps {
   id: string;
@@ -146,7 +139,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
           </div>
         ))}
 
-        <div className='max-w-[95%] overflow-wrap text-wrap h-auto break-words' ref={chatWindowRef} />
+      <div className='max-w-[95%] overflow-wrap text-wrap h-auto break-words' ref={chatWindowRef} />
       </div>
       <TextBar
         refreshMessages={fetchAllMessages}
@@ -159,65 +152,5 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   );
 }
 
-// input field at the bottom of the page
-const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: (message: string) => void, name: string, widthmsg: number, refreshMessages: () => void }) => {
-  const [emojiMenuOpen, setEmojiMenuOpen] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
-  };
-
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!inputValue) return;
-
-    // Clear the input field and add the new message
-    addMessage(inputValue);
-    setInputValue('');
-  };
-
-  const handleEmojiClick = (emoji: any) => {
-    setInputValue(inputValue + emoji.emoji);
-  };
-
-  return (
-    <form onSubmit={handleFormSubmit} className='flex w-auto flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 shadow-lg bg-secondary px-2 h-12 m-2 mx-4' style={{ left: `calc(max(230px,15%))`, marginRight: `${widthmsg + 1.5}%` }}>
-      {/* This is a button that will open file attachment menu */}
-      <button tabIndex={0}>
-        <RiAttachment2 size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
-      </button>
-      {/* This is a button to refresh all channel messages */}
-      <button onClick={refreshMessages}>
-        <IoRefreshOutline size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
-      </button>
-      <input
-        type='text'
-        value={inputValue}
-        onChange={handleInputChange}
-        placeholder={`Enter message on ${name}`}
-        className='w-full bg-transparent outline-none ml-0 mr-auto text-gray-300 placeholder-gray-500 cursor-text'
-      />
-      {/* This is a button that will open GIF menu */}
-      <button>
-        <HiGif size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
-      </button>
-      <div className="absolute bottom-full right-1 my-2">
-        {emojiMenuOpen && <Picker onEmojiClick={handleEmojiClick} theme={Theme.DARK} emojiStyle={EmojiStyle.NATIVE} skinTonesDisabled={true} />}
-      </div>
-
-      {/* This is a button that opens emoji menu */}
-      <button type="button" onClick={() => setEmojiMenuOpen(!emojiMenuOpen)}>
-        <FaRegSmile size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
-      </button>
-
-      {/* This is a button that sends a message */}
-      <button type='submit'>
-        <IoSend size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
-      </button>
-    </form>
-  );
-};
 
 export default Channel;

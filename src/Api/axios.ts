@@ -23,6 +23,8 @@ const EDIT_USER = '/User/EditForm';
 const DELETE_MESSAGE_URL = '/Message/Delete?id=';
 const ADD_PICTURE = '/Server/AddPicture?serverId=';
 const SERVER_EDIT = '/Server/Edit?serverId=';
+const SEARCH_GIF = '/FavoriteGifs/Search?keyword=';
+const FAVORITE_GIFS = '/FavoriteGifs/GetAll';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -338,6 +340,7 @@ export const editUser = async (token: string, email: string, username: string, n
     );
     return response;
 }
+
 export const editServer = async (token: string, serverId: string ,name:string, description:string, avatar: File | null) => {
     console.log(token, serverId, name, description, avatar)
     if (avatar) {
@@ -372,10 +375,35 @@ export const editServer = async (token: string, serverId: string ,name:string, d
 
 }
 
-
 export const getCurrent = async (token: string) => {
     const response = await axios.get(
         BASE_URL+'/User/GetCurrent',
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+}
+
+export const getGifs = async (token: string, keyword: string) => {
+    const response = await axios.get(
+        BASE_URL+SEARCH_GIF+keyword,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+}
+
+export const getFavoriteGifs = async (token: string) => {
+    const response = await axios.get(
+        BASE_URL+FAVORITE_GIFS,
         {
             headers: { 
                 'Content-Type': 'application/json',
