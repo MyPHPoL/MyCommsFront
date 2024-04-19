@@ -8,6 +8,9 @@ function MainPage(){
     const {setAuth} = useAuth();
     const navigate = useNavigate();
 
+    // after user loads page, but before the page is displayed, check if localstaorage has user info
+    // it doesn't check if the token is valid, so it should be fixed
+    // TODO: instead of saving ac token it should save refresh token
     useEffect(() => {
         const loggedInUser = localStorage.getItem("auth");
         if (loggedInUser) {

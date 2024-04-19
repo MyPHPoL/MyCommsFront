@@ -36,7 +36,7 @@ export default function TopbarServer({
   const handleCreateClose = () => {
     setCreateOpen(false);
   };
-
+  
   return (
     <div>
       <div className="h-auto w-auto flex flex-row bg-primary">
@@ -66,7 +66,7 @@ export default function TopbarServer({
           {servers?.map(({ id, name, picture }) => (
             <li className="mr-2" key={id}>
               <Link to={"/home/" + id}>
-                <ServerButton name={name} picture={"https://localhost:7031/file/"+picture} />
+                <ServerButton name={name ? name : 'undefined server name'} picture={picture ? "https://localhost:7031/file/"+picture : undefined} />
               </Link>
             </li>
           ))}
