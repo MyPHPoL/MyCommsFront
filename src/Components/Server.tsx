@@ -21,9 +21,9 @@ import { IconContext } from 'react-icons';
 import { useTitle } from "../Hooks/useTitle";
 import { MdEdit } from "react-icons/md";
 import DeleteChannelConfirmation from "./DialogPopups/DeleteChannelConfirmation";
-import { channel } from "diagnostics_channel";
 import DeleteServerConfirmation from "./DialogPopups/DeleteServerConfirmation";
 import EditServerDialog from "./DialogPopups/EditServerDialog";
+
 export interface ServerProps {
   id: string;
   name: string;
@@ -31,9 +31,11 @@ export interface ServerProps {
   picture?: string;
   ownerId: string;
 }
+
 interface AdditionalProps {
   removeServer: (id: string) => void;
 }
+
 function Server({ removeServer }: AdditionalProps) {
 
   const { ServerId } = useParams();
@@ -91,7 +93,7 @@ function Server({ removeServer }: AdditionalProps) {
   const setDialogTypeAndOpen = (type: string, passedId: string) => {
     setDialogType(type);
     setPassedId(passedId);
-    if (type == "EditChannel") {
+    if (type === "EditChannel") {
       setToBeEditedChannel(channels?.find((channel) => channel.id === passedId));
     }
     handleDialogOpen();
@@ -110,6 +112,8 @@ function Server({ removeServer }: AdditionalProps) {
     handleServerDeleteOpen();
   }
   const handleEditServer = (id: string) => {
+    setEditName(server?.name ?? "");
+    setEditDesc(server?.description ?? "");
     setPassedId(id);
     handleServerEditOpen();
   }

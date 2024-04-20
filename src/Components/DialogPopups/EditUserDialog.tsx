@@ -89,7 +89,7 @@ const SettingsDialog = ({open, handleClose, changeAuth}: {open: boolean, handleC
             setErrMsg("No changes made.");
             return;
         }
-        if(oldPassword && newPassword != repeatPassword){
+        if(oldPassword && newPassword !== repeatPassword){
             setErrMsg("New password and repeat password do not match.");
             return;
         }
