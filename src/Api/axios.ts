@@ -25,6 +25,8 @@ const ADD_PICTURE = '/Server/AddPicture?serverId=';
 const SERVER_EDIT = '/Server/Edit?serverId=';
 const SEARCH_GIF = '/FavoriteGifs/Search?keyword=';
 const FAVORITE_GIFS = '/FavoriteGifs/GetAll';
+const ADD_FAVORITE_GIF = '/FavoriteGifs/Add';
+const DELETE_FAVORITE_GIF = '/FavoriteGifs/Delete?url=';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -413,3 +415,32 @@ export const getFavoriteGifs = async (token: string) => {
     );
     return response;
 }
+
+export const addFavoriteGif = async (token: string, gifUrl: string) => {
+    const response = await axios.post(
+        BASE_URL+ADD_FAVORITE_GIF,
+        JSON.stringify({
+            gifUrl: gifUrl,
+        }),
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+}
+
+export const deleteFavoriteGif = async (token: string, gifUrl: string) => {
+    const response = await axios.delete(
+        BASE_URL+DELETE_FAVORITE_GIF+gifUrl,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+}  
