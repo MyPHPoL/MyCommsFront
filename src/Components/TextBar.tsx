@@ -38,7 +38,7 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
     console.log(file);
   }
 };
-  
+
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(event.target.value);
     };
