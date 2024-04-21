@@ -1,5 +1,5 @@
 import { Theme, EmojiStyle } from "emoji-picker-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { FaRegSmile } from "react-icons/fa";
 import { HiGif } from "react-icons/hi2";
 import { IoRefreshOutline, IoSend } from "react-icons/io5";
@@ -9,6 +9,7 @@ import useAuth from "../Hooks/useAuth";
 import { addFavoriteGif, deleteFavoriteGif, getFavoriteGifs, getGifs } from "../Api/axios";
 import useDebounce from "../Hooks/useDebounce";
 import { FaStar } from "react-icons/fa";
+import { MuiFileInput } from "mui-file-input";
 
 export interface GifProps {
     description?: string;
@@ -21,7 +22,21 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
     const [emojiMenuOpen, setEmojiMenuOpen] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [gifMenuOpen, setGifMenuOpen] = useState(false);
-  
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [file, setFile] = useState<File | null>(null);
+    
+    const handleFileInputClick = () => {
+      if (fileInputRef.current) {
+        fileInputRef.current.click();
+      }
+    };
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Handle the selected file
+    console.log(file);
+    setInputValue(event.target.value);
+    };
+
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(event.target.value);
     };
@@ -43,9 +58,16 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
     return (
       <form onSubmit={handleFormSubmit} className='flex w-auto flex-row items-center justify-between fixed bottom-3 rounded-lg right-1 shadow-lg bg-secondary px-2 h-12 m-2 mx-4' style={{ left: `calc(max(230px,15%))`, marginRight: `${widthmsg + 1.5}%` }}>
         {/* This is a button that will open file attachment menu */}
-        <button tabIndex={0}>
-          <RiAttachment2 size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
+        <button tabIndex={0} onClick={handleFileInputClick}>
+        <RiAttachment2 size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
         </button>
+        <input
+          type='file'
+          value={inputValue}
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          onChange={handleFileChange}
+        />
         {/* This is a button to refresh all channel messages */}
         <button onClick={refreshMessages}>
           <IoRefreshOutline size='22' className='text-gray-300 mx-2 hover:text-gray-200' />

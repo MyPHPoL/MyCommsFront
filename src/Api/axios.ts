@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { channel } from 'diagnostics_channel';
 
 const BASE_URL = 'https://localhost:7031';
 const REGISTER_URL = '/Account/Register';
@@ -27,6 +28,7 @@ const SEARCH_GIF = '/FavoriteGifs/Search?keyword=';
 const FAVORITE_GIFS = '/FavoriteGifs/GetAll';
 const ADD_FAVORITE_GIF = '/FavoriteGifs/Add';
 const DELETE_FAVORITE_GIF = '/FavoriteGifs/Delete?url=';
+const SEND_MESSAGEFORM_URL = '/Message/CreateForm';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -173,6 +175,28 @@ export const sendMessage = async (token: string, channelId: string, body: string
             headers: { 
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+};
+
+export const sendMessageForm = async (token: string, channelId: string, body: string, respondToId: string, attachment: File) => {
+    const formData = new FormData();
+    formData.append('ChannelId', channelId);
+    formData.append('Body', body);
+    formData.append('ResponseToId', respondToId);
+    if (attachment) {
+        formData.append('Attachment', attachment);
+    }
+
+    const response = await axios.post(
+        BASE_URL+SEND_MESSAGEFORM_URL,
+        formData,
+        {
+            headers: { 
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}` 
             }
         },
     );
