@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import useAuth from "../Hooks/useAuth";
-import { getAllMessages, getChannelInfo, sendMessage } from "../Api/axios";
+import { getAllMessages, getChannelInfo, sendMessage, sendMessageForm } from "../Api/axios";
 import { Message } from "./Message";
 import { MdDeleteForever } from "react-icons/md";
 import DeleteMessageConfirmation  from "./DialogPopups/DeleteMessageConfirmation";
@@ -20,6 +20,7 @@ export interface MessageProps {
   authorId: string,
   body: string,
   creationDate: string
+  attachment?: File
 }
 
 function Channel({ widthmsg }: { widthmsg: number }) {
@@ -43,6 +44,23 @@ function Channel({ widthmsg }: { widthmsg: number }) {
         authorId: response.data.authorId,
         body: response.data.body,
         creationDate: response.data.creationDate,
+      };
+      setMessages((messages) => [...messages, newMessage]);
+    } catch (error: any) {
+      enqueueSnackbar("We couldn't send your message. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+    };
+  };
+
+
+  const addMessageForm = async (body: string) => {
+    try {
+      const response = await sendMessage(auth.token, ChannelId || '', body, '0');
+      const newMessage: MessageProps = {
+        id: response.data.id,
+        authorId: response.data.authorId,
+        body: response.data.body,
+        creationDate: response.data.creationDate,
+        attachment: response.data.attachment
       };
       setMessages((messages) => [...messages, newMessage]);
     } catch (error: any) {
@@ -143,7 +161,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
       </div>
       <TextBar
         refreshMessages={fetchAllMessages}
-        addMessage={addMessage}
+        addMessage={addMessageForm}
         name={channelInfo?.name || 'this channel'}
         widthmsg={widthmsg}
       />

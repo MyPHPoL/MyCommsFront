@@ -32,12 +32,10 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
     };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (event.target.files) {
-        const file = event.target.files[0];
     // Handle the selected file
     console.log(file);
-  }
-};
+    setInputValue(event.target.value);
+    };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(event.target.value);
@@ -65,6 +63,7 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
         </button>
         <input
           type='file'
+          value={inputValue}
           ref={fileInputRef}
           style={{ display: 'none' }}
           onChange={handleFileChange}
