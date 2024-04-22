@@ -45,7 +45,9 @@ export const Message = ({ authorId, body, creationDate, attachment }: MessagePro
               {new Date(creationDate).toLocaleDateString()} {new Date(creationDate).toLocaleTimeString()}
             </small>
           </p>
-          <p className='text-left font-semibold text-white mr-2 cursor-pointer'>Attachment</p>
+          <p className='text-lg float-left text-white mr-auto whitespace-normal'>
+            {body}
+          </p>
           {attachment && <img src={getFileUrl(attachment)} className='w-1/4 object-scale-down max-h-96 max-w-96' />}
         </div>
       </div>
