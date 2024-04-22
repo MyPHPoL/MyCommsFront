@@ -21,7 +21,6 @@ export interface GifProps {
 const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: (message: string, file: File | null) => void, name: string, widthmsg: number, refreshMessages: () => void }) => {
   const [emojiMenuOpen, setEmojiMenuOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [inputValueFile, setInputValueFile] = useState('Attachment'); // [file, setFile] = useState<File | null>(null);
   const [gifMenuOpen, setGifMenuOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -35,7 +34,6 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Handle the selected file
     console.log(file);
-    setInputValue(event.target.value);
     if (event.target.files && event.target.files.length > 0) {
       setFile(event.target.files[0]);
     }
@@ -49,11 +47,7 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
     event.preventDefault();
 
     if (!inputValue) return;
-    if (file) {
-      addMessage(inputValueFile, file);
-    } else {
-      addMessage(inputValue, file);
-    }
+    addMessage(inputValue, file);
     setInputValue('');
     setFile(null);
   };
