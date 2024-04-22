@@ -17,46 +17,47 @@ export interface FriendProps {
 }
 
 function FriendMessage() {
-    const { UserId } = useParams(); // userId is the name of the variable in the URL
-    const User = friends.find((friend: FriendProps) => friend.id === UserId);
-    const [Messages, setMessages] = useState<MessageProps[]>([]);
-    const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
-    const addMessage = (newMessage: MessageProps) => {
-      
-    };
+  const { UserId } = useParams(); // userId is the name of the variable in the URL
+  const User = friends.find((friend: FriendProps) => friend.id === UserId);
+  const [Messages, setMessages] = useState<MessageProps[]>([]);
+  const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
+  const addMessage = (newMessage: MessageProps) => {
 
-    useEffect(() => {
-      setMessages(messages);
-    }, [UserId]);
-  
-    useEffect(() => {
-      chatWindowRef.current?.scrollIntoView({ behavior: 'smooth' });
-    },);
-  
-    return (
-      <div className='md:flex h-auto w-full -z-20 flex-col fixed inset-y-0 top-20 left-0'>
-        <div className='flex-row flex w-full pt-2 pb-4 pl-[20px] bg-tertiary h-auto text-5xl shadow-sg tracking-wider font-semibold text-white items-center'>
-          Chat with: 
-          <div className='flex mx-2'>
-            <UserAvatar name={User?.username} picture={User?.email}/>
-          </div>
-          {User?.username}
+  };
+
+  useEffect(() => {
+    setMessages(messages);
+  }, [UserId]);
+
+  useEffect(() => {
+    chatWindowRef.current?.scrollIntoView({ behavior: 'smooth' });
+  },);
+
+  return (
+    <div className='md:flex h-auto w-full -z-20 flex-col fixed inset-y-0 top-20 left-0'>
+      <div className='flex-row flex w-full pt-2 pb-4 pl-[20px] bg-tertiary h-auto text-5xl shadow-sg tracking-wider font-semibold text-white items-center'>
+        Chat with:
+        <div className='flex mx-2'>
+          <UserAvatar name={User?.username} picture={User?.email} />
         </div>
-        <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 border-tertiary w-full'>
-          {Messages.map(({ id, authorId, body, creationDate }: MessageProps) => (
-            <Message
-              key={id}
-              id={id}
-              authorId={authorId}
-              body={body}
-              creationDate={creationDate}
-            />
-          ))}
-      <div ref={chatWindowRef}/>
+        {User?.username}
+      </div>
+      <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 border-tertiary w-full'>
+        {Messages.map(({ id, authorId, body, creationDate, attachment }: MessageProps) => (
+          <Message
+            key={id}
+            id={id}
+            authorId={authorId}
+            body={body}
+            creationDate={creationDate}
+            attachment={attachment}
+          />
+        ))}
+        <div ref={chatWindowRef} />
       </div>
       <TextBar
         addMessage={addMessage}
-        name={User?.username || 'this channel' }
+        name={User?.username || 'this channel'}
       />
     </div>
   );
@@ -80,6 +81,7 @@ const TextBar = ({ addMessage, name, }: { addMessage: (message: MessageProps) =>
       authorId: 'current user', // replace with the current username
       body: inputValue,
       creationDate: new Date().toDateString(),
+      attachment: null,
     };
 
     // Clear the input field and add the new message
@@ -94,7 +96,7 @@ const TextBar = ({ addMessage, name, }: { addMessage: (message: MessageProps) =>
       </button>
       {/* This will be a button to refresh chat when backend is working, needed for tests, might be removed in further implementation*/}
       <button>
-      <IoRefreshOutline size='22' className='text-gray-300 mx-2 hover:text-gray-200'/>
+        <IoRefreshOutline size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
       <input
         type='text'

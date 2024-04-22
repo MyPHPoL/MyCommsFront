@@ -29,6 +29,7 @@ const FAVORITE_GIFS = '/FavoriteGifs/GetAll';
 const ADD_FAVORITE_GIF = '/FavoriteGifs/Add';
 const DELETE_FAVORITE_GIF = '/FavoriteGifs/Delete?url=';
 const SEND_MESSAGEFORM_URL = '/Message/CreateForm';
+const GET_FILE = '/File/';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -163,6 +164,19 @@ export const getChannelInfo = async (token: string, id: string) => {
     return response;
 };
 
+export const getFile = async (token: string, id: string) => {
+    const response = await axios.get(
+        BASE_URL+GET_FILE+id,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+}
+
 export const sendMessage = async (token: string, channelId: string, body: string, respondToId: string) => {
     const response = await axios.post(
         BASE_URL+SEND_MESSAGE_URL,
@@ -181,7 +195,7 @@ export const sendMessage = async (token: string, channelId: string, body: string
     return response;
 };
 
-export const sendMessageForm = async (token: string, channelId: string, body: string, respondToId: string, attachment: File) => {
+export const sendMessageForm = async (token: string, channelId: string, body: string, respondToId: string, attachment: File | null) => {
     const formData = new FormData();
     formData.append('ChannelId', channelId);
     formData.append('Body', body);

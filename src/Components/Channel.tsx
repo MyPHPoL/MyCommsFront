@@ -5,7 +5,7 @@ import useAuth from "../Hooks/useAuth";
 import { getAllMessages, getChannelInfo, sendMessage, sendMessageForm } from "../Api/axios";
 import { Message } from "./Message";
 import { MdDeleteForever } from "react-icons/md";
-import DeleteMessageConfirmation  from "./DialogPopups/DeleteMessageConfirmation";
+import DeleteMessageConfirmation from "./DialogPopups/DeleteMessageConfirmation";
 import TextBar from "./TextBar";
 
 export interface ChannelProps {
@@ -20,7 +20,7 @@ export interface MessageProps {
   authorId: string,
   body: string,
   creationDate: string
-  attachment?: File
+  attachment: string | null
 }
 
 function Channel({ widthmsg }: { widthmsg: number }) {
@@ -34,9 +34,9 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   const [dialogId, setPassedId] = useState("");
   const [toBeRemovedId, settoBeRemoved] = useState('');
 
-  
+
   // will add message to the database and then to the messages array (if successful)
-  const addMessage = async (body: string) => {
+  /*const addMessage = async (body: string) => {
     try {
       const response = await sendMessage(auth.token, ChannelId || '', body, '0');
       const newMessage: MessageProps = {
@@ -49,12 +49,12 @@ function Channel({ widthmsg }: { widthmsg: number }) {
     } catch (error: any) {
       enqueueSnackbar("We couldn't send your message. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
     };
-  };
+  };*/
 
 
-  const addMessageForm = async (body: string) => {
+  const addMessageForm = async (body: string, file: File | null) => {
     try {
-      const response = await sendMessage(auth.token, ChannelId || '', body, '0');
+      const response = await sendMessageForm(auth.token, ChannelId || '', body, '0', file);
       const newMessage: MessageProps = {
         id: response.data.id,
         authorId: response.data.authorId,
@@ -139,7 +139,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
         {channelInfo?.name} | {channelInfo?.description}
       </div>
       <div className='mt-0 ml-0 mx-auto px-0 overflow-y-auto  mb-16  w-full'>
-        {messages?.map(({ id, authorId, body, creationDate }) => (
+        {messages?.map(({ id, authorId, body, creationDate, attachment }) => (
           <div key={id} className='align-left grid grid-cols-12 border-tertiary'>
             <div className='col-span-10'>
               <Message
@@ -147,6 +147,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
                 authorId={authorId}
                 body={body}
                 creationDate={creationDate}
+                attachment={attachment}
               />
             </div>
             {(auth.id === authorId) ?
@@ -157,7 +158,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
           </div>
         ))}
 
-      <div className='max-w-[95%] overflow-wrap text-wrap h-auto break-words' ref={chatWindowRef} />
+        <div className='max-w-[95%] overflow-wrap text-wrap h-auto break-words' ref={chatWindowRef} />
       </div>
       <TextBar
         refreshMessages={fetchAllMessages}
