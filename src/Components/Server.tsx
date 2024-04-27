@@ -213,7 +213,7 @@ function Server({ removeServer }: AdditionalProps) {
               >
                 <IconButton
                   icon={<MdMoreHoriz size={30} />}
-                  name="ShowMembers"
+                  name="Server Options"
                 ></IconButton>
               </button>
             </div>

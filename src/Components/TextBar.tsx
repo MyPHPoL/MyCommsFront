@@ -9,7 +9,6 @@ import useAuth from "../Hooks/useAuth";
 import { addFavoriteGif, deleteFavoriteGif, getFavoriteGifs, getGifs } from "../Api/axios";
 import useDebounce from "../Hooks/useDebounce";
 import { FaStar } from "react-icons/fa";
-import { MuiFileInput } from "mui-file-input";
 
 export interface GifProps {
   description?: string;
@@ -227,12 +226,15 @@ export interface GifProps2 {
 const Gif = ({ gif, addMessage, checkIfFavorite, addFavorite, deleteFavorite }: GifProps2) => {
   return (
     <div className='group relative'>
-      <img
-        src={gif.url}
-        alt={gif.description}
-        className='w-[180px] h-full rounded-sm shadow-lg'
-        onClick={() => addMessage(gif.url, null)}
-      />
+      <div className="w-[180px] min-h-32"> { /* to properly load the gif while also using lazy load, image needs a fixed sized, because before loading it has 0 widht and height so it loads */}
+        <img
+          loading="lazy"
+          src={gif.url}
+          alt={gif.description}
+          className='w-[180px] h-full min-h-1 object-cover rounded shadow-lg'
+          onClick={() => addMessage(gif.url, null)}
+        />
+      </div>
       {checkIfFavorite(gif.url) ? (
         <button className='text-xl absolute top-0 text-yellow-500 p-2 rounded hover:bg-red-700 m-2' onClick={() => deleteFavorite(gif.url)}>
           <FaStar />
