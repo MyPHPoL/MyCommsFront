@@ -28,7 +28,7 @@ export const Message = ({ authorId, body, creationDate, attachment }: MessagePro
               {new Date(creationDate).toLocaleDateString()} {new Date(creationDate).toLocaleTimeString()}
             </small>
           </p>
-          <img src={body} className='w-1/4 object-scale-down max-h-96 max-w-96'></img>
+          <img loading="lazy" src={body} className='w-1/4 object-scale-down max-h-96 max-w-96' alt="attachement"/>
         </div>
       </div>
     )//gif limited to smaller size, 
@@ -48,7 +48,7 @@ export const Message = ({ authorId, body, creationDate, attachment }: MessagePro
           <p className='text-lg float-left text-white mr-auto whitespace-normal'>
             {body}
           </p>
-          {attachment && <img src={getFileUrl(attachment)} className='w-1/4 object-scale-down max-h-96 max-w-96' />}
+          {attachment && <img loading="lazy" src={getFileUrl(attachment)} className='w-1/4 object-scale-down max-h-96 max-w-96' alt="attachement"/>}
         </div>
       </div>
     )
