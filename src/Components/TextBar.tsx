@@ -9,10 +9,16 @@ import useAuth from "../Hooks/useAuth";
 import { addFavoriteGif, deleteFavoriteGif, getFavoriteGifs, getGifs } from "../Api/axios";
 import useDebounce from "../Hooks/useDebounce";
 import { FaStar } from "react-icons/fa";
+import { LazyLoadComponent } from 'react-lazy-load-image-component';
 
 export interface GifProps {
   description?: string;
-  url: string;
+  gifUrl: string;
+  gifWidth: number;
+  gifHeight: number;
+  previewUrl: string;
+  previewWidth: number;
+  previewHeight: number;
   tenorId?: string;
 }
 
@@ -118,7 +124,17 @@ const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | nu
   const fetchGifs = async () => {
     try {
       const response = await getGifs(auth.token, keyword);
-      setGifs(response.data.gifs);
+      const formattedGifs = response.data.gifs.map((gif: any): GifProps => ({
+        description: gif.description,
+        gifUrl: gif.gif.url,
+        previewUrl: gif.preview.url,
+        gifWidth: gif.gif.dims.width,
+        gifHeight: gif.gif.dims.height,
+        previewHeight: gif.preview.dims.height,
+        previewWidth: gif.preview.dims.width,
+        tenorId: gif.tenorId,
+      }));
+      setGifs(formattedGifs);
     }
     catch (error: any) {
     }
@@ -127,20 +143,30 @@ const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | nu
   const fetchFavoriteGifs = async () => {
     try {
       const response = await getFavoriteGifs(auth.token);
-      setFavoriteGifs(response.data);
+      console.log(response.data);
+      const formattedGifs = response.data.map((gif: any): GifProps => ({
+        description: gif.description,
+        gifUrl: gif.gif.url,
+        previewUrl: gif.preview.url,
+        gifWidth: gif.gif.dims.width,
+        gifHeight: gif.gif.dims.height,
+        previewHeight: gif.preview.dims.height,
+        previewWidth: gif.preview.dims.width,
+      }));
+      setFavoriteGifs(formattedGifs);
     }
     catch (error: any) {
     }
   }
 
   const checkIfFavorite = (gifUrl: string) => {
-    return favoriteGifs.some((favoriteGif) => favoriteGif.url === gifUrl);
+    return favoriteGifs.some((favoriteGif) => favoriteGif.gifUrl === gifUrl);
   }
 
-  const addFavorite = async (gifUrl: string) => {
+  const addFavorite = async (gif: GifProps) => {
     try {
-      await addFavoriteGif(auth.token, gifUrl);
-      setFavoriteGifs([...favoriteGifs, { url: gifUrl }]);
+      await addFavoriteGif(auth.token, gif);
+      setFavoriteGifs([...favoriteGifs, gif]);
     }
     catch (error: any) {
     }
@@ -149,7 +175,7 @@ const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | nu
   const deleteFavorite = async (gifUrl: string) => {
     try {
       await deleteFavoriteGif(auth.token, gifUrl);
-      setFavoriteGifs(favoriteGifs.filter((favoriteGif) => favoriteGif.url !== gifUrl));
+      setFavoriteGifs(favoriteGifs.filter((favoriteGif) => favoriteGif.gifUrl !== gifUrl));
     }
     catch (error: any) {
     }
@@ -193,8 +219,8 @@ const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | nu
           {!keyword && (
             <li>
               {favoriteGifs.map((gif) => (
-                <div key={gif.url} className='m-1 float-left'>
-                  <Gif gif={gif} addMessage={addMessage} checkIfFavorite={checkIfFavorite} addFavorite={addFavorite} deleteFavorite={deleteFavorite} />
+                <div key={gif.gifUrl} className='m-1 float-left'>
+                    <Gif gif={gif} addMessage={addMessage} checkIfFavorite={checkIfFavorite} addFavorite={addFavorite} deleteFavorite={deleteFavorite} />
                 </div>
               ))}
             </li>
@@ -202,8 +228,8 @@ const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | nu
           {keyword && (
             <li>
               {gifs.map((gif) => (
-                <div key={gif.url} className='m-1 float-left'>
-                  <Gif gif={gif} addMessage={addMessage} checkIfFavorite={checkIfFavorite} addFavorite={addFavorite} deleteFavorite={deleteFavorite} />
+                <div key={gif.gifUrl} className='m-1 float-left'>
+                    <Gif gif={gif} addMessage={addMessage} checkIfFavorite={checkIfFavorite} addFavorite={addFavorite} deleteFavorite={deleteFavorite} />
                 </div>
               ))}
             </li>
@@ -218,7 +244,7 @@ export interface GifProps2 {
   gif: GifProps;
   addMessage: (message: string, file: File | null) => void;
   checkIfFavorite: (gifUrl: string) => boolean;
-  addFavorite: (gifUrl: string) => void;
+  addFavorite: (gif: GifProps) => void;
   deleteFavorite: (gifUrl: string) => void;
 }
 
@@ -226,23 +252,30 @@ export interface GifProps2 {
 const Gif = ({ gif, addMessage, checkIfFavorite, addFavorite, deleteFavorite }: GifProps2) => {
   return (
     <div className='group relative'>
-      <div className="w-[180px] min-h-32"> { /* to properly load the gif while also using lazy load, image needs a fixed sized, because before loading it has 0 widht and height so it loads */}
-        <img
-          loading="lazy"
-          src={gif.url}
-          alt={gif.description}
-          className='w-[180px] h-full min-h-1 object-cover rounded shadow-lg'
-          onClick={() => addMessage(gif.url, null)}
-        />
-      </div>
-      {checkIfFavorite(gif.url) ? (
-        <button className='text-xl absolute top-0 text-yellow-500 p-2 rounded hover:bg-red-700 m-2' onClick={() => deleteFavorite(gif.url)}>
+      <div style={{width: '180px', height: (gif.previewHeight / gif.previewWidth * 180)}}> { /* to properly load the gif while also using lazy load, image needs a fixed sized, because before loading it has 0 widht and height so it loads */}
+      <LazyLoadComponent>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline // for iOS xD
+          preload="none"
+          poster="https://cdn.discordapp.com/attachments/1172130278161002521/1234234377102426172/myphpol.png?ex=662ffdd6&is=662eac56&hm=bd70565c047e6b09b68bad8ebe58a330afc5ee511ec95921aa87ee21415d26d6&"
+          className='object-cover rounded shadow-lg w-[180px] h-full'
+          onClick={() => addMessage(gif.gifUrl, null)}>
+          <source src={gif.previewUrl} type="video/mp4"/> 
+        </video>
+      </LazyLoadComponent>
+
+      {checkIfFavorite(gif.gifUrl) ? (
+        <button className='text-xl absolute top-0 text-yellow-500 p-2 rounded hover:bg-red-700 m-2' onClick={() => deleteFavorite(gif.gifUrl)}>
           <FaStar />
         </button>
       ) : (
-        <button className='invisible group-hover:visible text-xl absolute top-0 text-white bg-slate-400 p-2 rounded hover:bg-slate-600 m-2' onClick={() => addFavorite(gif.url)}>
+        <button className='invisible group-hover:visible text-xl absolute top-0 text-white bg-slate-400 p-2 rounded hover:bg-slate-600 m-2' onClick={() => addFavorite(gif)}>
           <FaStar />
         </button>)}
+        </div>
     </div>
   );
 }
