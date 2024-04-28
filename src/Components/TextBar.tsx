@@ -143,7 +143,6 @@ const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | nu
   const fetchFavoriteGifs = async () => {
     try {
       const response = await getFavoriteGifs(auth.token);
-      console.log(response.data);
       const formattedGifs = response.data.map((gif: any): GifProps => ({
         description: gif.description,
         gifUrl: gif.gif.url,
@@ -187,7 +186,6 @@ const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | nu
 
     if (isMounted) {
       fetchFavoriteGifs();
-      console.log(favoriteGifs);
     };
 
     return () => {
@@ -260,7 +258,7 @@ const Gif = ({ gif, addMessage, checkIfFavorite, addFavorite, deleteFavorite }: 
           muted
           playsInline // for iOS xD
           preload="none"
-          poster="https://cdn.discordapp.com/attachments/1172130278161002521/1234234377102426172/myphpol.png?ex=662ffdd6&is=662eac56&hm=bd70565c047e6b09b68bad8ebe58a330afc5ee511ec95921aa87ee21415d26d6&"
+          poster="/myphpol.png"
           className='object-cover rounded shadow-lg w-[180px] h-full'
           onClick={() => addMessage(gif.gifUrl, null)}>
           <source src={gif.previewUrl} type="video/mp4"/> 
