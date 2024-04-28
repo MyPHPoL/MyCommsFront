@@ -212,12 +212,12 @@ const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | nu
           className='text-white placeholder:color-white w-full h-full border-2 border-solid border-slate-600 bg-transparent outline-none rounded-s-3xl rounded-e-3xl pt-5 pr-11 pb-5 pl-5'
         />
       </div>
-      <section className="h-[470px] flex flex-col pb-3 mx-auto">
-        <ul className="flex flex-column overflow-y-scroll my-4">
+      <section className="h-[440px] my-3 mx-auto overflow-y-scroll">
+        <ul className="flex-col columns-2 gap-1 py-1">
           {!keyword && (
             <li>
               {favoriteGifs.map((gif) => (
-                <div key={gif.gifUrl} className='m-1 float-left'>
+                <div key={gif.gifUrl} className='m-2 break-inside-avoid'>
                     <Gif gif={gif} addMessage={addMessage} checkIfFavorite={checkIfFavorite} addFavorite={addFavorite} deleteFavorite={deleteFavorite} />
                 </div>
               ))}
@@ -226,7 +226,7 @@ const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | nu
           {keyword && (
             <li>
               {gifs.map((gif) => (
-                <div key={gif.gifUrl} className='m-1 float-left'>
+                <div key={gif.gifUrl} className='m-2 break-inside-avoid'>
                     <Gif gif={gif} addMessage={addMessage} checkIfFavorite={checkIfFavorite} addFavorite={addFavorite} deleteFavorite={deleteFavorite} />
                 </div>
               ))}
