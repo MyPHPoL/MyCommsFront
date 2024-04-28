@@ -34,8 +34,6 @@ export const Message = ({ authorId, body, creationDate, attachment }: MessagePro
     )//gif limited to smaller size, 
   } else if (attachment) {
     const attachmentUrl = 'Check';
-    console.log(attachment);
-    console.log(typeof attachment);
     return (
       <div className='w-full flex-row justify-evenly py-3 px-8 m-0 cursor-pointer border-tertiary border-b-2 hover:bg-tertiary'>
         <div className='flex flex-col justify-start ml-auto border-tertiary'>

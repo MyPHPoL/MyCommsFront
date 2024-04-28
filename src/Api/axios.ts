@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { channel } from 'diagnostics_channel';
+import { GifProps } from '../Components/TextBar';
+import { Description } from '@mui/icons-material';
+import { url } from 'inspector';
 
 const BASE_URL = 'https://localhost:7031';
 const REGISTER_URL = '/Account/Register';
@@ -102,7 +105,6 @@ export const getServer = async (token: string, id: string) => {
             }
         },
     );
-    console.log(response)
     return response;
 };
 
@@ -382,7 +384,6 @@ export const editUser = async (token: string, email: string, username: string, n
 }
 
 export const editServer = async (token: string, serverId: string ,name:string, description:string, avatar: File | null) => {
-    console.log(token, serverId, name, description, avatar)
     if (avatar) {
         const formData = new FormData();
         formData.append('File', avatar);
@@ -454,11 +455,25 @@ export const getFavoriteGifs = async (token: string) => {
     return response;
 }
 
-export const addFavoriteGif = async (token: string, gifUrl: string) => {
+export const addFavoriteGif = async (token: string, gif: GifProps) => {
     const response = await axios.post(
         BASE_URL+ADD_FAVORITE_GIF,
         JSON.stringify({
-            gifUrl: gifUrl,
+            description: gif.description,
+            gif: {
+                url: gif.gifUrl,
+                dims: {
+                    width: gif.gifWidth,
+                    height: gif.gifHeight,
+                }
+            },
+            preview: {
+                url: gif.previewUrl,
+                dims: {
+                    width: gif.previewWidth,
+                    height: gif.previewHeight,
+            },
+            }
         }),
         {
             headers: { 
