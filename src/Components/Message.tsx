@@ -7,7 +7,7 @@ export const Message = ({ authorId, body, creationDate, attachment }: MessagePro
   const [username, setUsername] = useState('');
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const getFileUrl = (attachment: string) => `https://localhost:7031/file/${attachment}`;
-  const gifRegex: RegExp = /^(https\:\/\/media\.tenor\.com\/).*(\.gif)/g; //check if the sent message fits tenor gif format
+  const gifRegex: RegExp = /^https:\/\/(?:media1*)?\.?tenor\.com\/.*/g; //check if the sent message fits tenor gif format
   const youtubeRegex: RegExp = /(^https:\/\/www\.youtube\.com\/watch\?v=).*/g; //check if the sent message fits youtube video format
   const shortYoutubeRegex: RegExp = /(^https:\/\/youtu\.be\/).*/g; //check if the sent message fits mobile youtube video format (needs to be converted in order to work)
   var isYoutube: boolean = body.match(youtubeRegex) ? true : false;
