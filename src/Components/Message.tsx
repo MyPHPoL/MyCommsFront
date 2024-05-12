@@ -11,6 +11,9 @@ export const Message = ({ authorId, body, creationDate, attachment }: MessagePro
   const youtubeRegex: RegExp = /(^https:\/\/www\.youtube\.com\/watch\?v=).*/g; //check if the sent message fits youtube video format
   const shortYoutubeRegex: RegExp = /(^https:\/\/youtu\.be\/).*/g; //check if the sent message fits mobile youtube video format (needs to be converted in order to work)
   var isYoutube: boolean = body.match(youtubeRegex) ? true : false;
+  const steamWidget: boolean = body.match(/(^https:\/\/store\.steampowered\.com\/widget\/).*/g) ? true : false;
+  const steamApp: boolean = body.match(/(^https:\/\/store\.steampowered\.com\/app\/).*/g) ? true : false;
+
   if(shortYoutubeRegex.test(body)){
     body = body.replace('youtu.be/', 'youtube.com/watch?v=');
     isYoutube = true;
@@ -21,6 +24,10 @@ export const Message = ({ authorId, body, creationDate, attachment }: MessagePro
   });
   const isGif: boolean = body.match(gifRegex) ? true : false;
   
+  if(steamApp){
+  body = body.replace('/app/', '/widget/')
+  }
+
   if (isGif) {
     return (
       <div className='w-full flex-row justify-evenly py-3 px-8 m-0 cursor-pointer border-tertiary border-b-2 hover:bg-tertiary'>
@@ -64,6 +71,20 @@ export const Message = ({ authorId, body, creationDate, attachment }: MessagePro
             </small>
           </p>
           <iframe loading="lazy" width="560" height="315" src={body.replace('watch?v=', 'embed/')} allowFullScreen></iframe>
+        </div>
+      </div>
+    )
+  } else if (steamWidget || steamApp) { 
+    return (
+      <div className='w-full flex-row justify-evenly py-3 px-8 m-0 cursor-pointer border-tertiary border-b-2 hover:bg-tertiary'>
+        <div className='flex flex-col justify-start ml-auto border-tertiary'>
+          <p className='text-left font-semibold text-white mr-2 cursor-pointer'>
+            {username}
+            <small className='text-xs text-left font-semibold text-gray-500 ml-2'>
+              {new Date(creationDate).toLocaleDateString()} {new Date(creationDate).toLocaleTimeString()}
+            </small>
+          </p>
+          <iframe loading="lazy" width="646" height="190" src={body}></iframe>
         </div>
       </div>
     )
