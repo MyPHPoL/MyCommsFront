@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Route, Link, Routes } from "react-router-dom";
 import { ServerButton } from "./IconLib";
@@ -8,6 +8,8 @@ import { IoMdAdd } from "react-icons/io";
 import Server, { ServerProps } from "./Server";
 import CreateServerDialog from "./DialogPopups/CreateServerDialog";
 import JoinServerDialog from "./DialogPopups/JoinServerDialog";
+import { useNavigate } from "react-router-dom";
+import FriendManager from "./Dashboard";
 
 interface TopbarProps {
   servers?: ServerProps[];
@@ -20,11 +22,17 @@ export default function TopbarServer({
   removeServer,
   handleAddServer,
 }: TopbarProps) {
+
   const [joinOpen, setJoinOpen] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
   const handleJoinOpen = () => {
     setJoinOpen(true);
   };
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate('/home');
+  }, []);
 
   const handleJoinClose = () => {
     setJoinOpen(false);
@@ -65,7 +73,7 @@ export default function TopbarServer({
         <ul className="m-4 first:my-0 last:my-0 flex flex-row">
           {servers?.map(({ id, name, picture }) => (
             <li className="mr-2" key={id}>
-              <Link to={"/home/" + id}>
+              <Link to={`/server/${id}`}>
                 <ServerButton name={name ? name : 'undefined server name'} picture={picture ? "https://localhost:7031/file/"+picture : undefined} />
               </Link>
             </li>
@@ -74,7 +82,7 @@ export default function TopbarServer({
       </div>
       <Routes>
         <Route
-          path="/:ServerId/*"
+          path=":ServerId/*"
           element={<Server removeServer={removeServer} />}
         />
       </Routes>

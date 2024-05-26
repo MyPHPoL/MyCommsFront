@@ -38,7 +38,7 @@ function FriendMessage() {
       <div className='flex-row flex w-full pt-2 pb-4 pl-[20px] bg-tertiary h-auto text-5xl shadow-sg tracking-wider font-semibold text-white items-center'>
         Chat with:
         <div className='flex mx-2'>
-          <UserAvatar name={User?.username} picture={User?.email} />
+          <UserAvatar name={User?.username} />
         </div>
         {User?.username}
       </div>

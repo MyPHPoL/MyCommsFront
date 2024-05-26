@@ -1,12 +1,12 @@
-import React from "react";
-import { Route, Link, Routes } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Route, Link, Routes, useNavigate } from "react-router-dom";
 import { ServerButton } from "./IconLib";
 import { useState } from "react";
 import CustomDialog from "./DialogTemplate";
 import { TiUserAdd } from "react-icons/ti";
 import { IconButton } from "./IconLib";
-
 import FriendMessage, { FriendProps } from "./FriendMessage";
+import FriendManager from "./Dashboard";
 
 interface TopbarProps {
   friends?: FriendProps[];
@@ -18,6 +18,11 @@ export default function TopbarFriend({ friends }: TopbarProps) {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("Add Friend");
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate('/home');
+  }, []);
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -51,8 +56,8 @@ export default function TopbarFriend({ friends }: TopbarProps) {
         />
         <ul className="m-4 first:my-0 last:my-0 flex flex-row">
           {friends?.map(({ id, username, picture }) => (
-            <li className="mr-1" key={id}>
-              <Link to={id}>
+            <li className="mr-2" key={id}>
+              <Link to={`/friends/${id}`}>
                 <ServerButton name={username} picture={picture} />
               </Link>
             </li>
@@ -60,7 +65,7 @@ export default function TopbarFriend({ friends }: TopbarProps) {
         </ul>
       </div>
       <Routes>
-        <Route path="/:UserId/*" element={<FriendMessage />} />
+        <Route path="/:UserId" element={<FriendMessage />} />
       </Routes>
     </div>
   );

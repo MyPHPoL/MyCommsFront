@@ -10,7 +10,9 @@ function App() {
           <Route path='register/*' element={<RegisterPage />} />
           <Route path='login/*' element={<LoginPage />} />
           <Route path='home/*' element={<MainPage />} />
+          <Route path='server/*' element={<MainPage />} />
           <Route path='error/*' element={<ErrorPages />} />
+          <Route path='friends/*' element={<MainPage />} />
           <Route path='*' element={<Navigate to='/login' replace />} />
       </Routes>
   );
