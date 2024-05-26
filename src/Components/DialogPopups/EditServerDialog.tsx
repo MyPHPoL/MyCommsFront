@@ -1,9 +1,9 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@material-ui/core";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { deleteChannel, deleteServer, editServer } from "../../Api/axios";
 import useAuth from "../../Hooks/useAuth";
-import { useStyles } from "./DialogStyles";
+import { dialogStyles } from "./DialogStyles";
 import { ChannelProps } from "../Channel";
 import { MuiFileInput } from "mui-file-input";
 import CloseIcon from '@mui/icons-material/Close'
@@ -12,21 +12,20 @@ import { FaEnvelope, FaUser } from "react-icons/fa";
 import React from "react";
 
 interface DialogProps {
-  open: boolean; /* Whether the dialog is open or not */
-  handleClose: () => void; /* Function to close the dialog */
-  type?: string; /* Type of the dialog, we might change it to an enum later */
-  actions?: React.ReactNode; /* Optional custom actions for the dialog */
-  passedName: string;
-  passedDesc: string;
-  serverId: string;
-  setChannelEdit?: (editedChannel: ChannelProps) => void;
+    open: boolean; /* Whether the dialog is open or not */
+    handleClose: () => void; /* Function to close the dialog */
+    type?: string; /* Type of the dialog, we might change it to an enum later */
+    actions?: React.ReactNode; /* Optional custom actions for the dialog */
+    passedName: string;
+    passedDesc: string;
+    serverId: string;
+    setChannelEdit?: (editedChannel: ChannelProps) => void;
 }
 
-const EditServerDialog: React.FC<DialogProps> = ({open, handleClose, actions, passedName, passedDesc, serverId}) => {
+const EditServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, passedName, passedDesc, serverId }) => {
     const nameRegex = /^.{1,32}$/; //using the regex does not work, currently using a temp fix
     const descRegex = /^.{0,128}$/;
     const { auth }: { auth: any } = useAuth();
-    const classes = useStyles();
     const [name, setName] = useState(passedName);
     const [validName, setValidName] = useState(false);
     const [nameFocus, setNameFocus] = useState(false);
@@ -37,63 +36,64 @@ const EditServerDialog: React.FC<DialogProps> = ({open, handleClose, actions, pa
     const [errMsg, setErrMsg] = useState("");
     const handlePictureChange = (newFile: File | null): void => {
         setFile(newFile);
-      }
-  // clear error message
-  useEffect(() => {
-    setErrMsg("");
-}, [name, description]);
-
-
-const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    if (name === passedName && description === passedDesc && !file) {
-        handleClose();
-        return;
     }
-    try {   
-      if (description === passedDesc) {
-        if(name !== passedName && name !== "") {
-            await editServer(auth.token, serverId, name, passedDesc, file);
+    // clear error message
+    useEffect(() => {
+        setErrMsg("");
+    }, [name, description]);
+
+
+    const handleSubmit = async (e: any) => {
+        e.preventDefault();
+        if (name === passedName && description === passedDesc && !file) {
+            handleClose();
+            return;
+        }
+        try {
+            if (description === passedDesc) {
+                if (name !== passedName && name !== "") {
+                    await editServer(auth.token, serverId, name, passedDesc, file);
+                } else {
+                    await editServer(auth.token, serverId, passedName, passedDesc, file);
+                }
             } else {
-                await editServer(auth.token, serverId, passedName, passedDesc, file);
+                if (name !== passedName && name !== "") {
+                    if (description === "") {
+                        await editServer(auth.token, serverId, name, passedDesc, file);
+                    }
+                    else {
+                        await editServer(auth.token, serverId, name, description, file);
+                    }
+                } else {
+                    await editServer(auth.token, serverId, passedName, description, file);
+                }
             }
-      } else {
-        if(name !== passedName && name !== "") {
-            if(description === "") {
-            await editServer(auth.token, serverId, name, passedDesc, file);
+            setFile(null);
+            handleClose();
+        } catch (error: any) {
+            if (!error?.response) {
+                setErrMsg("No server response. Please try again later.");
+            } else if (error.response?.status === 500) {
+                setErrMsg("Server name already taken!");
+            } else {
+                setErrMsg("Something went wrong. Please try again later.");
             }
-            else {
-            await editServer(auth.token, serverId, name, description, file);
-            }
-        } else {
-        await editServer(auth.token, serverId, passedName, description, file);
         }
-    }
-      setFile(null);
-      handleClose();
-    } catch (error: any) {
-        if (!error?.response) {
-            setErrMsg("No server response. Please try again later.");
-        } else if (error.response?.status === 500) {
-            setErrMsg("Server name already taken!");
-        } else {
-            setErrMsg("Something went wrong. Please try again later.");
-        }
-    }
-};
+    };
     useEffect(() => {
         setValidName(nameRegex.test(name));
     }, [name]);
     useEffect(() => {
         setValidDescription(descRegex.test(description));
-      }, [description]);
+    }, [description]);
     return (
         <div>
             <Dialog
                 open={open}
                 onClose={handleClose}
-                classes={{ paper: classes.dialogPaper }}>
-                <DialogTitle classes={{ root: classes.title }}>
+                sx={dialogStyles.dialogPaper}
+            >
+                <DialogTitle sx={dialogStyles.title}>
                     Change server details
                 </DialogTitle>
                 <DialogContent>
@@ -158,21 +158,21 @@ const handleSubmit = async (e: any) => {
                     </div>
                     <label className='text-white mt-7'>Change Avatar</label>
                     <div className='relative w-full h-12 mb-7 border-white'>
-                      <MuiFileInput value={file} inputProps={{ accept: '.png, .jpeg .jpg' }}  onChange={handlePictureChange} 
-                      clearIconButtonProps={{
-                        title: "Remove",
-                        children: <CloseIcon fontSize="small" />
-                      }}
-                      placeholder="Insert a file"
-                      className={classes.inputField}
-                      />
+                        <MuiFileInput value={file} inputProps={{ accept: '.png, .jpeg .jpg' }} onChange={handlePictureChange}
+                            clearIconButtonProps={{
+                                title: "Remove",
+                                children: <CloseIcon fontSize="small" />
+                            }}
+                            placeholder="Insert a file"
+                            sx={dialogStyles.inputField}
+                        />
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} className={classes.styleButton}>
+                    <Button onClick={handleClose} sx={dialogStyles.styleButton}>
                         Cancel
                     </Button>
-                    <Button onClick={handleSubmit} className={classes.styleButton}>
+                    <Button onClick={handleSubmit} sx={dialogStyles.styleButton}>
                         Apply Changes
                     </Button>
                 </DialogActions>
@@ -180,4 +180,4 @@ const handleSubmit = async (e: any) => {
         </div>
     );
 }
-  export default EditServerDialog;
+export default EditServerDialog;

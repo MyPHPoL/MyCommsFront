@@ -1,13 +1,8 @@
 import React from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import TextField from "@material-ui/core/TextField";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField } from '@mui/material';
 import useAuth from '../Hooks/useAuth';
 import { createChannel, editChannel } from "../Api/axios";
-import { useStyles } from './DialogPopups/DialogStyles';
+import { dialogStyles } from './DialogPopups/DialogStyles';
 import { ChannelProps } from './Channel';
 import { useNavigate } from 'react-router-dom';
 import { enqueueSnackbar } from 'notistack';
@@ -34,7 +29,6 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   const isNameValueValid = (nameValue.length < 32) && (nameValue.length > 0);
   const isChannelDescriptionValid = description.length < 64;
   const didNameValueChange = nameValue !== toBeEditedChannel?.name;
-  const classes = useStyles();
 
   /* Add a function to handle input changes */
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,17 +119,17 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   if (type === 'Add Channel') {
     return (
       /* Needs text labels and stuff*/
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
-        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Add new channel</DialogTitle>
-        <DialogContent className={classes.inputField}>
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" sx={dialogStyles.dialogPaper}>
+        <DialogTitle id="form-dialog-title" sx={dialogStyles.title}>Add new channel</DialogTitle>
+        <DialogContent sx={dialogStyles.inputField}>
           {/* for now the values used in both server and channel creation are the same in order not to create thousands of variables */}
           {/* as for now I am not familiar with the required validation, this might force us to create a new set of variables, or handle the validation differently */}
           <TextField
             InputProps={{
-              className: classes.inputField
+              sx: dialogStyles.inputField
             }}
             InputLabelProps={{
-              className: classes.inputLabel
+              sx: dialogStyles.inputLabel
             }}
             autoFocus
             margin="dense"
@@ -148,10 +142,10 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
           />
           <TextField
             InputProps={{
-              className: classes.inputField
+              sx: dialogStyles.inputField
             }}
             InputLabelProps={{
-              className: classes.inputLabel
+              sx: dialogStyles.inputLabel
             }}
             autoFocus
             margin="dense"
@@ -169,11 +163,11 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
           {actions ? actions : (
             <>
               {/* Confirm button, closes the dialog */}
-              <Button onClick={handleAddChannel} className={classes.styleButton}>
+              <Button onClick={handleAddChannel} sx={dialogStyles.styleButton}>
                 Confirm
               </Button>
               {/* Cancel button, closes the dialog */}
-              <Button onClick={handleClose} className={classes.styleButton}>
+              <Button onClick={handleClose} sx={dialogStyles.styleButton}>
                 Cancel
               </Button>
             </>
@@ -183,17 +177,18 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     );
   } else if (type === "Add Friend") {
     return (
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
-        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Invite Your Friends!</DialogTitle>
-        <DialogContent className={classes.inputField}>
+
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" sx={dialogStyles.dialogPaper}>
+        <DialogTitle id="form-dialog-title" sx={dialogStyles.title}>Type the username to add</DialogTitle>
+        <DialogContent sx={dialogStyles.inputField}>
           {/* Currently joining server is based on typing its name into the join, it will probably be changed in the future */}
           {/* once more, the server name value is used, poggies */}
           <TextField
             InputProps={{
-              className: classes.inputField
+              sx: dialogStyles.inputField
             }}
             InputLabelProps={{
-              className: classes.inputLabel
+              sx: dialogStyles.inputLabel
             }}
             autoFocus
             margin="dense"
@@ -209,11 +204,11 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
           {actions ? actions : (
             <>
               {/* Confirm button, closes the dialog */}
-              <Button onClick={handleAddFriend} className={classes.styleButton}>
+              <Button onClick={handleAddFriend} sx={dialogStyles.styleButton}>
                 Confirm
               </Button>
               {/* Cancel button, closes the dialog */}
-              <Button onClick={handleClose} className={classes.styleButton}>
+              <Button onClick={handleClose} sx={dialogStyles.styleButton}>
                 Cancel
               </Button>
 
@@ -238,11 +233,11 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
           {actions ? actions : (
             <>
               {/* Cancel button, closes the dialog */}
-              <Button onClick={handleClose} className={classes.styleButton}>
+              <Button onClick={handleClose} sx={dialogStyles.styleButton}>
                 Cancel
               </Button>
               {/* Confirm button, closes the dialog */}
-              <Button onClick={handleClose} className={classes.styleButton}>
+              <Button onClick={handleClose} sx={dialogStyles.styleButton}>
                 Confirm
               </Button>
             </>
