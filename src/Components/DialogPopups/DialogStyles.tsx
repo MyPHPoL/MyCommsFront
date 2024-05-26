@@ -1,10 +1,10 @@
-import { makeStyles } from '@material-ui/core/styles';
-
-export const useStyles = makeStyles({
+export const dialogStyles = {
   dialogPaper: {
-    backgroundColor: '#2a3a54',
-    color: '#ffffff',
-    borderRadius: '15px'
+    '&& .MuiDialog-paper': {
+      backgroundColor: '#2a3a54',
+      color: '#ffffff',
+      borderRadius: '15px',
+    },
   },
   title: {
     backgroundColor: '#152238',
@@ -56,4 +56,4 @@ export const useStyles = makeStyles({
       },
     },
   },
-});
+};
