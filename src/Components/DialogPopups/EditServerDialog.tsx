@@ -21,6 +21,7 @@ interface DialogProps {
   serverId: string;
   setChannelEdit?: (editedChannel: ChannelProps) => void;
 }
+
 const EditServerDialog: React.FC<DialogProps> = ({open, handleClose, actions, passedName, passedDesc, serverId}) => {
     const nameRegex = /^.{1,32}$/; //using the regex does not work, currently using a temp fix
     const descRegex = /^.{0,128}$/;

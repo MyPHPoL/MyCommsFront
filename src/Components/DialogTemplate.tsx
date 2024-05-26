@@ -184,7 +184,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
   } else if (type === "Add Friend") {
     return (
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
-        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Type the username to add</DialogTitle>
+        <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Invite Your Friends!</DialogTitle>
         <DialogContent className={classes.inputField}>
           {/* Currently joining server is based on typing its name into the join, it will probably be changed in the future */}
           {/* once more, the server name value is used, poggies */}

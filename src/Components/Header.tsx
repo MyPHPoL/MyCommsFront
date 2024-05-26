@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
 import TopbarServer from "./TopbarServer";
 import { IconButton, UserAvatar } from "./IconLib";
@@ -15,6 +15,7 @@ import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 import { useTitle } from '../Hooks/useTitle';
 import { IoLogInOutline } from "react-icons/io5";
 import SettingsDialog from './DialogPopups/EditUserDialog';
+import Dashboard from './Dashboard';
 
 function Header() {
   const [activeTopbar, setActiveTopbar] = useState<string | null>(null);
@@ -69,8 +70,14 @@ function Header() {
 
     const fetchFriends = async () => {
       try {
-        const response = await getFriends(auth.token);
-        isMounted && setFriends(response.data);
+        //const response = await getFriends(auth.token);
+        const friends: FriendProps[] = [
+          { id: '1', username: 'John Doe', picture: undefined },
+          { id: '2', username: 'Jane Doe', picture: undefined },
+          { id: '3', username: 'John Smith', picture: undefined },
+          { id: '4', username: 'Jane Smith', picture: undefined },
+        ];
+        isMounted && setFriends(friends);
       } catch (error: any) {
         enqueueSnackbar("We couldn't load your friend list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
@@ -142,7 +149,7 @@ function Header() {
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
         </ul>
         <div className="my-2 flex">
-          {activeTopbar === 'servers' && <TopbarServer handleAddServer={pushServer} servers={servers} removeServer={removeServer} />}
+          {activeTopbar === 'servers'  && <TopbarServer handleAddServer={pushServer} servers={servers} removeServer={removeServer} />}
           {activeTopbar === 'friends' && <TopbarFriend friends={friends} />}
         </div>
       </nav>
@@ -152,6 +159,8 @@ function Header() {
         handleClose={handleDialogClose}
         changeAuth={changeAuth}
       />
+      { useLocation().pathname === '/home' && <Dashboard friends={friends} servers={servers} removeServer={removeServer}/>}
+      
     </div>
   );
   function toggleDropdown() {
