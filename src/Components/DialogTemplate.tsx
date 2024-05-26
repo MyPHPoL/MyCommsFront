@@ -177,6 +177,7 @@ const CustomDialog: React.FC<DialogProps> = ({ open, handleClose, type, passedId
     );
   } else if (type === "Add Friend") {
     return (
+
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" sx={dialogStyles.dialogPaper}>
         <DialogTitle id="form-dialog-title" sx={dialogStyles.title}>Type the username to add</DialogTitle>
         <DialogContent sx={dialogStyles.inputField}>

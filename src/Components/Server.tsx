@@ -23,6 +23,7 @@ import { MdEdit } from "react-icons/md";
 import DeleteChannelConfirmation from "./DialogPopups/DeleteChannelConfirmation";
 import DeleteServerConfirmation from "./DialogPopups/DeleteServerConfirmation";
 import EditServerDialog from "./DialogPopups/EditServerDialog";
+import { useLocation } from 'react-router-dom';
 
 export interface ServerProps {
   id: string;
@@ -61,6 +62,8 @@ function Server({ removeServer }: AdditionalProps) {
   const [serverEditOpen, setServerEditOpen] = useState(false);
   const [editDesc, setEditDesc] = useState(server?.description ?? "");
   const [editName, setEditName] = useState(server?.name ?? "");
+  const location = useLocation();
+  
   const handleServerEditOpen = () => {
     setServerEditOpen(true);
   }
@@ -181,9 +184,11 @@ function Server({ removeServer }: AdditionalProps) {
       }
     }
 
-    fetchServer();
-    fetchChannels();
-    fetchServerMembers();
+    if (location.pathname.startsWith(`/server/${ServerId}`)) {
+      fetchServer();
+      fetchChannels();
+      fetchServerMembers();
+    }
 
     return () => {
       isMounted = false;

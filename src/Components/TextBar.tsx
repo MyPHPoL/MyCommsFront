@@ -72,6 +72,7 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
         ref={fileInputRef}
         style={{ display: 'none' }}
         onChange={handleFileChange}
+        accept="image/png, image/jpeg"
       />
       {/* This is a button to refresh all channel messages */}
       <button onClick={refreshMessages}>
