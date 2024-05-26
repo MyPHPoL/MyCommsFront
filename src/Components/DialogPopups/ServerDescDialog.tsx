@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogActions from '@material-ui/core/DialogActions';
-import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 interface ServerDescDialogProps {
     open: boolean;
@@ -34,11 +29,11 @@ const useStyles = makeStyles({
         backgroundColor: '#123456', // replace with your desired color
         fontWeight: 600, // replace with your desired color
         '&:hover': {
-          backgroundColor: '#789abc', // replace with your desired color for hover state
-          
+            backgroundColor: '#789abc', // replace with your desired color for hover state
+
         },
-      },
-    });
+    },
+});
 
 const ServerDescDialog: React.FC<ServerDescDialogProps> = ({ serverName, serverDescription }) => {
     const [open, setOpen] = useState(false);
