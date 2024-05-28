@@ -2,6 +2,10 @@ import { getUsername, getFile } from "../Api/axios";
 import useAuth from "../Hooks/useAuth";
 import { MessageProps } from "./Channel";
 import React, { useState } from "react";
+import { FaFilePdf } from "react-icons/fa";
+import { useEffect } from "react";
+
+
 
 export const Message = ({ authorId, body, creationDate, attachment }: MessageProps) => {
   const [username, setUsername] = useState('');
@@ -13,6 +17,7 @@ export const Message = ({ authorId, body, creationDate, attachment }: MessagePro
   var isYoutube: boolean = body.match(youtubeRegex) ? true : false;
   const steamWidget: boolean = body.match(/(^https:\/\/store\.steampowered\.com\/widget\/).*/g) ? true : false;
   const steamApp: boolean = body.match(/(^https:\/\/store\.steampowered\.com\/app\/).*/g) ? true : false;
+  const [fileType, setFileType] = useState<string | null>(null);
 
   if(shortYoutubeRegex.test(body)){
     body = body.replace('youtu.be/', 'youtube.com/watch?v=');
@@ -27,6 +32,28 @@ export const Message = ({ authorId, body, creationDate, attachment }: MessagePro
   if(steamApp){
   body = body.replace('/app/', '/widget/')
   }
+
+
+  useEffect(() => {
+    if (attachment) {
+      getFile(auth.token, attachment).then(response => {
+        const blob = new Blob([response.data], { type: response.headers['content-type'] });
+        const fileReader = new FileReader();
+  
+        fileReader.onloadend = () => {
+          const result = fileReader.result as string;
+          const mimeType = result.split(':')[1].split(';')[0];
+          setFileType(mimeType);
+        };
+  
+        fileReader.onerror = () => {
+          console.error('Failed to read file');
+        };
+  
+        fileReader.readAsDataURL(blob);
+      });
+    }
+  }, [attachment, auth.token]);
 
   if (isGif) {
     return (
@@ -43,7 +70,29 @@ export const Message = ({ authorId, body, creationDate, attachment }: MessagePro
       </div>
     )//gif limited to smaller size, 
   } else if (attachment) {
-    const attachmentUrl = 'Check';
+    
+    if (fileType === 'application/pdf') {
+      // Handle PDF attachment here
+      return (
+        <div className='w-full flex-row justify-evenly py-3 px-8 m-0 cursor-pointer border-tertiary border-b-2 hover:bg-tertiary'>
+          <div className='flex flex-col justify-start ml-auto border-tertiary'>
+            <p className='text-left font-semibold text-white mr-2 cursor-pointer'>
+              {username}
+              <small className='text-xs text-left font-semibold text-gray-500 ml-2'>
+                {new Date(creationDate).toLocaleDateString()} {new Date(creationDate).toLocaleTimeString()}
+              </small>
+            </p>
+            <p className='text-lg float-left text-white mr-auto whitespace-normal'>
+              {body}
+            </p>
+            <div className='flex items-center text-left font-semibold text-white mr-2 cursor-pointer' onClick={() => window.open(getFileUrl(attachment), '_blank')}>
+              <FaFilePdf className='w-6 h-6 mr-2' />
+              <p>PDF File</p>
+            </div>
+          </div>
+        </div>
+      );
+    } else {
     return (
       <div className='w-full flex-row justify-evenly py-3 px-8 m-0 cursor-pointer border-tertiary border-b-2 hover:bg-tertiary'>
         <div className='flex flex-col justify-start ml-auto border-tertiary'>
@@ -60,6 +109,7 @@ export const Message = ({ authorId, body, creationDate, attachment }: MessagePro
         </div>
       </div>
     )
+  }
   } else if (isYoutube) {
     return (
       <div className='w-full flex-row justify-evenly py-3 px-8 m-0 cursor-pointer border-tertiary border-b-2 hover:bg-tertiary'>
