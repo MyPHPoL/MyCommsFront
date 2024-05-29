@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import { Route, Link, Routes, useNavigate } from "react-router-dom";
 import { ServerButton } from "./IconLib";
 import { useState } from "react";
-import CustomDialog from "./DialogTemplate";
 import { TiUserAdd } from "react-icons/ti";
 import { IconButton } from "./IconLib";
 import FriendMessage, { FriendProps } from "./FriendMessage";
 import FriendManager from "./Dashboard";
+import AddFriendDialog from "./DialogPopups/AddFriendDialog";
 
 interface TopbarProps {
   friends?: FriendProps[];
@@ -48,11 +48,11 @@ export default function TopbarFriend({ friends }: TopbarProps) {
             <IconButton icon={<TiUserAdd size="30" />} name={"Add Friend"} />
           </i>
         </ul>
-        <CustomDialog
+        <AddFriendDialog
           open={dialogOpen}
           handleClose={handleDialogClose}
           type={dialogType}
-        //handleAddFriend={handleAddFriend}
+        //handleAddFriend={handleAddFriend} the dialog currently does not have any functionality, moved from dialog template to separate component for further development
         />
         <ul className="m-4 first:my-0 last:my-0 flex flex-row">
           {friends?.map(({ id, username, picture }) => (

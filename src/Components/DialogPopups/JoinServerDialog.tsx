@@ -29,7 +29,7 @@ const JoinServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, h
   const handleAccept = () => {
     if (isNameValueValid) {
       serverJoin();
-      handleClose();
+      closeDialog();
     } else {
     }
   }
@@ -55,6 +55,10 @@ const JoinServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, h
         enqueueSnackbar("You are already in this server", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
     }
+  }
+  const closeDialog = () => {
+    setInputValue('');
+    handleClose();
   }
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" sx={dialogStyles.dialogPaper}>
@@ -87,7 +91,7 @@ const JoinServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, h
               Confirm
             </Button>
             {/* Cancel button, closes the dialog */}
-            <Button onClick={handleClose} sx={dialogStyles.styleButton}>
+            <Button onClick={closeDialog} sx={dialogStyles.styleButton}>
               Cancel
             </Button>
 
