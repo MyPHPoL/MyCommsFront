@@ -1,78 +1,77 @@
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@material-ui/core";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
 import { MuiFileInput } from "mui-file-input";
 import { useState, useEffect } from "react";
 import { FaEnvelope, FaUser, FaEye, FaLock } from "react-icons/fa";
 import { editUser } from "../../Api/axios";
 import { USER_REGEX, MAIL_REGEX, PWD_REGEX } from "../RegisterForm";
-import { useStyles } from "./DialogStyles";
+import { dialogStyles } from "./DialogStyles";
 import CloseIcon from '@mui/icons-material/Close'
 import React from "react";
 import useAuth from "../../Hooks/useAuth";
 
 // copied 90% from RegisterForm.tsx works, so i dont care, maybe refactor later, but probably not
-const SettingsDialog = ({open, handleClose, changeAuth}: {open: boolean, handleClose: () => void, changeAuth: (token: string) => void })  => {
-    let classes = useStyles();
+const SettingsDialog = ({ open, handleClose, changeAuth }: { open: boolean, handleClose: () => void, changeAuth: (token: string) => void }) => {
     const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
     const [email, setEmail] = useState(auth.email);
     const [validEmail, setValidEmail] = useState(false);
     const [emailFocus, setEmailFocus] = useState(false);
-  
+
     const [username, setUsername] = useState(auth.username);
     const [validUsername, setValidUsername] = useState(false);
     const [usernameFocus, setUsernameFocus] = useState(false);
-  
+
     const [oldPassword, setOldPassword] = useState("");
     const [oldvalidPassword, oldsetValidPassword] = useState(false);
     const [oldpasswordFocus, oldsetPasswordFocus] = useState(false);
-  
+
     const [newPassword, setPassword] = useState("");
     const [validPassword, setValidPassword] = useState(false);
     const [passwordFocus, setPasswordFocus] = useState(false);
-  
+
     const [repeatPassword, setRepeatPassword] = useState("");
     const [validRepeatPassword, setValidRepeatPassword] = useState(false);
     const [repeatPasswordFocus, setRepeatPasswordFocus] = useState(false);
-  
+
     const [errMsg, setErrMsg] = useState("");
     const [file, setFile] = React.useState<File | null>(null);
-  
+
     const handlePictureChange = (newFile: File | null): void => {
-      setFile(newFile);
+        setFile(newFile);
     }
-  
+
     // check if username is valid
     useEffect(() => {
-      setValidUsername(USER_REGEX.test(username));
+        setValidUsername(USER_REGEX.test(username));
     }, [username]);
-  
+
     // check if email is valid
     useEffect(() => {
-      setValidEmail(MAIL_REGEX.test(email));
+        setValidEmail(MAIL_REGEX.test(email));
     }, [email]);
-  
+
     // check if password and repeat password are valid
     useEffect(() => {
         setValidPassword(PWD_REGEX.test(newPassword));
         setValidRepeatPassword(newPassword === repeatPassword);
     }, [newPassword, repeatPassword]);
-  
+
     // check if old password is valid
     useEffect(() => {
         if (oldPassword) {
             setValidPassword(PWD_REGEX.test(oldPassword));
         }
     }, [oldPassword]);
-  
+
     // clear error message
     useEffect(() => {
         setErrMsg("");
     }, [email, username, newPassword, repeatPassword]);
-  
+
     const [passwordShown, setPasswordShown] = useState(false);
     const togglePasswordVisiblity = () => {
         setPasswordShown(passwordShown ? false : true);
     };
-  
+
     const resetSettings = () => {
         setEmail(auth.email);
         setUsername(auth.username);
@@ -81,32 +80,32 @@ const SettingsDialog = ({open, handleClose, changeAuth}: {open: boolean, handleC
         setRepeatPassword("");
         setFile(null);
     };
-  
+
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-  
+
         if ((username === auth.username || !username) && (email === auth.email || !email) && !oldPassword && !newPassword && !repeatPassword && !file) {
             setErrMsg("No changes made.");
             return;
         }
-        if(oldPassword && newPassword !== repeatPassword){
+        if (oldPassword && newPassword !== repeatPassword) {
             setErrMsg("New password and repeat password do not match.");
             return;
         }
-        if(!oldPassword && (newPassword || repeatPassword)){
+        if (!oldPassword && (newPassword || repeatPassword)) {
             setErrMsg("Please enter your old password to update password.");
             return;
         }
         try {
-        if(!oldPassword && !newPassword && !repeatPassword){
-            await editUser(auth.token, email, username, null, null, file);
-        }
-        if(oldPassword && newPassword && repeatPassword){
-            await editUser(auth.token, email, username, oldPassword, newPassword, file);
-        }
-          changeAuth(auth.token);
-          setFile(null);
-          handleClose();
+            if (!oldPassword && !newPassword && !repeatPassword) {
+                await editUser(auth.token, email, username, null, null, file);
+            }
+            if (oldPassword && newPassword && repeatPassword) {
+                await editUser(auth.token, email, username, oldPassword, newPassword, file);
+            }
+            changeAuth(auth.token);
+            setFile(null);
+            handleClose();
         } catch (error: any) {
             if (!error?.response) {
                 setErrMsg("No server response. Please try again later.");
@@ -122,12 +121,12 @@ const SettingsDialog = ({open, handleClose, changeAuth}: {open: boolean, handleC
             <Dialog
                 open={open}
                 onClose={handleClose}
-                classes={{ paper: classes.dialogPaper }}>
-                <DialogTitle classes={{ root: classes.title }}>
+                sx={dialogStyles.dialogPaper}>
+                <DialogTitle sx={dialogStyles.title}>
                     Change user settings
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText className={classes.inputField}>
+                    <DialogContentText sx={dialogStyles.inputField}>
                         Change your e-mail address, username or password.
                     </DialogContentText>
                     <p
@@ -278,30 +277,30 @@ const SettingsDialog = ({open, handleClose, changeAuth}: {open: boolean, handleC
                     </div>
                     <label className='text-white mt-7'>Change Avatar</label>
                     <div className='relative w-full h-12 mb-7 border-white'>
-                      <MuiFileInput value={file} inputProps={{ accept: '.png, .jpeg .jpg' }}  onChange={handlePictureChange} 
-                      clearIconButtonProps={{
-                        title: "Remove",
-                        children: <CloseIcon fontSize="small" />
-                      }}
-                      placeholder="Insert a file"
-                      className={classes.inputField}
-                      />
+                        <MuiFileInput value={file} inputProps={{ accept: '.png, .jpeg .jpg' }} onChange={handlePictureChange}
+                            clearIconButtonProps={{
+                                title: "Remove",
+                                children: <CloseIcon fontSize="small" />
+                            }}
+                            placeholder="Insert a file"
+                            sx={dialogStyles.inputField}
+                        />
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} className={classes.styleButton}>
+                    <Button onClick={handleClose} sx={dialogStyles.styleButton}>
                         Cancel
                     </Button>
-                    <Button onClick={resetSettings} className={classes.styleButton}>
+                    <Button onClick={resetSettings} sx={dialogStyles.styleButton}>
                         Reset
                     </Button>
-                    <Button onClick={handleSubmit} className={classes.styleButton}>
+                    <Button onClick={handleSubmit} sx={dialogStyles.styleButton}>
                         Change Settings
                     </Button>
                 </DialogActions>
             </Dialog>
         </div>
     );
-  }
+}
 
-  export default SettingsDialog;
+export default SettingsDialog;

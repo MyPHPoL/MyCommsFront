@@ -51,8 +51,9 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!inputValue) return;
-    addMessage(inputValue, file);
+    if (!inputValue && !file) return;
+    const messageToSend = inputValue || "attachment";
+    addMessage(messageToSend, file);
     setInputValue('');
     setFile(null);
   };
@@ -67,12 +68,13 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
       <button type="button" tabIndex={0} onClick={handleFileInputClick}>
         <RiAttachment2 size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
+      {file && <p className='text-gray-300 mx-2'>{file.name}</p>}
       <input
         type='file'
         ref={fileInputRef}
         style={{ display: 'none' }}
         onChange={handleFileChange}
-        accept="image/png, image/jpeg"
+        accept="image/png, image/jpeg, application/pdf, image/gif"
       />
       {/* This is a button to refresh all channel messages */}
       <button onClick={refreshMessages}>

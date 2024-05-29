@@ -3,83 +3,87 @@ import { createServer } from "../../Api/axios";
 import useAuth from "../../Hooks/useAuth";
 import React from "react";
 import { ServerProps } from "../Server";
-import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField, withStyles } from "@material-ui/core";
-import { useStyles } from "./DialogStyles";
+import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material";
+import { withStyles } from "@mui/styles";
+import { dialogStyles } from "./DialogStyles";
 
 interface DialogProps {
-    open: boolean; /* Whether the dialog is open or not */
-    handleClose: () => void; /* Function to close the dialog */
-    actions?: React.ReactNode; /* Optional custom actions for the dialog */
-    handleAddServer: (server: ServerProps) => void;
-  }
-  const CustomCheckbox = withStyles({
-    root: {
-      color: '#ffffff', // replace with your desired color
-      '&$checked': {
-        color: '#FBC02D', // replace with your desired color
-      },
+  open: boolean; /* Whether the dialog is open or not */
+  handleClose: () => void; /* Function to close the dialog */
+  actions?: React.ReactNode; /* Optional custom actions for the dialog */
+  handleAddServer: (server: ServerProps) => void;
+}
+const CustomCheckbox = withStyles({
+  root: {
+    color: '#ffffff', // replace with your desired color
+    '&$checked': {
+      color: '#FBC02D', // replace with your desired color
     },
-    checked: {},
-  })(Checkbox);
-  const CreateServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, handleAddServer}) => {
-    const { auth }: { auth: any } = useAuth();
-    const [nameValue, setInputValue] = React.useState('');
-    const isNameValueValid = (nameValue.length < 32) && (nameValue.length > 0);
-    const [description, setDescription] = React.useState('');
-    const isServerDescriptionValid = (description.length < 128);
-    const [isPublic, setIsPublic] = React.useState(false);
-    const classes = useStyles();
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setInputValue(event.target.value);
+  },
+  checked: {},
+})(Checkbox);
+const CreateServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, handleAddServer }) => {
+  const { auth }: { auth: any } = useAuth();
+  const [nameValue, setInputValue] = React.useState('');
+  const isNameValueValid = (nameValue.length < 32) && (nameValue.length > 0);
+  const [description, setDescription] = React.useState('');
+  const isServerDescriptionValid = (description.length < 128);
+  const [isPublic, setIsPublic] = React.useState(false);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
+  const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDescription(event.target.value);
+  }
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsPublic(event.target.checked);
+  }
+
+  const serverCreate = async () => {
+    try {
+      const response = await createServer(auth.token, nameValue, description, isPublic);
+      const newServer = {
+        id: response.data.id,
+        name: response.data.name,
+        description: response.data.description,
+        isPublic: response.data.isPublic,
+        ownerId: response.data.ownerId,
       };
-      const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setDescription(event.target.value);
+      handleAddServer(newServer);
+    } catch (error: any) {
+      if (error.response.status === 409) {
+        enqueueSnackbar("Server with this name already exists", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
-      const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIsPublic(event.target.checked);
+      else {
+        enqueueSnackbar("There was an error while creating server", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
-    
-    const serverCreate = async () => {
-        try {
-          const response = await createServer(auth.token, nameValue, description, isPublic);
-          const newServer = {
-            id: response.data.id,
-            name: response.data.name,
-            description: response.data.description,
-            isPublic: response.data.isPublic,
-            ownerId: response.data.ownerId,
-          };
-            handleAddServer(newServer);
-        } catch (error: any) {
-          if (error.response.status === 409) {
-            enqueueSnackbar("Server with this name already exists", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
-          }
-          else {
-            enqueueSnackbar("There was an error while creating server", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
-          }
-        }
-      }
+    }
+  }
   const handleCreateServer = () => {
     if (isNameValueValid && isServerDescriptionValid) {
       serverCreate();
-      handleClose();
+      closeDialog();
     } else {
       //throw error
     }
   }
-
+  const closeDialog = () => {
+    setInputValue("");
+    setDescription("");
+    handleClose();
+  }
 
   return (
     /* Dialog component from Material UI */
-    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogPaper }}>
-      <DialogTitle id="form-dialog-title" classes={{ root: classes.title }}>Server Creation</DialogTitle>
-      <DialogContent className={classes.inputField}>
+    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" sx={dialogStyles.dialogPaper}>
+      <DialogTitle id="form-dialog-title" sx={dialogStyles.title}>Server Creation</DialogTitle>
+      <DialogContent sx={dialogStyles.inputField}>
         <TextField
           InputProps={{
-            className: classes.inputField
+            sx: dialogStyles.inputField
           }}
           InputLabelProps={{
-            className: classes.inputLabel
+            sx: dialogStyles.inputLabel
           }}
           autoFocus
           margin="dense"
@@ -92,10 +96,10 @@ interface DialogProps {
         />
         <TextField
           InputProps={{
-            className: classes.inputField
+            sx: dialogStyles.inputField
           }}
           InputLabelProps={{
-            className: classes.inputLabel
+            sx: dialogStyles.inputLabel
           }}
           autoFocus
           margin="dense"
@@ -117,11 +121,11 @@ interface DialogProps {
         {actions ? actions : (
           <>
             {/* Confirm button, closes the dialog */}
-            <Button onClick={handleCreateServer} className={classes.styleButton}>
+            <Button onClick={handleCreateServer} sx={dialogStyles.styleButton}>
               Confirm
             </Button>
             {/* Cancel button, closes the dialog */}
-            <Button onClick={handleClose} className={classes.styleButton}>
+            <Button onClick={closeDialog} sx={dialogStyles.styleButton}>
               Cancel
             </Button>
           </>

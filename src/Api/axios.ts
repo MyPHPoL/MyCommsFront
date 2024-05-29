@@ -33,6 +33,10 @@ const ADD_FAVORITE_GIF = '/FavoriteGifs/Add';
 const DELETE_FAVORITE_GIF = '/FavoriteGifs/Delete?url=';
 const SEND_MESSAGEFORM_URL = '/Message/CreateForm';
 const GET_FILE = '/File/';
+const MESSAGE_FRIENDS_URL = '/Message/GetAll?userId=';
+const GET_MESSAGED_USERS_URL = '/PrivateMessage/Users';
+const SEND_PRIVATE_MESSAGEFORM_URL = '/PrivateMessage/CreateForm';
+const GET_ALL_MESSAGES_FROM_USER_URL = '/PrivateMessage/GetAll?userId=';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -151,7 +155,18 @@ export const getUsername = async (token: string, id: string) => {
     };
 };
 
-
+export const getUser = async (token: string, id: string) => {
+        const response = await axios.get(
+            BASE_URL+USER_GET_URL+id,
+            {
+                headers: { 
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                }
+            },
+        );
+        return response;
+};
 export const getChannelInfo = async (token: string, id: string) => {
     const response = await axios.post(
         BASE_URL+CHANNEL_INFO_URL+id,
@@ -497,3 +512,38 @@ export const deleteFavoriteGif = async (token: string, gifUrl: string) => {
     );
     return response;
 }  
+
+export const sendPrivateMessageForm = async (token: string, otherId: string, body: string, respondToId: string, attachment: File | null) => {
+    const formData = new FormData();
+    //formData.append('otherId', otherId);
+    formData.append('Body', body);
+    formData.append('ResponseToId', respondToId);
+    if (attachment) {
+        formData.append('Attachment', attachment);
+    }
+
+    const response = await axios.post(
+        BASE_URL+SEND_PRIVATE_MESSAGEFORM_URL+'?otherId='+otherId,
+        formData,
+        {
+            headers: { 
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+};
+
+export const getAllMessagesFromUser = async (token: string, id: string) => {
+    const response = await axios.get(
+        BASE_URL+GET_ALL_MESSAGES_FROM_USER_URL+id,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+};

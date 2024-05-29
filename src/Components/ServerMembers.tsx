@@ -3,12 +3,12 @@ import "../index.css";
 import { UserAvatar } from "./IconLib";
 import { UserProps } from "./User";
 import useAuth from "../Hooks/useAuth";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@material-ui/core";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { MdDeleteForever } from "react-icons/md";
 import { kickUser } from "../Api/axios";
 import { enqueueSnackbar } from "notistack";
-import { useStyles } from './DialogPopups/DialogStyles';
-import { withStyles } from '@material-ui/core/styles';
+import { dialogStyles } from './DialogPopups/DialogStyles';
+import { withStyles } from '@mui/styles';
 
 interface ServerMembersProps {
   serverMembers: UserProps[];
@@ -49,8 +49,8 @@ function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps)
               <div className="text-lg flex flex-col my-1 mb-2 font-semibold text-white mr-2 pl-2   py-2 px-4 w-full items-start">
                 <div className="flex justify-start items-center w-full">
                   <div className="scale-75">
-                    {user.avatar ? <UserAvatar name={user.username} picture={"https://localhost:7031/file/"+ user.avatar} /> : <UserAvatar name={user.username} />}
-                    </div>
+                    {user.avatar ? <UserAvatar name={user.username} picture={"https://localhost:7031/file/" + user.avatar} /> : <UserAvatar name={user.username} />}
+                  </div>
                   <span className="ml-2">{user.username}</span>
                 </div>
               </div>
@@ -77,7 +77,6 @@ function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps)
 }
 const KickConfirmation: React.FC<KickUserProps> = ({ open, handleClose, userId, currServerId, userName }) => {
   const { auth }: { auth: any } = useAuth();
-  const classes = useStyles();
   const handleKick = async () => {
     try {
       if (currServerId) {
@@ -95,16 +94,16 @@ const KickConfirmation: React.FC<KickUserProps> = ({ open, handleClose, userId, 
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
-      classes={{ paper: classes.dialogPaper }}
+      sx={dialogStyles.dialogPaper}
     >
-      <DialogTitle id="alert-dialog-title" classes={{ root: classes.title }}>
+      <DialogTitle id="alert-dialog-title" sx={dialogStyles.title}>
 
         {"Are you sure you want to kick " + userName + " from the server?"}
       </DialogTitle>
 
       <DialogActions>
-        <Button onClick={handleKick} className={classes.styleButton}>Yes</Button>
-        <Button onClick={handleClose} className={classes.styleButton} autoFocus>
+        <Button onClick={handleKick} sx={dialogStyles.styleButton}>Yes</Button>
+        <Button onClick={handleClose} sx={dialogStyles.styleButton} autoFocus>
           No
         </Button>
       </DialogActions>

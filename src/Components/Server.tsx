@@ -14,7 +14,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { MdDescription } from "react-icons/md";
 import useAuth from "../Hooks/useAuth";
 import ServerDescDialog from './DialogPopups/ServerDescDialog';
-import CustomDialog from "./DialogTemplate";
+import EditChannelDialog from "./DialogPopups/EditChannelDialog";
 import { MdDeleteForever } from "react-icons/md";
 import { UserProps } from "./User";
 import { IconContext } from 'react-icons';
@@ -24,7 +24,8 @@ import DeleteChannelConfirmation from "./DialogPopups/DeleteChannelConfirmation"
 import DeleteServerConfirmation from "./DialogPopups/DeleteServerConfirmation";
 import EditServerDialog from "./DialogPopups/EditServerDialog";
 import { useLocation } from 'react-router-dom';
-
+import { Add } from "@mui/icons-material";
+import AddChannelDialog from "./DialogPopups/AddChannelDialog";
 export interface ServerProps {
   id: string;
   name: string;
@@ -50,12 +51,13 @@ function Server({ removeServer }: AdditionalProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showChannels, setShowChannels] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogEditOpen, setDialogEditOpen] = useState(false);
+  const [dialogAddOpen, setDialogAddOpen] = useState(false);
   const [dialogType, setDialogType] = useState("Add Channel");
   const [dialogId, setPassedId] = useState("");
   const [tmpChannel, setTmpChannel] = useState<ChannelProps | undefined>();
   const [toBeRemovedId, settoBeRemoved] = useState('');
-  const [toBeEditedChannel, setToBeEditedChannel] = useState<ChannelProps | undefined>();
+  const [toBeEditedChannel, setToBeEditedChannel] = useState<ChannelProps>();
   const [editedChannel, setEditedChannel] = useState<ChannelProps | undefined>();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [serverDeleteOpen, setServerDeleteOpen] = useState(false);
@@ -85,12 +87,18 @@ function Server({ removeServer }: AdditionalProps) {
     setDeleteDialogOpen(false);
   }
 
-  const handleDialogOpen = () => {
-    setDialogOpen(true);
+  const handleDialogEditOpen = () => {
+    setDialogEditOpen(true);
   };
 
-  const handleDialogClose = () => {
-    setDialogOpen(false);
+  const handleDialogEditClose = () => {
+    setDialogEditOpen(false);
+  };
+  const handleDialogAddOpen = () => {
+    setDialogAddOpen(true);
+  };
+  const handleDialogAddClose = () => {
+    setDialogAddOpen(false);
   };
   //changed to accept Id so it can be used for both channels and servers
   const setDialogTypeAndOpen = (type: string, passedId: string) => {
@@ -99,7 +107,11 @@ function Server({ removeServer }: AdditionalProps) {
     if (type === "EditChannel") {
       setToBeEditedChannel(channels?.find((channel) => channel.id === passedId));
     }
-    handleDialogOpen();
+    if(type === "Add Channel"){
+      handleDialogAddOpen();
+    }else{
+    handleDialogEditOpen();
+    }
   }
 
   const pushChannel = (channel: ChannelProps) => {
@@ -295,7 +307,7 @@ function Server({ removeServer }: AdditionalProps) {
           </button>
           {showChannels && (
             <ul>
-              {channels?.map(({ id, name }) => (
+              {channels?.map(({ id, name, description }) => (
                 <li key={id} tabIndex={-1}>
                   <Link to={'' + id} tabIndex={-1}>
                     <div className="justify-left flex mr-2 mb-1 max-w-[280px]">
@@ -314,6 +326,7 @@ function Server({ removeServer }: AdditionalProps) {
                         </button> : null}
                     </div>
                   </Link>
+                  <EditChannelDialog open={dialogEditOpen} handleClose={handleDialogEditClose} passedId={dialogId} pushChannel={pushChannel} setChannelEdit={setChannelEdit} passedDescription={description} passedName={name} serverId={ServerId}/>
                 </li>
               ))}
             </ul>
@@ -327,7 +340,7 @@ function Server({ removeServer }: AdditionalProps) {
       {showMembers && <ServerMembers serverMembers={serverMembers} ownerId={server?.ownerId} serverId={server?.id} />}
       <EditServerDialog open={serverEditOpen} handleClose={handleServerEditClose} serverId={dialogId} passedDesc={editDesc} passedName={editName} />
       <DeleteChannelConfirmation open={deleteDialogOpen} handleClose={handleDeleteClose} removeChannel={removeChannel} passedId={dialogId} />
-      <CustomDialog open={dialogOpen} handleClose={handleDialogClose} type={dialogType} passedId={dialogId} pushChannel={pushChannel} setChannelEdit={setChannelEdit} toBeEditedChannel={toBeEditedChannel} />
+      <AddChannelDialog open={dialogAddOpen} handleClose={handleDialogAddClose} passedId={dialogId} pushChannel={pushChannel} />
       <DeleteServerConfirmation open={serverDeleteOpen} handleClose={handleServerDeleteClose} removeServer={removeServer} passedId={dialogId} />
     </div>
   );
