@@ -20,9 +20,10 @@ const DeleteServerConfirmation: React.FC<DialogProps> = ({ open, handleClose, ac
 
   const serverDelete = async () => {
     try {
-      const response = await deleteServer(auth.token, passedId);
+      await deleteServer(auth.token, passedId);
       removeServer(passedId)
       navigate("/home");
+      document.location.reload();
     } catch (error: any) {
       handleError(error.response.status);
     }
