@@ -130,7 +130,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   }, [ChannelId]);
 
   useEffect(() => {
-    chatWindowRef.current?.scrollIntoView({ behavior: 'smooth' });
+    chatWindowRef.current?.scrollIntoView({ behavior: 'auto' });
   },);
 
   return (
