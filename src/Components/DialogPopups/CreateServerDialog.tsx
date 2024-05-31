@@ -62,12 +62,16 @@ const CreateServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions,
   const handleCreateServer = () => {
     if (isNameValueValid && isServerDescriptionValid) {
       serverCreate();
-      handleClose();
+      closeDialog();
     } else {
       //throw error
     }
   }
-
+  const closeDialog = () => {
+    setInputValue("");
+    setDescription("");
+    handleClose();
+  }
 
   return (
     /* Dialog component from Material UI */
@@ -121,7 +125,7 @@ const CreateServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions,
               Confirm
             </Button>
             {/* Cancel button, closes the dialog */}
-            <Button onClick={handleClose} sx={dialogStyles.styleButton}>
+            <Button onClick={closeDialog} sx={dialogStyles.styleButton}>
               Cancel
             </Button>
           </>

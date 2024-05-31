@@ -19,7 +19,6 @@ interface DialogProps {
     passedName: string;
     passedDesc: string;
     serverId: string;
-    setChannelEdit?: (editedChannel: ChannelProps) => void;
 }
 
 const EditServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, passedName, passedDesc, serverId }) => {
@@ -42,11 +41,15 @@ const EditServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, p
         setErrMsg("");
     }, [name, description]);
 
-
+    const closeDialog = () => {
+        setName('');
+        setDescription('');
+        handleClose();
+    }
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         if (name === passedName && description === passedDesc && !file) {
-            handleClose();
+            closeDialog();
             return;
         }
         try {
@@ -69,7 +72,7 @@ const EditServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, p
                 }
             }
             setFile(null);
-            handleClose();
+            closeDialog();
         } catch (error: any) {
             if (!error?.response) {
                 setErrMsg("No server response. Please try again later.");
@@ -90,7 +93,7 @@ const EditServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, p
         <div>
             <Dialog
                 open={open}
-                onClose={handleClose}
+                onClose={closeDialog}
                 sx={dialogStyles.dialogPaper}
             >
                 <DialogTitle sx={dialogStyles.title}>
@@ -169,7 +172,7 @@ const EditServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, p
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} sx={dialogStyles.styleButton}>
+                    <Button onClick={closeDialog} sx={dialogStyles.styleButton}>
                         Cancel
                     </Button>
                     <Button onClick={handleSubmit} sx={dialogStyles.styleButton}>
