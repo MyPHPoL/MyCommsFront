@@ -18,7 +18,7 @@ import SettingsDialog from './DialogPopups/EditUserDialog';
 import Dashboard from './Dashboard';
 
 function Header() {
-  const [activeTopbar, setActiveTopbar] = useState<string | null>(null);
+  const [activeTopbar, setActiveTopbar] = useState<string | null>('servers');
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const { setAuth }: { setAuth: any } = useAuth();
   const [servers, setServers] = useState<ServerProps[] | undefined>();
@@ -35,9 +35,11 @@ function Header() {
     setToRemoveId(id);
     console.log('removed')
   }
+  
   const pushServer = (server: ServerProps) => {
     setTmpServer(server);
   }
+
   useEffect(() => {
     if (tmpServer) {
       if (servers) {
@@ -50,6 +52,7 @@ function Header() {
     if (servers) {
       if (toRemoveId) {
         // toRemoveId is string but server.id is number thus != instead of !==
+        // but it is !== ???
         setServers(servers.filter((server) => server.id !== toRemoveId))
       }
     }
@@ -62,7 +65,7 @@ function Header() {
     const fetchServers = async () => {
       try {
         const response = await getServers(auth.token);
-        isMounted && setServers(response.data);
+        setServers(response.data);
       } catch (error: any) {
         enqueueSnackbar("We couldn't load your server list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
@@ -72,12 +75,12 @@ function Header() {
       try {
         //const response = await getFriends(auth.token);
         const friends: FriendProps[] = [
-          { id: '1', username: 'John Doe', picture: undefined },
-          { id: '2', username: 'Jane Doe', picture: undefined },
-          { id: '3', username: 'John Smith', picture: undefined },
-          { id: '4', username: 'Jane Smith', picture: undefined },
+          { id: '1', username: 'Abecadłuś', picture: undefined },
+          { id: '2', username: 'Brokułas', picture: undefined },
+          { id: '3', username: 'Cwaniak', picture: undefined },
+          { id: '4', username: 'Dupek z dłuższym nickiem xd', picture: undefined },
         ];
-        isMounted && setFriends(friends);
+        setFriends(friends);
       } catch (error: any) {
         enqueueSnackbar("We couldn't load your friend list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
@@ -144,12 +147,12 @@ function Header() {
             </div>
           </li>
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
-          <li className="relative flex items-center justify-center mx-auto mr-1"><button onClick={() => setActiveTopbar('servers')}><IconButton icon={<IoServer size={30} />} name="Server List"></IconButton></button></li>
+          <li className="relative flex items-center justify-center mx-auto mr-1"><button onClick={() => { if(activeTopbar === 'servers') setActiveTopbar('friends'); setActiveTopbar('servers')} }><IconButton icon={<IoServer size={30} />} name="Server List"></IconButton></button></li>
           <li className="relative flex items-center justify-center mx-auto"><button onClick={() => setActiveTopbar('friends')}><IconButton icon={<FaUserFriends size={30} />} name="Friend List"></IconButton></button></li>
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
         </ul>
         <div className="my-2 flex">
-          {activeTopbar === 'servers'  && <TopbarServer handleAddServer={pushServer} servers={servers} removeServer={removeServer} />}
+          {activeTopbar === 'servers' && <TopbarServer handleAddServer={pushServer} servers={servers} removeServer={removeServer} />}
           {activeTopbar === 'friends' && <TopbarFriend friends={friends} />}
         </div>
       </nav>
@@ -159,8 +162,7 @@ function Header() {
         handleClose={handleDialogClose}
         changeAuth={changeAuth}
       />
-      { useLocation().pathname === '/home' && <Dashboard friends={friends} servers={servers} removeServer={removeServer}/>}
-      
+      { useLocation().pathname === '/home' && <Dashboard friends={friends} servers={servers} removeServer={removeServer} mode={activeTopbar || 'null'}/>}
     </div>
   );
   function toggleDropdown() {

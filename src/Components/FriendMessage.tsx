@@ -3,7 +3,7 @@ import { RiAttachment2 } from "react-icons/ri";
 import { FaRegSmile } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
 import { HiGif } from "react-icons/hi2";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { IoRefreshOutline } from "react-icons/io5";
 import { UserAvatar } from "./IconLib";
 import { MessageProps } from "./Channel";
@@ -25,8 +25,9 @@ function FriendMessage() {
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [User, setUser] = useState<FriendProps | undefined>();
+  const location = useLocation();
   useEffect(() => {
-    if(UserId){
+    if(UserId && (location.pathname.startsWith(`/friends/${UserId}`))){
     getUser(auth.token, UserId || '').then((response) => {
       setUser(response.data);
     }).catch((error: any) => {
@@ -36,7 +37,7 @@ function FriendMessage() {
   }, [UserId]);
 
   useEffect(() => {
-    chatWindowRef.current?.scrollIntoView({ behavior: 'smooth' });
+    chatWindowRef.current?.scrollIntoView({ behavior: 'auto' });
   },);
 
   const addMessageForm = async (body: string, file: File | null) => {
