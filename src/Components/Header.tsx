@@ -147,8 +147,8 @@ function Header() {
             </div>
           </li>
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
-          <li className="relative flex items-center justify-center mx-auto mr-1"><button onClick={() => { if(activeTopbar === 'servers') setActiveTopbar('friends'); setActiveTopbar('servers')} }><IconButton icon={<IoServer size={30} />} name="Server List"></IconButton></button></li>
-          <li className="relative flex items-center justify-center mx-auto"><button onClick={() => setActiveTopbar('friends')}><IconButton icon={<FaUserFriends size={30} />} name="Friend List"></IconButton></button></li>
+          <li className="relative flex items-center justify-center mx-auto mr-1"><button onClick={() => { if(activeTopbar === 'servers') setActiveTopbar('friends'); setActiveTopbar('servers'); navigate('/home')} }><IconButton icon={<IoServer size={30} />} name="Server List"></IconButton></button></li>
+          <li className="relative flex items-center justify-center mx-auto"><button onClick={() => { setActiveTopbar('friends'); navigate('/home'); }}><IconButton icon={<FaUserFriends size={30} />} name="Friend List"></IconButton></button></li>
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
         </ul>
         <div className="my-2 flex">
