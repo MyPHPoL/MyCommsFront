@@ -18,7 +18,7 @@ import SettingsDialog from './DialogPopups/EditUserDialog';
 import Dashboard from './Dashboard';
 
 function Header() {
-  const [activeTopbar, setActiveTopbar] = useState<string | null>(null);
+  const [activeTopbar, setActiveTopbar] = useState<string | null>('servers');
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const { setAuth }: { setAuth: any } = useAuth();
   const [servers, setServers] = useState<ServerProps[] | undefined>();
@@ -52,6 +52,7 @@ function Header() {
     if (servers) {
       if (toRemoveId) {
         // toRemoveId is string but server.id is number thus != instead of !==
+        // but it is !== ???
         setServers(servers.filter((server) => server.id !== toRemoveId))
       }
     }
@@ -64,7 +65,7 @@ function Header() {
     const fetchServers = async () => {
       try {
         const response = await getServers(auth.token);
-        isMounted && setServers(response.data);
+        setServers(response.data);
       } catch (error: any) {
         enqueueSnackbar("We couldn't load your server list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
@@ -79,7 +80,7 @@ function Header() {
           { id: '3', username: 'Cwaniak', picture: undefined },
           { id: '4', username: 'Dupek z dłuższym nickiem xd', picture: undefined },
         ];
-        isMounted && setFriends(friends);
+        setFriends(friends);
       } catch (error: any) {
         enqueueSnackbar("We couldn't load your friend list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
@@ -162,7 +163,6 @@ function Header() {
         changeAuth={changeAuth}
       />
       { useLocation().pathname === '/home' && <Dashboard friends={friends} servers={servers} removeServer={removeServer} mode={activeTopbar || 'null'}/>}
-      
     </div>
   );
   function toggleDropdown() {

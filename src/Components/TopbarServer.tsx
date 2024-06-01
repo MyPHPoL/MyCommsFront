@@ -9,7 +9,6 @@ import Server, { ServerProps } from "./Server";
 import CreateServerDialog from "./DialogPopups/CreateServerDialog";
 import JoinServerDialog from "./DialogPopups/JoinServerDialog";
 import { useNavigate } from "react-router-dom";
-import FriendManager from "./Dashboard";
 
 interface TopbarProps {
   servers?: ServerProps[];

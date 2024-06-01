@@ -37,6 +37,7 @@ const MESSAGE_FRIENDS_URL = '/Message/GetAll?userId=';
 const GET_MESSAGED_USERS_URL = '/PrivateMessage/Users';
 const SEND_PRIVATE_MESSAGEFORM_URL = '/PrivateMessage/CreateForm';
 const GET_ALL_MESSAGES_FROM_USER_URL = '/PrivateMessage/GetAll?userId=';
+const LEAVE_SERVER_URL = '/Server/LeaveServer?serverId=';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -547,3 +548,16 @@ export const getAllMessagesFromUser = async (token: string, id: string) => {
     );
     return response;
 };
+
+export const LeaveServer = async (token: string, serverId: string) => {
+    const response = await axios.delete(
+        BASE_URL+LEAVE_SERVER_URL+serverId,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+}
