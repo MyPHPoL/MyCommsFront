@@ -1,8 +1,5 @@
 import axios from 'axios';
-import { channel } from 'diagnostics_channel';
 import { GifProps } from '../Components/TextBar';
-import { Description } from '@mui/icons-material';
-import { url } from 'inspector';
 
 const BASE_URL = 'https://localhost:7031';
 const REGISTER_URL = '/Account/Register';

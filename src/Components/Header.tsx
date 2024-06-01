@@ -65,7 +65,7 @@ function Header() {
     const fetchServers = async () => {
       try {
         const response = await getServers(auth.token);
-        setServers(response.data);
+        isMounted && setServers(response.data);
       } catch (error: any) {
         enqueueSnackbar("We couldn't load your server list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
@@ -80,7 +80,7 @@ function Header() {
           { id: '3', username: 'Cwaniak', picture: undefined },
           { id: '4', username: 'Dupek z dłuższym nickiem xd', picture: undefined },
         ];
-        setFriends(friends);
+        isMounted && setFriends(friends);
       } catch (error: any) {
         enqueueSnackbar("We couldn't load your friend list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
