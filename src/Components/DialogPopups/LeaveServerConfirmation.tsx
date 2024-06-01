@@ -1,7 +1,6 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import { enqueueSnackbar } from "notistack";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { deleteChannel, deleteServer } from "../../Api/axios";
+import { LeaveServer } from "../../Api/axios";
 import useAuth from "../../Hooks/useAuth";
 import { dialogStyles } from "./DialogStyles";
 
@@ -14,13 +13,13 @@ interface DialogProps {
 }
 
 
-const DeleteServerConfirmation: React.FC<DialogProps> = ({ open, handleClose, actions, removeServer, passedId }) => {
+const LeaveServerConfirmation: React.FC<DialogProps> = ({ open, handleClose, actions, removeServer, passedId }) => {
   const navigate = useNavigate();
   const { auth }: { auth: any } = useAuth();
 
-  const serverDelete = async () => {
+  const serverLeave = async () => {
     try {
-      await deleteServer(auth.token, passedId);
+      await LeaveServer(auth.token, passedId);
       removeServer(passedId)
       navigate("/home");
       document.location.reload(); // idk why, but it doesn't update server list, so we can just reload the page
@@ -29,8 +28,8 @@ const DeleteServerConfirmation: React.FC<DialogProps> = ({ open, handleClose, ac
     }
   }
 
-  const handleDeleteServer = () => {
-    serverDelete();
+  const handleLeaveServer = () => {
+    serverLeave();
     handleClose();
   }
 
@@ -39,15 +38,16 @@ const DeleteServerConfirmation: React.FC<DialogProps> = ({ open, handleClose, ac
   }
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" sx={dialogStyles.dialogPaper}>
-      <DialogTitle id="form-dialog-title" sx={dialogStyles.title}>Are you sure you want to delete the server?</DialogTitle>
+      <DialogTitle id="form-dialog-title" sx={dialogStyles.title}>Are you sure you want to leave this server?</DialogTitle>
       <DialogContent sx={dialogStyles.inputField}>
+      <DialogContentText sx={dialogStyles.inputField}>You will be able to join back at any time.</DialogContentText>
       </DialogContent>
       {/* Actions of the dialog */}
       <DialogActions>
         {/* If custom actions are provided, use them, otherwise use default actions */}
         {actions ? actions : (
           <>
-            <Button onClick={handleDeleteServer} sx={dialogStyles.styleButton}>
+            <Button onClick={handleLeaveServer} sx={dialogStyles.styleButton}>
               Yes
             </Button>
             <Button onClick={handleClose} sx={dialogStyles.styleButton}>
@@ -59,4 +59,4 @@ const DeleteServerConfirmation: React.FC<DialogProps> = ({ open, handleClose, ac
     </Dialog>
   );
 }
-export default DeleteServerConfirmation;
+export default LeaveServerConfirmation;

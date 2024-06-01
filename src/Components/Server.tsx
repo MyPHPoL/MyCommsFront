@@ -24,8 +24,9 @@ import DeleteChannelConfirmation from "./DialogPopups/DeleteChannelConfirmation"
 import DeleteServerConfirmation from "./DialogPopups/DeleteServerConfirmation";
 import EditServerDialog from "./DialogPopups/EditServerDialog";
 import { useLocation } from 'react-router-dom';
-import { Add } from "@mui/icons-material";
 import AddChannelDialog from "./DialogPopups/AddChannelDialog";
+import LeaveServerConfirmation from "./DialogPopups/LeaveServerConfirmation";
+
 export interface ServerProps {
   id: string;
   name: string;
@@ -61,6 +62,7 @@ function Server({ removeServer }: AdditionalProps) {
   const [editedChannel, setEditedChannel] = useState<ChannelProps | undefined>();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [serverDeleteOpen, setServerDeleteOpen] = useState(false);
+  const [serverLeaveOpen, setServerLeaveOpen] = useState(false);
   const [serverEditOpen, setServerEditOpen] = useState(false);
   const [editDesc, setEditDesc] = useState(server?.description ?? "");
   const [editName, setEditName] = useState(server?.name ?? "");
@@ -77,6 +79,13 @@ function Server({ removeServer }: AdditionalProps) {
   }
   const handleServerDeleteClose = () => {
     setServerDeleteOpen(false);
+  }
+  const handleServerLeaveClose = () => {
+    setServerLeaveOpen(false);
+  }
+
+  const handleServerLeaveOpen = () => {
+    setServerLeaveOpen(true);
   }
 
   const handleDeleteOpen = () => {
@@ -126,6 +135,12 @@ function Server({ removeServer }: AdditionalProps) {
     setPassedId(id);
     handleServerDeleteOpen();
   }
+
+  const handleLeaveServer = (id: string) => {
+    setPassedId(id);
+    handleServerLeaveOpen();
+  }
+
   const handleEditServer = (id: string) => {
     setEditName(server?.name ?? "");
     setEditDesc(server?.description ?? "");
@@ -287,6 +302,15 @@ function Server({ removeServer }: AdditionalProps) {
                       <MdDeleteForever size={25} /> Delete Server
                     </button>
                     : null}
+                  {(auth.id !== server?.ownerId) ?
+                    <button
+                      className="flex items-center px-4 py-2 text-sm w-full text-white hover:bg-red-600"
+                      role="menuitem"
+                      onClick={() => handleLeaveServer(ServerId ?? '')}
+                    >
+                      <MdDeleteForever size={25} /> Leave Server
+                    </button>
+                    : null}
                 </div>
               </div>
             )}
@@ -342,6 +366,7 @@ function Server({ removeServer }: AdditionalProps) {
       <DeleteChannelConfirmation open={deleteDialogOpen} handleClose={handleDeleteClose} removeChannel={removeChannel} passedId={dialogId} />
       <AddChannelDialog open={dialogAddOpen} handleClose={handleDialogAddClose} passedId={dialogId} pushChannel={pushChannel} />
       <DeleteServerConfirmation open={serverDeleteOpen} handleClose={handleServerDeleteClose} removeServer={removeServer} passedId={dialogId} />
+      <LeaveServerConfirmation open={serverLeaveOpen} handleClose={handleServerLeaveClose} removeServer={removeServer} passedId={dialogId} />
     </div>
   );
 }
