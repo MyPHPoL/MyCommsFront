@@ -29,8 +29,6 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogId, setPassedId] = useState("");
   const [toBeRemovedId, settoBeRemoved] = useState('');
 
 
@@ -84,19 +82,6 @@ function Channel({ widthmsg }: { widthmsg: number }) {
     } catch (error: any) {
       enqueueSnackbar("We couldn't load this channel info bar. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
     }
-  }
-
-  const handleDialogOpen = () => {
-    setDialogOpen(true);
-  };
-
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-  };
-  //changed to accept Id so it can be used for both channels and servers
-  const openDialog = (passedId: string) => {
-    setPassedId(passedId);
-    handleDialogOpen();
   }
 
   const removeMessage = (id: string) => {
@@ -159,7 +144,6 @@ function Channel({ widthmsg }: { widthmsg: number }) {
         name={channelInfo?.name || 'this channel'}
         widthmsg={widthmsg}
       />
-      <DeleteMessageConfirmation open={dialogOpen} handleClose={handleDialogClose} passedId={dialogId} removeMessage={removeMessage} />
     </div>
   );
 }

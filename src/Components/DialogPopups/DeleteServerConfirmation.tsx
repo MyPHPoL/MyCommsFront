@@ -23,7 +23,6 @@ const DeleteServerConfirmation: React.FC<DialogProps> = ({ open, handleClose, ac
       await deleteServer(auth.token, passedId);
       removeServer(passedId)
       navigate("/home");
-      document.location.reload(); // idk why, but it doesn't update server list, so we can just reload the page
     } catch (error: any) {
       handleError(error.response.status);
     }
