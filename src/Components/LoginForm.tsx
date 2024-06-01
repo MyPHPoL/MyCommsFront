@@ -108,7 +108,7 @@ const LoginForm = () => {
                 <Route path='/Register' element={<RegisterPage />} />
             </Routes>
         </div>
-        )};
+        )}
         </>
     );
 };

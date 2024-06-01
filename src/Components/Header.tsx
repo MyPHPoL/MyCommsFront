@@ -52,8 +52,8 @@ function Header() {
     if (servers) {
       if (toRemoveId) {
         // toRemoveId is string but server.id is number thus != instead of !==
-        // but it is !== ???
-        setServers(servers.filter((server) => server.id !== toRemoveId))
+        // eslint-disable-next-line eqeqeq
+        setServers(servers.filter((server) => server.id != toRemoveId))
       }
     }
   }, [toRemoveId])
@@ -162,7 +162,7 @@ function Header() {
         handleClose={handleDialogClose}
         changeAuth={changeAuth}
       />
-      { useLocation().pathname === '/home' && <Dashboard friends={friends} servers={servers} removeServer={removeServer} mode={activeTopbar || 'null'}/>}
+      { useLocation().pathname === '/home' && <Dashboard friends={friends} servers={servers} removeServer={removeServer} mode={activeTopbar || 'null'} handleAddServer={pushServer}/>}
     </div>
   );
   function toggleDropdown() {
