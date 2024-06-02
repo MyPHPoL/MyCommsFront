@@ -22,6 +22,7 @@ const GET_SERVER_MEMBERS_URL = '/Server/GetUsers?id=';
 const KICK_USER_URL = '/Server/KickUser?serverId=';
 const EDIT_USER = '/User/EditForm';
 const DELETE_MESSAGE_URL = '/Message/Delete?id=';
+const DELETE_PRIVATE_MESSAGE_URL = '/PrivateMessage/Delete?id=';
 const ADD_PICTURE = '/Server/AddPicture?serverId=';
 const SERVER_EDIT = '/Server/Edit?serverId=';
 const SEARCH_GIF = '/FavoriteGifs/Search?keyword=';
@@ -558,3 +559,16 @@ export const LeaveServer = async (token: string, serverId: string) => {
     );
     return response;
 }
+
+export const deletePrivateMessage = async (token: string, id: string) => {
+    const response = await axios.delete(
+        BASE_URL+DELETE_PRIVATE_MESSAGE_URL+id,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+};

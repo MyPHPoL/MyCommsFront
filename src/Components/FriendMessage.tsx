@@ -13,6 +13,7 @@ import { getAllMessagesFromUser, getUser, sendPrivateMessageForm } from "../Api/
 import useAuth from "../Hooks/useAuth";
 import { enqueueSnackbar } from "notistack";
 import { MessagePropsWithDelete } from "./Message";
+import { UserProps } from "./User";
 
 export interface FriendProps {
   id: string;
@@ -22,16 +23,16 @@ export interface FriendProps {
 
 function FriendMessage() {
   const { UserId } = useParams(); // userId is the name of the variable in the URL
-  const [Messages, setMessages] = useState<MessageProps[]>([]);
+  const [messages, setMessages] = useState<MessageProps[]>([]);
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
-  const [User, setUser] = useState<FriendProps | undefined>();
+  const [user, setUser] = useState<UserProps>();
   const location = useLocation();
-
+  const [toBeRemovedId, settoBeRemoved] = useState('');
+  
   const removeMessage = (id: string) => {
-    console.log(id);
+    settoBeRemoved(id);
   }
-
   useEffect(() => {
     if(UserId && (location.pathname.startsWith(`/friends/${UserId}`))){
     getUser(auth.token, UserId || '').then((response) => {
@@ -45,7 +46,14 @@ function FriendMessage() {
   useEffect(() => {
     chatWindowRef.current?.scrollIntoView({ behavior: 'auto' });
   },);
-
+  
+  useEffect(() => {
+    if (toBeRemovedId) {
+      if (messages) {
+        setMessages(messages.filter((message) => message.id !== toBeRemovedId));
+      }
+    }
+  }, [toBeRemovedId])
   const addMessageForm = async (body: string, file: File | null) => {
     try {
       const response = await sendPrivateMessageForm(auth.token, UserId || '', body, '0', file);
@@ -76,18 +84,19 @@ function FriendMessage() {
       <div className='flex-row flex w-full pt-2 pb-4 pl-[20px] bg-tertiary h-auto text-5xl shadow-sg tracking-wider font-semibold text-white items-center'>
         Chat with:
         <div className='flex mx-2'>
-          <UserAvatar name={User?.username} />
+        {user?.avatar ? <UserAvatar name={user.username} picture={"https://localhost:7031/file/" + user.avatar} /> : <UserAvatar name={user?.username} />}
         </div>
-        {User?.username}
+        {user?.username}
       </div>
       <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 border-tertiary w-full'>
-        {Messages.map(({ id, authorId, body, creationDate, attachment }: MessageProps) => (
+        {messages.map(({ id, authorId, body, creationDate, attachment }: MessageProps) => (
           <Message
             id={id}
             authorId={authorId}
             body={body}
             creationDate={creationDate}
             attachment={attachment}
+            isPrivateMessage={true}
             removeMessage={removeMessage}
           />
         ))}
