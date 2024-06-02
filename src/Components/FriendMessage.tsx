@@ -13,6 +13,7 @@ import { getAllMessagesFromUser, getUser, sendPrivateMessageForm } from "../Api/
 import useAuth from "../Hooks/useAuth";
 import { enqueueSnackbar } from "notistack";
 import { MessagePropsWithDelete } from "./Message";
+import { UserProps } from "./User";
 
 export interface FriendProps {
   id: string;
@@ -25,7 +26,7 @@ function FriendMessage() {
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
-  const [User, setUser] = useState<FriendProps | undefined>();
+  const [user, setUser] = useState<UserProps>();
   const location = useLocation();
   const [toBeRemovedId, settoBeRemoved] = useState('');
   
@@ -83,9 +84,9 @@ function FriendMessage() {
       <div className='flex-row flex w-full pt-2 pb-4 pl-[20px] bg-tertiary h-auto text-5xl shadow-sg tracking-wider font-semibold text-white items-center'>
         Chat with:
         <div className='flex mx-2'>
-          <UserAvatar name={User?.username} />
+        {user?.avatar ? <UserAvatar name={user.username} picture={"https://localhost:7031/file/" + user.avatar} /> : <UserAvatar name={user?.username} />}
         </div>
-        {User?.username}
+        {user?.username}
       </div>
       <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 border-tertiary w-full'>
         {messages.map(({ id, authorId, body, creationDate, attachment }: MessageProps) => (
