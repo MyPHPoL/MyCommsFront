@@ -78,7 +78,7 @@ function Header() {
           { id: '1', username: 'Abecadłuś', picture: undefined },
           { id: '2', username: 'Brokułas', picture: undefined },
           { id: '3', username: 'Cwaniak', picture: undefined },
-          { id: '4', username: 'Dupek z dłuższym nickiem xd', picture: undefined },
+          { id: 'd47ef5df-8cc3-4119-acfc-6d4a3336093a', username: 'Dupek z dłuższym nickiem xd', picture: undefined },
         ];
         isMounted && setFriends(friends);
       } catch (error: any) {
