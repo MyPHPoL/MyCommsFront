@@ -52,8 +52,8 @@ function Header() {
     if (servers) {
       if (toRemoveId) {
         // toRemoveId is string but server.id is number thus != instead of !==
-        // eslint-disable-next-line eqeqeq
-        setServers(servers.filter((server) => server.id != toRemoveId))
+         // eslint-disable-next-line eqeqeq
+         setServers(servers.filter((server) => server.id != toRemoveId))
       }
     }
   }, [toRemoveId])
@@ -171,6 +171,8 @@ function Header() {
       dropdown.classList.toggle('hidden');
     }
   }
+
+  
 }
 
 

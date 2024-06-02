@@ -5,7 +5,7 @@ const BASE_URL = 'https://localhost:7031';
 const REGISTER_URL = '/Account/Register';
 const LOGIN_URL = '/Account/Login';
 const SERVER_LIST_URL = '/Server/GetServers';
-const FRIEND_LIST_URL = '/FriendList/GetAll';
+const FRIEND_LIST_URL = '/FriendList/GetAllFriends';
 const SERVER_URL = '/Server/GetServer?id=';
 const CHANNELS_URL = '/Channel/GetAllOnServer?id=';
 const ALL_MESSAGES_URL = '/Message/GetAll?channelId=';
