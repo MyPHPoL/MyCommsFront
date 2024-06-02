@@ -12,6 +12,7 @@ import TextBar from "./TextBar";
 import { getAllMessagesFromUser, getUser, sendPrivateMessageForm } from "../Api/axios";
 import useAuth from "../Hooks/useAuth";
 import { enqueueSnackbar } from "notistack";
+import { MessagePropsWithDelete } from "./Message";
 
 export interface FriendProps {
   id: string;
@@ -26,6 +27,11 @@ function FriendMessage() {
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [User, setUser] = useState<FriendProps | undefined>();
   const location = useLocation();
+
+  const removeMessage = (id: string) => {
+    console.log(id);
+  }
+
   useEffect(() => {
     if(UserId && (location.pathname.startsWith(`/friends/${UserId}`))){
     getUser(auth.token, UserId || '').then((response) => {
@@ -77,12 +83,12 @@ function FriendMessage() {
       <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 border-tertiary w-full'>
         {Messages.map(({ id, authorId, body, creationDate, attachment }: MessageProps) => (
           <Message
-            key={id}
             id={id}
             authorId={authorId}
             body={body}
             creationDate={creationDate}
             attachment={attachment}
+            removeMessage={removeMessage}
           />
         ))}
         <div ref={chatWindowRef} />

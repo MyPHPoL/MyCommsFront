@@ -4,7 +4,6 @@ import { enqueueSnackbar } from "notistack";
 import useAuth from "../Hooks/useAuth";
 import { getAllMessages, getChannelInfo, sendMessage, sendMessageForm } from "../Api/axios";
 import { Message } from "./Message";
-import { MdDeleteForever } from "react-icons/md";
 import DeleteMessageConfirmation from "./DialogPopups/DeleteMessageConfirmation";
 import TextBar from "./TextBar";
 
@@ -30,8 +29,6 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogId, setPassedId] = useState("");
   const [toBeRemovedId, settoBeRemoved] = useState('');
 
 
@@ -87,19 +84,6 @@ function Channel({ widthmsg }: { widthmsg: number }) {
     }
   }
 
-  const handleDialogOpen = () => {
-    setDialogOpen(true);
-  };
-
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-  };
-  //changed to accept Id so it can be used for both channels and servers
-  const openDialog = (passedId: string) => {
-    setPassedId(passedId);
-    handleDialogOpen();
-  }
-
   const removeMessage = (id: string) => {
     settoBeRemoved(id);
   }
@@ -134,27 +118,21 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   },);
 
   return (
-    <div className='md:flex h-auto  -z-20 flex-col fixed inset-y-0 top-20  w-full' style={{ left: `calc(max(230px,15%))`, marginRight: `${widthmsg}%` }}>
-      <div className='text-5xl shadow-sg whitespace-nowrap tracking-wider font-semibold text-white w-full pl-5 h-[60px] bg-tertiary'>
+    <div className='md:flex h-auto -z-20 flex-col fixed inset-y-0 top-20 w-full' style={{ left: `calc(max(230px,15%))`, marginRight: `${widthmsg}%` }}>
+      <div className='text-5xl shadow-sg whitespace-nowrap tracking-wider font-semibold text-white w-full pl-5 pb-5 bg-tertiary'>
         {channelInfo?.name} | {channelInfo?.description}
       </div>
-      <div className='mt-0 ml-0 mx-auto px-0 overflow-y-auto  mb-16  w-full'>
+      <div className='mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 w-[85%]'>
         {messages?.map(({ id, authorId, body, creationDate, attachment }) => (
-          <div key={id} className='align-left grid grid-cols-12 border-tertiary'>
-            <div className='col-span-10'>
+          <div key={id} className='border-tertiary'>
               <Message
                 id={id}
                 authorId={authorId}
                 body={body}
                 creationDate={creationDate}
                 attachment={attachment}
+                removeMessage={removeMessage}
               />
-            </div>
-            {(auth.id === authorId) ?
-              <button className="col-span-1 w-7 h-7 ml-2 text-xs text-white rounded-lg radius-10 hover:bg-red-600 "
-                onClick={() => openDialog(id)}>
-                <MdDeleteForever size={25} />
-              </button> : null}
           </div>
         ))}
 
@@ -166,7 +144,6 @@ function Channel({ widthmsg }: { widthmsg: number }) {
         name={channelInfo?.name || 'this channel'}
         widthmsg={widthmsg}
       />
-      <DeleteMessageConfirmation open={dialogOpen} handleClose={handleDialogClose} passedId={dialogId} removeMessage={removeMessage} />
     </div>
   );
 }

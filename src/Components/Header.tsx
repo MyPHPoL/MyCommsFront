@@ -52,8 +52,8 @@ function Header() {
     if (servers) {
       if (toRemoveId) {
         // toRemoveId is string but server.id is number thus != instead of !==
-        // but it is !== ???
-        setServers(servers.filter((server) => server.id !== toRemoveId))
+        // eslint-disable-next-line eqeqeq
+        setServers(servers.filter((server) => server.id != toRemoveId))
       }
     }
   }, [toRemoveId])
@@ -65,7 +65,7 @@ function Header() {
     const fetchServers = async () => {
       try {
         const response = await getServers(auth.token);
-        setServers(response.data);
+        isMounted && setServers(response.data);
       } catch (error: any) {
         enqueueSnackbar("We couldn't load your server list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
@@ -80,7 +80,7 @@ function Header() {
           { id: '3', username: 'Cwaniak', picture: undefined },
           { id: '4', username: 'Dupek z dłuższym nickiem xd', picture: undefined },
         ];
-        setFriends(friends);
+        isMounted && setFriends(friends);
       } catch (error: any) {
         enqueueSnackbar("We couldn't load your friend list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
@@ -162,7 +162,7 @@ function Header() {
         handleClose={handleDialogClose}
         changeAuth={changeAuth}
       />
-      { useLocation().pathname === '/home' && <Dashboard friends={friends} servers={servers} removeServer={removeServer} mode={activeTopbar || 'null'}/>}
+      { useLocation().pathname === '/home' && <Dashboard friends={friends} servers={servers} removeServer={removeServer} mode={activeTopbar || 'null'} handleAddServer={pushServer}/>}
     </div>
   );
   function toggleDropdown() {

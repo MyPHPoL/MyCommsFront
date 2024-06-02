@@ -4,15 +4,22 @@ import { UserAvatar } from "./IconLib";
 import { ServerProps } from "./Server";
 import { FriendProps } from "./FriendMessage";
 import { MdDeleteForever } from "react-icons/md";
+import DeleteServerConfirmation from "./DialogPopups/DeleteServerConfirmation";
+import { FaDoorOpen } from "react-icons/fa6";
+import { IoMdAdd } from "react-icons/io";
+import CreateServerDialog from "./DialogPopups/CreateServerDialog";
+import JoinServerDialog from "./DialogPopups/JoinServerDialog";
+import useAuth from "../Hooks/useAuth";
 
 interface DashBoardProps {
     friends: FriendProps[] | undefined;
     servers: ServerProps[] | undefined;
     mode: string;
     removeServer: (id: string) => void;
+    handleAddServer: (server: ServerProps) => void;
   }
   
-  function Dashboard({ friends, servers, removeServer, mode }: DashBoardProps) {
+  function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: DashBoardProps) {
 
     const renderFriends = () => {
       return friends?.map(({ id, username, picture }) => (
@@ -40,16 +47,21 @@ interface DashBoardProps {
     return (
       <div className='md:flex h-full w-full -z-20 flex-col fixed inset-y-0 top-20 left-0'>
         {mode === "friends" ? renderFriends() : null }
-        {mode === "servers" ? RenderServers(servers || []) : null }
+        {mode === "servers" ? RenderServers(servers || [], removeServer, handleAddServer) : null }
       </div>
     );
   }
   
   export default Dashboard;
 
-  function RenderServers (servers: ServerProps[]) {
+  function RenderServers (servers: ServerProps[], removeServer: (id: string) => void, handleAddServer: (server: ServerProps) => void ){
 
     const [filteredServers, setFilteredServers] = useState(servers);
+    const [serverDeleteOpen, setServerDeleteOpen] = useState(false);
+    const [dialogId, setPassedId] = useState("");
+    const [joinOpen, setJoinOpen] = useState(false);
+    const [createOpen, setCreateOpen] = useState(false);
+    const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
 
     // servers didn't want to load at first so i added this useEffect. it probably won't be necessary in the friends function
     useEffect(() => {
@@ -73,7 +85,31 @@ interface DashBoardProps {
       setFilteredServers(filtered);
     };
 
-    return <>
+    const handleServerDeleteOpen = (id: string) => {
+      setPassedId(id);
+      setServerDeleteOpen(true);
+    }
+    
+    const handleServerDeleteClose = () => {
+      setServerDeleteOpen(false);
+    }
+
+    const handleJoinOpen = () => {
+      setJoinOpen(true);
+    };
+
+    const handleJoinClose = () => {
+      setJoinOpen(false);
+    };
+    const handleCreateOpen = () => {
+      setCreateOpen(true);
+    };
+  
+    const handleCreateClose = () => {
+      setCreateOpen(false);
+    };
+
+    return <div className="w-[720px]">
       <h1 className='text-5xl font-bold my-4 text-white mx-2 pl-[20px]'> Your Servers </h1>
       <div className='relative w-[600px] h-12 my-2 pl-[20px]'>
         <input
@@ -84,12 +120,13 @@ interface DashBoardProps {
             className='placeholder:color-white w-[600px] text-white h-full border-2 border-solid border-slate-600 bg-transparent outline-none color-white rounded-s-3xl rounded-e-3xl pt-5 pr-11 pb-5 pl-5'
         />
       </div>
-      {filteredServers?.map(({ id, name, description, picture }) => (
+      <div className='overflow-y-auto h-[700px]'>
+      {filteredServers?.map(({ id, name, description, picture, ownerId }) => (
         <div
           key={id}
           className='group flex-row flex w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white items-center'>
           <Link to={`/server/${id}`}>
-            <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] hover:bg-yellow-500 hover:text-primary align-middle transition-all duration-300 ease-linear'>
+            <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] hover:bg-yellow-500 hover:text-primary align-middle duration-300 ease-linear'>
               <UserAvatar
                 name={name}
                 picture={
@@ -104,11 +141,49 @@ interface DashBoardProps {
               </div>
             </div>
           </Link>
+          { auth.id === ownerId &&
           <button className="invisible group-hover:visible px-4 py-2 ml-0 text-sm text-white rounded-full bg-tertiary hover:bg-red-600 transition-all duration-300 ease-linear"
-                  onClick={() => console.log(id)}>
+                  onClick={() => handleServerDeleteOpen(id)}>
                   <MdDeleteForever size={25} /> 
           </button>
+          }
         </div>
       ))}
-    </>
+      <div className="w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white">
+        <button className='flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] border-dashed border-2 hover:bg-yellow-500 hover:text-primary duration-300 ease-linear'
+        onClick={() => handleJoinOpen()}>
+          <FaDoorOpen className="mx-3" size="32" />
+          <div className='pl-2'>
+            <div className="float-left">Click here to join a server!</div>
+            <div className='text-base font-normal overflow-clip float-left'>All you need is a server name!</div>        
+          </div>
+        </button>
+      </div>
+      <div className="w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white">
+        <button className='flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] border-dashed border-2 hover:bg-yellow-500 hover:text-primary duration-300 ease-linear'
+        onClick={() => handleCreateOpen()}>
+          <IoMdAdd className="mx-3" size="32" />
+          <div className='pl-2'>
+              <div className="float-left">Click here to create a new server!</div>
+              <div className='text-base font-normal overflow-clip float-left'>Perfect new server just a click away!</div>   
+          </div>
+        </button>
+      </div>
+    </div>
+      <DeleteServerConfirmation 
+        open={serverDeleteOpen} 
+        handleClose={handleServerDeleteClose} 
+        removeServer={removeServer} 
+        passedId={dialogId} />
+      <CreateServerDialog
+        open={createOpen}
+        handleClose={handleCreateClose}
+        handleAddServer={handleAddServer}
+      />
+      <JoinServerDialog
+        open={joinOpen}
+        handleClose={handleJoinClose}
+        handleJoinServer={handleAddServer}
+      />
+    </div>
 };
