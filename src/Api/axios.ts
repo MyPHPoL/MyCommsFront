@@ -34,7 +34,7 @@ const GET_FILE = '/File/';
 const MESSAGE_FRIENDS_URL = '/Message/GetAll?userId=';
 const GET_MESSAGED_USERS_URL = '/PrivateMessage/Users';
 const SEND_PRIVATE_MESSAGEFORM_URL = '/PrivateMessage/CreateForm';
-const GET_ALL_MESSAGES_FROM_USER_URL = '/PrivateMessage/GetAll?userId=';
+const GET_ALL_MESSAGES_FROM_USER_URL = '/PrivateMessage/Get/';
 const LEAVE_SERVER_URL = '/Server/LeaveServer?serverId=';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
