@@ -40,6 +40,7 @@ function Header() {
     setTmpServer(server);
   }
 
+
   useEffect(() => {
     if (tmpServer) {
       if (servers) {

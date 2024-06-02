@@ -38,6 +38,7 @@ const GET_ALL_MESSAGES_FROM_USER_URL = '/PrivateMessage/Get/';
 const LEAVE_SERVER_URL = '/Server/LeaveServer?serverId=';
 const GET_INC_INVITES = '/FriendInvitation/GetIncomingInvites';
 const GET_OUt_INVITES = '/FriendInvitation/GetOutgoingInvites';
+const INVITE_FRIEND_NAME = '/FriendInvitation/InviteByName?name=';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -569,6 +570,48 @@ export const deletePrivateMessage = async (token: string, id: string) => {
             headers: { 
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}` 
+            }
+        },
+    );
+    return response;
+};
+
+export const getIncomingInvites = async (token: string) => {
+    const response = await axios.get(
+        BASE_URL+GET_INC_INVITES,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+}
+
+export const getOutgoingInvites = async (token: string) => {
+    const response = await axios.get(
+        BASE_URL+GET_OUt_INVITES,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+}
+
+export const inviteFriendName = async (token: string, name: string) => {
+    const response = await axios.post(
+        
+        BASE_URL+INVITE_FRIEND_NAME+name,
+        
+        {},
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
             }
         },
     );
