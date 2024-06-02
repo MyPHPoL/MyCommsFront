@@ -22,16 +22,16 @@ export interface FriendProps {
 
 function FriendMessage() {
   const { UserId } = useParams(); // userId is the name of the variable in the URL
-  const [Messages, setMessages] = useState<MessageProps[]>([]);
+  const [messages, setMessages] = useState<MessageProps[]>([]);
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [User, setUser] = useState<FriendProps | undefined>();
   const location = useLocation();
-
+  const [toBeRemovedId, settoBeRemoved] = useState('');
+  
   const removeMessage = (id: string) => {
-    console.log(id);
+    settoBeRemoved(id);
   }
-
   useEffect(() => {
     if(UserId && (location.pathname.startsWith(`/friends/${UserId}`))){
     getUser(auth.token, UserId || '').then((response) => {
@@ -45,7 +45,14 @@ function FriendMessage() {
   useEffect(() => {
     chatWindowRef.current?.scrollIntoView({ behavior: 'auto' });
   },);
-
+  
+  useEffect(() => {
+    if (toBeRemovedId) {
+      if (messages) {
+        setMessages(messages.filter((message) => message.id !== toBeRemovedId));
+      }
+    }
+  }, [toBeRemovedId])
   const addMessageForm = async (body: string, file: File | null) => {
     try {
       const response = await sendPrivateMessageForm(auth.token, UserId || '', body, '0', file);
@@ -81,13 +88,14 @@ function FriendMessage() {
         {User?.username}
       </div>
       <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 border-tertiary w-full'>
-        {Messages.map(({ id, authorId, body, creationDate, attachment }: MessageProps) => (
+        {messages.map(({ id, authorId, body, creationDate, attachment }: MessageProps) => (
           <Message
             id={id}
             authorId={authorId}
             body={body}
             creationDate={creationDate}
             attachment={attachment}
+            isPrivateMessage={true}
             removeMessage={removeMessage}
           />
         ))}

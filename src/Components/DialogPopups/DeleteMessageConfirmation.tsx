@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { dialogStyles } from "./DialogStyles";
 import useAuth from "../../Hooks/useAuth";
-import { deleteMessage } from "../../Api/axios";
+import { deleteMessage, deletePrivateMessage } from "../../Api/axios";
 import { useNavigate } from 'react-router-dom';
 
 interface DialogProps {
@@ -9,14 +9,27 @@ interface DialogProps {
   handleClose: () => void;
   removeMessage: (removeId: string) => void;
   passedId: string;
+  isPrivateMessage:  boolean;
   actions?: React.ReactNode;
 }
-const DeleteMessageConfirmation: React.FC<DialogProps> = ({ open, handleClose, actions, removeMessage, passedId }) => {
+const DeleteMessageConfirmation: React.FC<DialogProps> = ({ open, handleClose, actions, removeMessage, passedId, isPrivateMessage }) => {
   const navigate = useNavigate();
   const { auth }: { auth: any } = useAuth();
   const handleDeleteMessage = () => {
-    messageDelete();
+    if(!isPrivateMessage){
+      messageDelete();
+    } else{
+      privateMessageDelete();
+    }
     handleClose();
+  }
+  const privateMessageDelete = async () => {
+    try {
+      const response = await deletePrivateMessage(auth.token, passedId);
+      removeMessage(passedId);
+    } catch (error: any) {
+      handleError(error.response.status);
+    }
   }
   const messageDelete = async () => {
     try {
