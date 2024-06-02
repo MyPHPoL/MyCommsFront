@@ -35,7 +35,7 @@ function Header() {
     setToRemoveId(id);
     console.log('removed')
   }
-  
+
   const pushServer = (server: ServerProps) => {
     setTmpServer(server);
   }
@@ -52,8 +52,8 @@ function Header() {
     if (servers) {
       if (toRemoveId) {
         // toRemoveId is string but server.id is number thus != instead of !==
-         // eslint-disable-next-line eqeqeq
-         setServers(servers.filter((server) => server.id != toRemoveId))
+        // eslint-disable-next-line eqeqeq
+        setServers(servers.filter((server) => server.id != toRemoveId))
       }
     }
   }, [toRemoveId])
@@ -73,14 +73,8 @@ function Header() {
 
     const fetchFriends = async () => {
       try {
-        //const response = await getFriends(auth.token);
-        const friends: FriendProps[] = [
-          { id: '1', username: 'Abecadłuś', picture: undefined },
-          { id: '2', username: 'Brokułas', picture: undefined },
-          { id: '3', username: 'Cwaniak', picture: undefined },
-          { id: 'd47ef5df-8cc3-4119-acfc-6d4a3336093a', username: 'Dupek z dłuższym nickiem xd', picture: undefined },
-        ];
-        isMounted && setFriends(friends);
+        const response = await getFriends(auth.token);
+        isMounted && setFriends(response.data);
       } catch (error: any) {
         enqueueSnackbar("We couldn't load your friend list. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
@@ -126,7 +120,7 @@ function Header() {
         <ul className="float-left  flex leading-[80px] text-white uppercase">
           <li className="float-left text-white text-3xl font-bold leading-[80px] pl-12">{auth.username}</li>
           <li className="relative flex items-center justify-center ml-3" >
-          {auth.avatar ? <UserAvatar name={auth.username} picture={"https://localhost:7031/file/" + auth.avatar} /> : <div></div>}
+            {auth.avatar ? <UserAvatar name={auth.username} picture={"https://localhost:7031/file/" + auth.avatar} /> : <div></div>}
           </li>
           <li className="relative flex items-center justify-center ml-3">
             <button onClick={toggleDropdown}>
@@ -147,7 +141,7 @@ function Header() {
             </div>
           </li>
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
-          <li className="relative flex items-center justify-center mx-auto mr-1"><button onClick={() => { if(activeTopbar === 'servers') setActiveTopbar('friends'); setActiveTopbar('servers'); navigate('/home')} }><IconButton icon={<IoServer size={30} />} name="Server List"></IconButton></button></li>
+          <li className="relative flex items-center justify-center mx-auto mr-1"><button onClick={() => { if (activeTopbar === 'servers') setActiveTopbar('friends'); setActiveTopbar('servers'); navigate('/home') }}><IconButton icon={<IoServer size={30} />} name="Server List"></IconButton></button></li>
           <li className="relative flex items-center justify-center mx-auto"><button onClick={() => { setActiveTopbar('friends'); navigate('/home'); }}><IconButton icon={<FaUserFriends size={30} />} name="Friend List"></IconButton></button></li>
           <label style={{ borderRight: '2px solid grey', borderRadius: '50%', margin: '15px' }}></label>
         </ul>
@@ -162,7 +156,7 @@ function Header() {
         handleClose={handleDialogClose}
         changeAuth={changeAuth}
       />
-      { useLocation().pathname === '/home' && <Dashboard friends={friends} servers={servers} removeServer={removeServer} mode={activeTopbar || 'null'} handleAddServer={pushServer}/>}
+      {useLocation().pathname === '/home' && <Dashboard friends={friends} servers={servers} removeServer={removeServer} mode={activeTopbar || 'null'} handleAddServer={pushServer} />}
     </div>
   );
   function toggleDropdown() {
@@ -172,7 +166,7 @@ function Header() {
     }
   }
 
-  
+
 }
 
 

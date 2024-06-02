@@ -36,6 +36,8 @@ const GET_MESSAGED_USERS_URL = '/PrivateMessage/Users';
 const SEND_PRIVATE_MESSAGEFORM_URL = '/PrivateMessage/CreateForm';
 const GET_ALL_MESSAGES_FROM_USER_URL = '/PrivateMessage/Get/';
 const LEAVE_SERVER_URL = '/Server/LeaveServer?serverId=';
+const GET_INC_INVITES = '/FriendInvitation/GetIncomingInvites';
+const GET_OUt_INVITES = '/FriendInvitation/GetOutgoingInvites';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
