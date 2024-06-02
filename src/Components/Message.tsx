@@ -12,6 +12,7 @@ export interface MessagePropsWithDelete {
   body: string,
   creationDate: string
   attachment: string | null
+  isPrivateMessage: boolean;
   removeMessage: (id: string) => void
 }
 export interface MessageContentProps {
@@ -19,7 +20,7 @@ export interface MessageContentProps {
   attachment: string | null;
 
 }
-export const Message = ({ id, authorId, body, creationDate, attachment, removeMessage }: MessagePropsWithDelete) => {
+export const Message = ({ id, authorId, body, creationDate, attachment, isPrivateMessage,removeMessage }: MessagePropsWithDelete) => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [username, setUsername] = useState('');
     const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
@@ -52,7 +53,7 @@ export const Message = ({ id, authorId, body, creationDate, attachment, removeMe
               <MessageContent body={body} attachment={attachment} />
             </div>
           </div>
-          <DeleteMessageConfirmation open={dialogOpen} handleClose={handleDialogClose} passedId={id} removeMessage={removeMessage} />
+          <DeleteMessageConfirmation open={dialogOpen} handleClose={handleDialogClose} passedId={id} removeMessage={removeMessage} isPrivateMessage={isPrivateMessage} />
         </div>
     );
 };

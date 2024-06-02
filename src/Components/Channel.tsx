@@ -131,6 +131,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
                 body={body}
                 creationDate={creationDate}
                 attachment={attachment}
+                isPrivateMessage={false}
                 removeMessage={removeMessage}
               />
           </div>
