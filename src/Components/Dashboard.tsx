@@ -12,6 +12,8 @@ import JoinServerDialog from "./DialogPopups/JoinServerDialog";
 import useAuth from "../Hooks/useAuth";
 import { TiUserAdd } from "react-icons/ti";
 import AddFriendDialog from "./DialogPopups/AddFriendDialog";
+import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+import { getIncomingInvites, getOutgoingInvites } from "../Api/axios";
 
 interface DashBoardProps {
   friends: FriendProps[] | undefined;
@@ -21,6 +23,13 @@ interface DashBoardProps {
   handleAddServer: (server: ServerProps) => void;
 }
 
+interface InviteProps {
+  id: string;
+  username: string;
+  picture?: string;
+  creationDate: string;
+}
+
 function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: DashBoardProps) {
 
   const RenderFriends: React.FC<DashBoardProps> = ({ friends = [] }) => {
@@ -28,6 +37,7 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
     const [incInvites, setIncInvites] = useState([]);
     const [outInvites, setOutInvites] = useState([]);
     const [addOpen, setAddOpen] = useState(false);
+    const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
 
 
     const handleFilter = (event: any) => {
@@ -35,6 +45,49 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
       const filtered = friends.filter(friend => friend.username.includes(value));
       setFilteredFriends(filtered);
     };
+
+    useEffect(() => {
+      let isMounted = true; // something, something not to render when component is unmounted
+      const controller = new AbortController(); // cancels request when component unmounts
+
+      const fetchIncInvites = async () => {
+        try {
+          const response = await getIncomingInvites(auth.token);
+          if (isMounted && response.data) {
+            const invites = response.data.map((invite: any) => invite.inviter);
+            setIncInvites(invites);
+          }
+        } catch (error: any) {
+          enqueueSnackbar("We couldn't load your incoming invites. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+        }
+      };
+
+      const fetchOutInvites = async () => {
+        try {
+          const response = await getOutgoingInvites(auth.token);
+          if (isMounted && response.data) {
+            const invites = response.data.map((invite: any) => invite.invitee);
+            setOutInvites(invites);
+          }
+        } catch (error: any) {
+          enqueueSnackbar("We couldn't load your outgoing invites. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+        }
+      };
+
+
+      fetchIncInvites();
+      fetchOutInvites();
+
+
+      return () => {
+        isMounted = false;
+        controller.abort();
+      };
+    }, []);
+
+
+
+
 
     const handleAddOpen = () => {
       setAddOpen(true);
@@ -113,7 +166,7 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
             />
           </div>
           <div className='overflow-y-auto h-[700px]'>
-            {outInvites?.map(({ id, username, picture, creationDate }) => (
+            {incInvites?.map(({ id, username, picture, creationDate }) => (
               <div
                 key={id}
                 className='group flex-row flex w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white items-center'>
@@ -157,25 +210,23 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
               <div
                 key={id}
                 className='group flex-row flex w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white items-center'>
-                <Link to={`/friends/${id}`}>
-                  <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] hover:bg-yellow-500 hover:text-primary align-middle duration-300 ease-linear'>
-                    <UserAvatar
-                      name={username}
-                      picture={
-                        picture
-                          ? "https://localhost:7031/file/" + picture
-                          : undefined
-                      }
-                    />
-                    <div className='pl-2'>
-                      {username}
-                      <small className='text-xs text-left font-semibold text-gray-500 ml-2'>
-                        {new Date(creationDate).toLocaleDateString()} {new Date(creationDate).toLocaleTimeString()}
-                      </small>
-                      <div className='text-base font-normal overflow-clip'></div>
-                    </div>
+                <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] hover:bg-yellow-500 hover:text-primary align-middle duration-300 ease-linear'>
+                  <UserAvatar
+                    name={username}
+                    picture={
+                      picture
+                        ? "https://localhost:7031/file/" + picture
+                        : undefined
+                    }
+                  />
+                  <div className='pl-2'>
+                    {username}
+                    <small className='text-xs text-left font-semibold text-gray-500 ml-2'>
+                      {new Date(creationDate).toLocaleDateString()} {new Date(creationDate).toLocaleTimeString()}
+                    </small>
+                    <div className='text-base font-normal overflow-clip'></div>
                   </div>
-                </Link>
+                </div>
               </div>
             ))}
           </div>

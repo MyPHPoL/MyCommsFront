@@ -29,24 +29,25 @@ function FriendMessage() {
   const [user, setUser] = useState<UserProps>();
   const location = useLocation();
   const [toBeRemovedId, settoBeRemoved] = useState('');
-  
+
   const removeMessage = (id: string) => {
     settoBeRemoved(id);
   }
   useEffect(() => {
-    if(UserId && (location.pathname.startsWith(`/friends/${UserId}`))){
-    getUser(auth.token, UserId || '').then((response) => {
-      setUser(response.data);
-    }).catch((error: any) => {
-      enqueueSnackbar("We couldn't load user info. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
-    })}
+    if (UserId && (location.pathname.startsWith(`/friends/${UserId}`))) {
+      getUser(auth.token, UserId || '').then((response) => {
+        setUser(response.data);
+      }).catch((error: any) => {
+        enqueueSnackbar("We couldn't load user info. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      })
+    }
     fetchAllMessages();
   }, [UserId]);
 
   useEffect(() => {
     chatWindowRef.current?.scrollIntoView({ behavior: 'auto' });
   },);
-  
+
   useEffect(() => {
     if (toBeRemovedId) {
       if (messages) {
@@ -84,7 +85,7 @@ function FriendMessage() {
       <div className='flex-row flex w-full pt-2 pb-4 pl-[20px] bg-tertiary h-auto text-5xl shadow-sg tracking-wider font-semibold text-white items-center'>
         Chat with:
         <div className='flex mx-2'>
-        {user?.avatar ? <UserAvatar name={user.username} picture={"https://localhost:7031/file/" + user.avatar} /> : <UserAvatar name={user?.username} />}
+          {user?.avatar ? <UserAvatar name={user.username} picture={"https://localhost:7031/file/" + user.avatar} /> : <UserAvatar name={user?.username} />}
         </div>
         {user?.username}
       </div>
@@ -102,11 +103,11 @@ function FriendMessage() {
         ))}
         <div ref={chatWindowRef} />
       </div>
-      <TextBar 
-      addMessage={addMessageForm} 
-      name={UserId || 'this friend'}
-      widthmsg={15}//temporary hardcoded value, I was not the creator of this code so will wait for the original creator to fix this
-      refreshMessages={fetchAllMessages}
+      <TextBar
+        addMessage={addMessageForm}
+        name={user?.username || 'this friend'}
+        widthmsg={15}//temporary hardcoded value, I was not the creator of this code so will wait for the original creator to fix this
+        refreshMessages={fetchAllMessages}
       />
     </div>
   );
