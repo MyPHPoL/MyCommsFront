@@ -5,7 +5,6 @@ import { useState } from "react";
 import { TiUserAdd } from "react-icons/ti";
 import { IconButton } from "./IconLib";
 import FriendMessage, { FriendProps } from "./FriendMessage";
-import FriendManager from "./Dashboard";
 import AddFriendDialog from "./DialogPopups/AddFriendDialog";
 
 interface TopbarProps {
@@ -22,6 +21,8 @@ export default function TopbarFriend({ friends }: TopbarProps) {
   const navigate = useNavigate();
   useEffect(() => {
     navigate('/home');
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDialogOpen = () => {
@@ -55,10 +56,17 @@ export default function TopbarFriend({ friends }: TopbarProps) {
         //handleAddFriend={handleAddFriend} the dialog currently does not have any functionality, moved from dialog template to separate component for further development
         />
         <ul className="m-4 first:my-0 last:my-0 flex flex-row">
-          {friends?.map(({ id, username, picture }) => (
+          {friends?.map(({ id, username, avatar }) => (
             <li className="mr-2" key={id}>
               <Link to={`/friends/${id}`}>
-                <ServerButton name={username} picture={picture} />
+                <ServerButton
+                    name={username}
+                    picture={
+                      avatar
+                        ? "https://localhost:7031/file/" + avatar
+                        : undefined
+                    }
+                  />
               </Link>
             </li>
           ))}

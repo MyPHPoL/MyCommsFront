@@ -14,16 +14,18 @@ export interface MessagePropsWithDelete {
   attachment: string | null
   isPrivateMessage: boolean;
   removeMessage: (id: string) => void
+  widthmsg?: number;
 }
 export interface MessageContentProps {
   body: string;
   attachment: string | null;
 
 }
-export const Message = ({ id, authorId, body, creationDate, attachment, isPrivateMessage,removeMessage }: MessagePropsWithDelete) => {
+export const Message = ({ id, authorId, body, creationDate, attachment, isPrivateMessage, removeMessage, widthmsg }: MessagePropsWithDelete) => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [username, setUsername] = useState('');
     const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
+
     const handleDialogOpen = () => {
       setDialogOpen(true);
     };
@@ -36,7 +38,7 @@ export const Message = ({ id, authorId, body, creationDate, attachment, isPrivat
       setUsername(username);
     });
     return (
-      <div className='group w-full justify-evenly flex-row py-3 px-8 m-0 cursor-pointer border-tertiary border-b-2 hover:bg-tertiary text-ellipsis truncate break-all'>
+      <div className='group justify-evenly w-auto flex-row py-3 px-8 cursor-pointer border-tertiary border-b-2 hover:bg-tertiary text-ellipsis truncate break-all' style={{ marginRight: `${widthmsg? widthmsg + 1.5 : 0}%`}}>
           <div className='flex flex-col ml-auto border-tertiary'>
             <div>
               {(auth.id === authorId) ?
@@ -53,8 +55,8 @@ export const Message = ({ id, authorId, body, creationDate, attachment, isPrivat
               <MessageContent body={body} attachment={attachment} />
             </div>
           </div>
-          <DeleteMessageConfirmation open={dialogOpen} handleClose={handleDialogClose} passedId={id} removeMessage={removeMessage} isPrivateMessage={isPrivateMessage} />
-        </div>
+          <DeleteMessageConfirmation open={dialogOpen} handleClose={handleDialogClose} passedId={id} removeMessage={removeMessage} isPrivateMessage={isPrivateMessage} />   
+      </div>
     );
 };
 const MessageContent = ({ body, attachment}: MessageContentProps) => {
