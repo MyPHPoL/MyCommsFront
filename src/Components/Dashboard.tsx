@@ -84,7 +84,7 @@ interface DashBoardProps {
         onClick={() => handleAddOpen()}>
           <TiUserAdd className="mx-3" size="32" />
           <div className='pl-2'>
-            <div className="float-left">Click here to add a friend!</div>
+            <div className="float-left">Click here to add a friend!</div><br></br>
             <div className='text-base font-normal overflow-clip float-left'>All you need is their username!</div>        
           </div>
         </button>
@@ -201,7 +201,7 @@ interface DashBoardProps {
         onClick={() => handleJoinOpen()}>
           <FaDoorOpen className="mx-3" size="32" />
           <div className='pl-2'>
-            <div className="float-left">Click here to join a server!</div>
+            <div className="float-left">Click here to join a server!</div><br></br>
             <div className='text-base font-normal overflow-clip float-left'>All you need is a server name!</div>        
           </div>
         </button>
@@ -211,7 +211,7 @@ interface DashBoardProps {
         onClick={() => handleCreateOpen()}>
           <IoMdAdd className="mx-3" size="32" />
           <div className='pl-2'>
-              <div className="float-left">Click here to create a new server!</div>
+              <div className="float-left">Click here to create a new server!</div><br></br>
               <div className='text-base font-normal overflow-clip float-left'>Perfect new server just a click away!</div>   
           </div>
         </button>
