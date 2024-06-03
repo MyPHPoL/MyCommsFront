@@ -202,16 +202,6 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
             </button>
           </div>
         </div>
-      ))}
-      <div className="w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white">
-        <button className='flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] border-dashed border-2 hover:bg-yellow-500 hover:text-primary duration-300 ease-linear'
-        onClick={() => handleAddOpen()}>
-          <TiUserAdd className="mx-3" size="32" />
-          <div className='pl-2'>
-            <div className="float-left">Click here to add a friend!</div><br></br>
-            <div className='text-base font-normal overflow-clip float-left'>All you need is their username!</div>        
-
-
 
         <div className="w-[720px]">
           <h1 className='text-5xl font-bold my-4 text-white mx-2 pl-[20px]'> Your Outgoing Invites </h1>
@@ -250,14 +240,9 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
             ))}
           </div>
         </div>
-
       </div>
-
-
-
     );
   }
-
 
   const RenderServers: React.FC<DashBoardProps> = ({ servers = [], removeServer, handleAddServer }) => {
 
@@ -355,42 +340,27 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
               }
             </div>
           ))}
-          <div className="w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white">
-            <button className='flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] border-dashed border-2 hover:bg-yellow-500 hover:text-primary duration-300 ease-linear'
-              onClick={() => handleJoinOpen()}>
-              <FaDoorOpen className="mx-3" size="32" />
-              <div className='pl-2'>
-                <div className="float-left">Click here to join a server!</div>
-                <div className='text-base font-normal overflow-clip float-left'>All you need is a server name!</div>
-              </div>
+
+        <div className="w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white">
+          <button className='flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] border-dashed border-2 hover:bg-yellow-500 hover:text-primary duration-300 ease-linear'
+            onClick={() => handleJoinOpen()}>
+            <FaDoorOpen className="mx-3" size="32" />
+            <div className='pl-2'>
+              <div className="float-left">Click here to join a server!</div><br></br>
+              <div className='text-base font-normal overflow-clip float-left'>All you need is a server name!</div>
             </div>
-          </Link>
-          { auth.id === ownerId &&
-          <button className="invisible group-hover:visible px-4 py-2 ml-0 text-sm text-white rounded-full bg-tertiary hover:bg-red-600 transition-all duration-300 ease-linear"
-                  onClick={() => handleServerDeleteOpen(id)}>
-                  <MdDeleteForever size={25} /> 
           </button>
-          }
         </div>
-      ))}
-      <div className="w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white">
-        <button className='flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] border-dashed border-2 hover:bg-yellow-500 hover:text-primary duration-300 ease-linear'
-        onClick={() => handleJoinOpen()}>
-          <FaDoorOpen className="mx-3" size="32" />
-          <div className='pl-2'>
-            <div className="float-left">Click here to join a server!</div><br></br>
-            <div className='text-base font-normal overflow-clip float-left'>All you need is a server name!</div>        
-          </div>
-        </button>
-      </div>
-      <div className="w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white">
-        <button className='flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] border-dashed border-2 hover:bg-yellow-500 hover:text-primary duration-300 ease-linear'
-        onClick={() => handleCreateOpen()}>
-          <IoMdAdd className="mx-3" size="32" />
-          <div className='pl-2'>
+        <div className="w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white">
+          <button className='flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] border-dashed border-2 hover:bg-yellow-500 hover:text-primary duration-300 ease-linear'
+            onClick={() => handleCreateOpen()}>
+            <IoMdAdd className="mx-3" size="32" />
+            <div className='pl-2'>
               <div className="float-left">Click here to create a new server!</div><br></br>
-              <div className='text-base font-normal overflow-clip float-left'>Perfect new server just a click away!</div>   
-          </div>
+              <div className='text-base font-normal overflow-clip float-left'>Perfect new server just a click away!</div>
+            </div>
+          </button>
+        </div>
         </div>
         <DeleteServerConfirmation
           open={serverDeleteOpen}
