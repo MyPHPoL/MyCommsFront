@@ -39,6 +39,7 @@ const LEAVE_SERVER_URL = '/Server/LeaveServer?serverId=';
 const GET_INC_INVITES = '/FriendInvitation/GetIncomingInvites';
 const GET_OUt_INVITES = '/FriendInvitation/GetOutgoingInvites';
 const INVITE_FRIEND_NAME = '/FriendInvitation/InviteByName?name=';
+const ACCEPT_INVITE = '/FriendInvitation/Accept?otherId='
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -606,6 +607,22 @@ export const inviteFriendName = async (token: string, name: string) => {
     const response = await axios.post(
         
         BASE_URL+INVITE_FRIEND_NAME+name,
+        
+        {},
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+};
+
+export const acceptInvite = async (token: string, id: string) => {
+    const response = await axios.post(
+        
+        BASE_URL+ACCEPT_INVITE+id,
         
         {},
         {

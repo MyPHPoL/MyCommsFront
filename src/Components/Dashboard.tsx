@@ -37,6 +37,7 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
     const [incInvites, setIncInvites] = useState([]);
     const [outInvites, setOutInvites] = useState([]);
     const [addOpen, setAddOpen] = useState(false);
+    const [inviteOpen, setInviteOpen] = useState(false);
     const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
 
 
@@ -86,6 +87,14 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
     }, []);
 
 
+    const handleInviteOpen = () => {
+      setInviteOpen(true);
+      console.log("Siema bangla");
+    };
+
+    const handleInviteClose = () => {
+      setInviteOpen(false);
+    };
 
 
 
@@ -166,29 +175,31 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
             />
           </div>
           <div className='overflow-y-auto h-[700px]'>
-            {incInvites?.map(({ id, username, picture, creationDate }) => (
-              <div
-                key={id}
-                className='group flex-row flex w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white items-center'>
-                <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] hover:bg-yellow-500 hover:text-primary align-middle duration-300 ease-linear'>
-                  <UserAvatar
-                    name={username}
-                    picture={
-                      picture
-                        ? "https://localhost:7031/file/" + picture
-                        : undefined
-                    }
-                  />
-                  <div className='pl-2'>
-                    {username}
-                    <small className='text-xs text-left font-semibold text-gray-500 ml-2'>
-                      {new Date(creationDate).toLocaleDateString()} {new Date(creationDate).toLocaleTimeString()}
-                    </small>
-                    <div className='text-base font-normal overflow-clip'></div>
+            <button onClick={() => handleInviteOpen()}>
+              {incInvites?.map(({ id, username, picture, creationDate }) => (
+                <div
+                  key={id}
+                  className='group flex-row flex w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white items-center'>
+                  <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] hover:bg-yellow-500 hover:text-primary align-middle duration-300 ease-linear'>
+                    <UserAvatar
+                      name={username}
+                      picture={
+                        picture
+                          ? "https://localhost:7031/file/" + picture
+                          : undefined
+                      }
+                    />
+                    <div className='pl-2'>
+                      {username}
+                      <small className='text-xs text-left font-semibold text-gray-500 ml-2'>
+                        {new Date(creationDate).toLocaleDateString()} {new Date(creationDate).toLocaleTimeString()}
+                      </small>
+                      <div className='text-base font-normal overflow-clip'></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </button>
           </div>
         </div>
 
@@ -210,7 +221,7 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
               <div
                 key={id}
                 className='group flex-row flex w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white items-center'>
-                <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] hover:bg-yellow-500 hover:text-primary align-middle duration-300 ease-linear'>
+                <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] align-middle duration-300 ease-linear'>
                   <UserAvatar
                     name={username}
                     picture={
