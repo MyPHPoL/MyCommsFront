@@ -118,7 +118,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   },);
 
   return (
-    <div className='md:flex h-auto -z-20 flex-col fixed inset-y-0 top-20 w-full' style={{ left: `calc(max(230px,15%))`, marginRight: `${widthmsg}%` }}>
+    <div className='md:flex h-auto -z-20 flex-col fixed inset-y-0 top-20 w-full' style={{ left: `calc(max(230px,15%))` }}>
       <div className='text-5xl shadow-sg whitespace-nowrap tracking-wider font-semibold text-white w-full pl-5 pb-5 bg-tertiary'>
         {channelInfo?.name} | {channelInfo?.description}
       </div>
@@ -133,6 +133,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
                 attachment={attachment}
                 isPrivateMessage={false}
                 removeMessage={removeMessage}
+                widthmsg={widthmsg}
               />
           </div>
         ))}

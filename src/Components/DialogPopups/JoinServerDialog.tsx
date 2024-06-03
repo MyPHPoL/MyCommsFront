@@ -42,6 +42,7 @@ const JoinServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, h
         description: response.data.description,
         isPublic: response.data.isPublic,
         ownerId: response.data.ownerId,
+        picture: response.data.picture,
       };
       handleJoinServer(newServer);
     } catch (error: any) {

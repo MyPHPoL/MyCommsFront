@@ -18,7 +18,7 @@ import { UserProps } from "./User";
 export interface FriendProps {
   id: string;
   username: string;
-  picture?: string;
+  avatar?: string;
 }
 
 function FriendMessage() {
