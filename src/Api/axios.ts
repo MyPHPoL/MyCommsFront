@@ -42,6 +42,11 @@ const INVITE_FRIEND_NAME = '/FriendInvitation/InviteByName?name=';
 const ACCEPT_INVITE = '/FriendInvitation/Accept?otherId='
 const REJECT_INVITE = '/FriendInvitation/Reject?otherId='
 const REMOVE_FRIEND = '/FriendList/Remove?friendId='
+const BLOCKLIST_GET = '/BlockList/Get';
+const BLOCKLIST_ADD = '/BlockList/Add?userId=';
+const BLOCKLIST_REMOVE = '/BlockList/Delete?userId=';
+const BLOCKLIST_CHECK = '/BlockList/IsBlocked?userId=';
+
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -661,3 +666,55 @@ export const removeFriend = async (token: string, id: string) => {
     return response;
 }
 
+export const getBlockList = async (token: string) => {
+    const response = await axios.get(
+        BASE_URL+BLOCKLIST_GET,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+}
+
+export const blockUser = async (token: string, id: string) => {
+    const response = await axios.post(
+        BASE_URL+BLOCKLIST_ADD+id,
+        {},
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+}
+
+export const unblockUser = async (token: string, id: string) => {
+    const response = await axios.delete(
+        BASE_URL+BLOCKLIST_REMOVE+id,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+}
+
+export const checkBlocked = async (token: string, id: string) => {
+    const response = await axios.get(
+        BASE_URL+BLOCKLIST_CHECK+id,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+}

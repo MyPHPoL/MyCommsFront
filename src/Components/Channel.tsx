@@ -73,7 +73,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
     } catch (error: any) {
       enqueueSnackbar("We couldn't load messagess. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
     }
-  }
+  } 
 
   const fetchChannelInfo = async () => {
     try {

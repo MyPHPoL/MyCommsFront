@@ -13,12 +13,13 @@ import useAuth from "../Hooks/useAuth";
 import { TiUserAdd } from "react-icons/ti";
 import AddFriendDialog from "./DialogPopups/AddFriendDialog";
 import { enqueueSnackbar } from 'notistack';
-import { acceptInvite, getIncomingInvites, getOutgoingInvites, rejectInvite } from "../Api/axios";
+import { acceptInvite, getIncomingInvites, getOutgoingInvites, rejectInvite, getBlockList, blockUser, unblockUser } from "../Api/axios";
 import { IoClose } from "react-icons/io5";
 import { IconType } from "react-icons";
 import LeaveServerConfirmation from "./DialogPopups/LeaveServerConfirmation";
 import RemoveFriendConfirmation from "./DialogPopups/RemoveFriendConfirmation";
 import { Remove } from "@mui/icons-material";
+import { TbLock, TbLockOff } from "react-icons/tb";
 
 interface DashBoardProps {
   friends: FriendProps[] | undefined;
@@ -41,12 +42,14 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
   const RenderFriends: React.FC<DashBoardProps> = ({ friends = [] }) => {
     const [filteredFriends, setFilteredFriends] = useState(friends);
     const [incInvites, setIncInvites] = useState<InviteProps[]>();
+    const [blockedUsers, setBlockedUsers] = useState<FriendProps[]>([]);
     const [outInvites, setOutInvites] = useState<InviteProps[]>();
     const [addOpen, setAddOpen] = useState(false);
     const [removeFriendOpen, setRemoveFriendOpen] = useState(false);
     const [dialogId, setPassedId] = useState("");
     const [filteredIncInvites, setFilteredIncInvites] = useState(incInvites);
     const [filteredOutInvites, setFilteredOutInvites] = useState(outInvites);
+    const [filteredBlockedUsers, setFilteredBlockedUsers] = useState(blockedUsers);
     const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
 
 
@@ -67,6 +70,16 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
       const filtered = outInvites?.filter(friend => friend.username.includes(value));
       setFilteredOutInvites(filtered);
     }
+
+    const handleFilterBlockedUsers = (event: any) => {
+      const value = event.target.value;
+      const filtered = blockedUsers?.filter(friend => friend.username.includes(value));
+      setFilteredBlockedUsers(filtered);
+    }
+
+    const isUserBlocked = (user: FriendProps) => {
+      return blockedUsers?.some(blockedUser => blockedUser.id === user.id);
+    };
 
     useEffect(() => {
 
@@ -100,11 +113,26 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
         }
       };
 
+      const fetchBlockedUsers = async () => {
+        try {
+          const response = await getBlockList(auth.token);
+          if (isMounted && response.data) {
+            const blockedUserIds = response.data.map((item: any) => item.blockedUser);
+            const blockedUsers = friends.filter(friend => blockedUserIds.includes(friend.id));
+            setBlockedUsers(blockedUsers);
+          }
+        } catch (error: any) {
+          enqueueSnackbar("We couldn't load your blocked users. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+        }
+      }
+
+
 
       if (!addOpen) {
         fetchIncInvites();
         fetchOutInvites();
       }
+      fetchBlockedUsers();
 
       return () => {
         isMounted = false;
@@ -123,6 +151,11 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
     useEffect(() => {
       setFilteredOutInvites(outInvites);
     }, [outInvites]);
+
+    useEffect(() => {
+      setFilteredBlockedUsers(blockedUsers);
+    }, [blockedUsers]);
+
 
 
 
@@ -157,6 +190,29 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
       }
     };
 
+    const handleBlockFriend = async (user: FriendProps) => {
+      try {
+        console.log(user.id)
+        await blockUser(auth.token, user.id);
+        setBlockedUsers(prevBlockedUsers => [...prevBlockedUsers, user]);
+      }
+      catch (error: any) {
+        console.log(error)
+        enqueueSnackbar("We couldn't block this user. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      }
+    };
+
+    const handleUnblockFriend = async (user: FriendProps) => {
+      try {
+        console.log(user.id)
+        await unblockUser(auth.token, user.id);
+        setBlockedUsers(blockedUsers.filter((blockedUser) => blockedUser.id !== user.id));
+      }
+      catch (error: any) {
+        console.log(error)
+        enqueueSnackbar("We couldn't unblock this user. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      }
+    };
 
     // it should work after adding axios function
     const handleRemoveFriendOpen = (id: string) => {
@@ -176,52 +232,62 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
     const handleAddClose = () => {
       setAddOpen(false);
     };
+    
+    useEffect(() => {
+      console.log(blockedUsers); // Logs the new value of blockedUsers whenever it changes
+    }, [blockedUsers]);
 
     return (
       <div className="flex">
-        <div className="w-[600px] pl-[20px]">
-          <h1 className='text-5xl font-bold my-4 text-white mx-2'> Your Friends </h1>
+        <div className="w-[450px] pl-[20px]">
+          <h1 className='text-4xl font-bold my-4 text-white mx-2'> Your Friends </h1>
           <div className='relative w-full h-12 my-2'>
             <input
               onChange={handleFilter}
               type='text'
               placeholder='Filter your friends by their name...'
               autoComplete='off'
-              className='placeholder:color-white w-[500px] text-white h-full border-2 border-solid border-slate-600 bg-transparent outline-none color-white rounded-s-3xl rounded-e-3xl pt-5 pr-11 pb-5 pl-5'
+              className='placeholder:color-white w-[430px] text-white h-full border-2 border-solid border-slate-600 bg-transparent outline-none color-white rounded-s-3xl rounded-e-3xl pt-5 pr-11 pb-5 pl-5'
             />
           </div>
-          <div className='overflow-y-auto h-[calc(100vh-210px)]'>
-            {filteredFriends?.map(({ id, username, avatar }) => (
+          <div className='overflow-y-auto h-[calc(100vh-210px)] '>
+            {filteredFriends?.map((user: FriendProps) => (
               <div
-                key={id}
-                className='group flex-row flex w-full pt-2 pb-4 h-auto text-2xl font-semibold text-white items-center'>
-                <Link to={`/friends/${id}`}>
-                  <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[500px] hover:bg-yellow-500 hover:text-primary align-middle duration-300 ease-linear'>
+                key={user.id}
+                className='group flex-row flex w-full pt-2 pb-4 h-auto text-2xl font-semibold text-white items-center  '>
+                <Link to={`/friends/${user.id}`}>
+                  <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 min-w-[300px]  duration-300  hover:bg-yellow-500 hover:text-primary align-middle  ease-linear'>
 
                     <UserAvatar
-                      name={username}
+                      name={user.username}
                       picture={
-                        avatar
-                          ? "https://localhost:7031/file/" + avatar
+                        user.avatar
+                          ? "https://localhost:7031/file/" + user.avatar
                           : undefined
                       }
                     />
 
                     <div className='pl-2'>
-                      {username}
+                      {user.username}
 
 
                     </div>
+                    
                   </div>
                 </Link>
                 <button className="invisible group-hover:visible px-4 py-2 ml-0 text-sm text-white rounded-full bg-tertiary hover:bg-red-600 transition-all duration-300 ease-linear"
-                  onClick={() => handleRemoveFriendOpen(id)}>
+                    onClick={() => handleRemoveFriendOpen(user.id)}>
                   <MdDeleteForever size={25} />
-                </button>
+                  </button>
+                  {isUserBlocked(user) ? null :  (
+                  <button className="invisible group-hover:visible px-4 py-2 ml-0 text-sm text-white rounded-full bg-tertiary hover:bg-yellow-600 transition-all duration-300 ease-linear"
+                   onClick={() => handleBlockFriend(user)}>
+                   <TbLock size={25} />
+                </button>)}
               </div>
             ))}
 
-            <button className="w-[500px]" onClick={() => handleAddOpen()}>
+            <button className="w-[430px]" onClick={() => handleAddOpen()}>
               <BigBlueButtonAtTheBottom Icon={TiUserAdd} text="Click here to add a friend!" subText="All you need is their username!" />
             </button>
           </div>
@@ -237,15 +303,15 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
           />
         </div>
 
-        <div className="w-[600px]">
-          <h1 className='text-5xl font-bold my-4 text-white mx-2 pl-[20px]'> Your Incoming Invites </h1>
-          <div className='relative w-[500px] h-12 my-2 pl-[20px]'>
+        <div className="w-[450px]">
+          <h1 className='text-4xl font-bold my-4 text-white mx-2 pl-[20px]'> Your Incoming Invites </h1>
+          <div className='relative w-[430px] h-12 my-2 pl-[20px]'>
             <input
               onChange={handleFilterIncInvites}
               type='text'
               placeholder='Filter your inivtes by the invitee...'
               autoComplete='off'
-              className='placeholder:color-white w-[500px] text-white h-full border-2 border-solid border-slate-600 bg-transparent outline-none color-white rounded-s-3xl rounded-e-3xl pt-5 pr-11 pb-5 pl-5'
+              className='placeholder:color-white w-[420px] text-white h-full border-2 border-solid border-slate-600 bg-transparent outline-none color-white rounded-s-3xl rounded-e-3xl pt-5 pr-11 pb-5 pl-5'
             />
           </div>
           <div className='overflow-y-auto h-[calc(100vh-210px)]'>
@@ -253,7 +319,7 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
               <div
                 key={user.id}
                 className='group flex-row flex w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white items-center'>
-                <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[500px] hover:bg-yellow-500 hover:text-primary align-middle duration-300 ease-linear'>
+                <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[430px] hover:bg-yellow-500 hover:text-primary align-middle duration-300 ease-linear'>
                   <UserAvatar
                     name={user.username}
                     picture={
@@ -279,15 +345,15 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
           </div>
         </div>
 
-        <div className="w-[720px]">
-          <h1 className='text-5xl font-bold my-4 text-white mx-2 pl-[20px]'> Your Outgoing Invites </h1>
-          <div className='relative w-[600px] h-12 my-2 pl-[20px]'>
+        <div className="w-[450px]">
+          <h1 className='text-4xl font-bold my-4 text-white mx-2 pl-[20px]'> Your Outgoing Invites </h1>
+          <div className='relative w-[430px] h-12 my-2 pl-[20px]'>
             <input
               onChange={handleFilterOutInvites}
               type='text'
               placeholder='Filter your inivtes by the receiver...'
               autoComplete='off'
-              className='placeholder:color-white w-[600px] text-white h-full border-2 border-solid border-slate-600 bg-transparent outline-none color-white rounded-s-3xl rounded-e-3xl pt-5 pr-11 pb-5 pl-5'
+              className='placeholder:color-white w-[420px] text-white h-full border-2 border-solid border-slate-600 bg-transparent outline-none color-white rounded-s-3xl rounded-e-3xl pt-5 pr-11 pb-5 pl-5'
             />
           </div>
           <div className='overflow-y-auto h-[calc(100vh-210px)]'>
@@ -295,7 +361,7 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
               <div
                 key={user.id}
                 className='group flex-row flex w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white items-center'>
-                <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] align-middle duration-300 ease-linear'>
+                <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[430px] align-middle duration-300 ease-linear'>
                   <UserAvatar
                     name={user.username}
                     picture={
@@ -316,6 +382,46 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
             ))}
           </div>
         </div>
+        
+        <div className="w-[450px]">
+          <h1 className='text-4xl font-bold my-4 text-white mx-2 pl-[20px]'> Users you blocked </h1>
+          <div className='relative w-[430px] h-12 my-2 pl-[20px]'>
+            <input
+              onChange={handleFilterBlockedUsers}
+              type='text'
+              placeholder='Filter users you blocked...'
+              autoComplete='off'
+              className='placeholder:color-white w-[420px] text-white h-full border-2 border-solid border-slate-600 bg-transparent outline-none color-white rounded-s-3xl rounded-e-3xl pt-5 pr-11 pb-5 pl-5'
+            />
+          </div>
+          <div className='overflow-y-auto h-[calc(100vh-210px)]'>
+            {filteredBlockedUsers?.map((user: FriendProps) => (
+              <div
+                key={user.id}
+                className='group flex-row flex w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white items-center'>
+                <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[430px]  align-middle duration-300 ease-linear'>
+                  <UserAvatar
+                    name={user.username}
+                    picture={
+                      user.avatar
+                        ? "https://localhost:7031/file/" + user.avatar
+                        : undefined
+                    }
+                  />
+                  <div className='pl-2'>
+                  {user.username}
+                  </div>
+                  <button className="invisible group-hover:visible absolute right-2 px-4 py-2 text-right text-sm text-white rounded-full bg-tertiary hover:bg-green-600 transition-all duration-300 ease-linear"
+                    onClick={() => handleUnblockFriend(user)}>
+                    <TbLockOff size={25} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+
       </div>
     );
   }
