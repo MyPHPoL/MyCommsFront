@@ -41,6 +41,7 @@ const GET_OUt_INVITES = '/FriendInvitation/GetOutgoingInvites';
 const INVITE_FRIEND_NAME = '/FriendInvitation/InviteByName?name=';
 const ACCEPT_INVITE = '/FriendInvitation/Accept?otherId='
 const REJECT_INVITE = '/FriendInvitation/Reject?otherId='
+const REMOVE_FRIEND = '/FriendList/Remove?friendId='
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -637,6 +638,19 @@ export const acceptInvite = async (token: string, id: string) => {
 export const rejectInvite = async (token: string, id: string) => {
     const response = await axios.delete(
         BASE_URL+REJECT_INVITE+id,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+}
+
+export const removeFriend = async (token: string, id: string) => {
+    const response = await axios.delete(
+        BASE_URL+REMOVE_FRIEND+id,
         {
             headers: { 
                 'Content-Type': 'application/json',

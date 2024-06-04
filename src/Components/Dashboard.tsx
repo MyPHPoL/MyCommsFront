@@ -13,10 +13,12 @@ import useAuth from "../Hooks/useAuth";
 import { TiUserAdd } from "react-icons/ti";
 import AddFriendDialog from "./DialogPopups/AddFriendDialog";
 import { enqueueSnackbar } from 'notistack';
-import { acceptInvite, getIncomingInvites, getOutgoingInvites, rejectInvite } from "../Api/axios";
+import { acceptInvite, getIncomingInvites, getOutgoingInvites, rejectInvite, removeFriend } from "../Api/axios";
 import { IoClose } from "react-icons/io5";
 import { IconType } from "react-icons";
 import LeaveServerConfirmation from "./DialogPopups/LeaveServerConfirmation";
+import RemoveFriendConfirmation from "./DialogPopups/RemoveFriendConfirmation";
+import { Remove } from "@mui/icons-material";
 
 interface DashBoardProps {
   friends: FriendProps[] | undefined;
@@ -24,6 +26,7 @@ interface DashBoardProps {
   mode: string;
   removeServer: (id: string) => void;
   handleAddServer: (server: ServerProps) => void;
+  removeFriend: (id: string) => void;
 }
 
 interface InviteProps {
@@ -33,14 +36,17 @@ interface InviteProps {
   creationDate: string;
 }
 
-function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: DashBoardProps) {
+function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleAddServer }: DashBoardProps) {
 
   const RenderFriends: React.FC<DashBoardProps> = ({ friends = [] }) => {
     const [filteredFriends, setFilteredFriends] = useState(friends);
-    const [incInvites, setIncInvites] = useState<FriendProps[]>();
-    const [outInvites, setOutInvites] = useState([]);
+    const [incInvites, setIncInvites] = useState<InviteProps[]>();
+    const [outInvites, setOutInvites] = useState<InviteProps[]>();
     const [addOpen, setAddOpen] = useState(false);
-    const [inviteOpen, setInviteOpen] = useState(false);
+    const [removeFriendOpen, setRemoveFriendOpen] = useState(false);
+    const [dialogId, setPassedId] = useState("");
+    const [filteredIncInvites, setFilteredIncInvites] = useState(incInvites);
+    const [filteredOutInvites, setFilteredOutInvites] = useState(outInvites);
     const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
 
 
@@ -50,7 +56,20 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
       setFilteredFriends(filtered);
     };
 
+    const handleFilterIncInvites = (event: any) => {
+      const value = event.target.value;
+      const filtered = incInvites?.filter(friend => friend.username.includes(value));
+      setFilteredIncInvites(filtered);
+    };
+
+    const handleFilterOutInvites = (event: any) => {
+      const value = event.target.value;
+      const filtered = outInvites?.filter(friend => friend.username.includes(value));
+      setFilteredOutInvites(filtered);
+    }
+
     useEffect(() => {
+
       let isMounted = true; // something, something not to render when component is unmounted
       const controller = new AbortController(); // cancels request when component unmounts
 
@@ -59,6 +78,7 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
           const response = await getIncomingInvites(auth.token);
           if (isMounted && response.data) {
             const invites = response.data.map((invite: any) => invite.inviter);
+
             setIncInvites(invites);
           }
         } catch (error: any) {
@@ -71,26 +91,40 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
           const response = await getOutgoingInvites(auth.token);
           if (isMounted && response.data) {
             const invites = response.data.map((invite: any) => invite.invitee);
+
             setOutInvites(invites);
           }
         } catch (error: any) {
+
           enqueueSnackbar("We couldn't load your outgoing invites. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
         }
       };
 
 
-      fetchIncInvites();
-      fetchOutInvites();
+      if (!addOpen) {
+        fetchIncInvites();
+        fetchOutInvites();
+      }
 
       return () => {
         isMounted = false;
         controller.abort();
       };
-    }, []);
+    }, [addOpen]);
 
     useEffect(() => {
       setFilteredFriends(friends);
     }, [friends]);
+
+    useEffect(() => {
+      setFilteredIncInvites(incInvites);
+    }, [incInvites]);
+
+    useEffect(() => {
+      setFilteredOutInvites(outInvites);
+    }, [outInvites]);
+
+
 
     const handleInviteAccept = async (user: FriendProps) => {
       try {
@@ -114,15 +148,15 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
     };
 
     // it should work after adding axios function
-    const handleRemoveFriend = (id: string) => {
-      try {
-        // removeFriend(auth.token, id);
-        friends.filter((friend) => friend.id !== id);
-      }
-      catch (error: any) {
-        enqueueSnackbar("We couldn't remove this friend. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
-      }
-    };
+    const handleRemoveFriendOpen = (id: string) => {
+      setPassedId(id);
+      setRemoveFriendOpen(true);
+    }
+
+    const handleRemoveFriendClose = () => {
+      console.log('closed')
+      setRemoveFriendOpen(false);
+    }
 
     const handleAddOpen = () => {
       setAddOpen(true);
@@ -152,6 +186,7 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
                 className='group flex-row flex w-full pt-2 pb-4 h-auto text-2xl font-semibold text-white items-center'>
                 <Link to={`/friends/${id}`}>
                   <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[500px] hover:bg-yellow-500 hover:text-primary align-middle duration-300 ease-linear'>
+
                     <UserAvatar
                       name={username}
                       picture={
@@ -160,14 +195,21 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
                           : undefined
                       }
                     />
+
                     <div className='pl-2'>
                       {username}
-                      <div className='text-base font-normal overflow-clip'></div>
+
+
                     </div>
                   </div>
                 </Link>
+                <button className="invisible group-hover:visible px-4 py-2 ml-0 text-sm text-white rounded-full bg-tertiary hover:bg-red-600 transition-all duration-300 ease-linear"
+                  onClick={() => handleRemoveFriendOpen(id)}>
+                  <MdDeleteForever size={25} />
+                </button>
               </div>
             ))}
+
             <button className="w-[500px]" onClick={() => handleAddOpen()}>
               <BigBlueButtonAtTheBottom Icon={TiUserAdd} text="Click here to add a friend!" subText="All you need is their username!" />
             </button>
@@ -176,13 +218,19 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
             open={addOpen}
             handleClose={handleAddClose}
           />
+          <RemoveFriendConfirmation
+            open={removeFriendOpen}
+            handleClose={handleRemoveFriendClose}
+            deleteFriend={removeFriend}
+            passedId={dialogId}
+          />
         </div>
 
         <div className="w-[600px]">
           <h1 className='text-5xl font-bold my-4 text-white mx-2 pl-[20px]'> Your Incoming Invites </h1>
           <div className='relative w-[500px] h-12 my-2 pl-[20px]'>
             <input
-              onChange={handleFilter}
+              onChange={handleFilterIncInvites}
               type='text'
               placeholder='Filter your inivtes by the invitee...'
               autoComplete='off'
@@ -190,33 +238,33 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
             />
           </div>
           <div className='overflow-y-auto h-[calc(100vh-210px)]'>
-              {incInvites?.map((user: FriendProps) => (
-                <div
-                  key={user.id}
-                  className='group flex-row flex w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white items-center'>
-                  <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[500px] hover:bg-yellow-500 hover:text-primary align-middle duration-300 ease-linear'>
-                    <UserAvatar
-                      name={user.username}
-                      picture={
-                        user.avatar
-                          ? "https://localhost:7031/file/" + user.avatar
-                          : undefined
-                      }
-                    />
-                    <div className='pl-2'>
-                      {user.username}
-                    </div>
-                    <button className="invisible group-hover:visible absolute right-20 px-4 py-2 text-right text-sm text-white rounded-full bg-tertiary hover:bg-green-600 transition-all duration-300 ease-linear"
-                      onClick={() => handleInviteAccept(user)}>
-                      <IoMdCheckmark size={25} />
-                    </button>
-                    <button className="invisible group-hover:visible absolute right-2 px-4 py-2 text-right text-sm text-white rounded-full bg-tertiary hover:bg-red-600 transition-all duration-300 ease-linear"
-                      onClick={() => handleInviteReject(user)}>
-                      <IoClose size={25} />
-                    </button>
+            {filteredIncInvites?.map((user: FriendProps) => (
+              <div
+                key={user.id}
+                className='group flex-row flex w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white items-center'>
+                <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[500px] hover:bg-yellow-500 hover:text-primary align-middle duration-300 ease-linear'>
+                  <UserAvatar
+                    name={user.username}
+                    picture={
+                      user.avatar
+                        ? "https://localhost:7031/file/" + user.avatar
+                        : undefined
+                    }
+                  />
+                  <div className='pl-2'>
+                    {user.username}
                   </div>
+                  <button className="invisible group-hover:visible absolute right-20 px-4 py-2 text-right text-sm text-white rounded-full bg-tertiary hover:bg-green-600 transition-all duration-300 ease-linear"
+                    onClick={() => handleInviteAccept(user)}>
+                    <IoMdCheckmark size={25} />
+                  </button>
+                  <button className="invisible group-hover:visible absolute right-2 px-4 py-2 text-right text-sm text-white rounded-full bg-tertiary hover:bg-red-600 transition-all duration-300 ease-linear"
+                    onClick={() => handleInviteReject(user)}>
+                    <IoClose size={25} />
+                  </button>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -224,7 +272,7 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
           <h1 className='text-5xl font-bold my-4 text-white mx-2 pl-[20px]'> Your Outgoing Invites </h1>
           <div className='relative w-[600px] h-12 my-2 pl-[20px]'>
             <input
-              onChange={handleFilter}
+              onChange={handleFilterOutInvites}
               type='text'
               placeholder='Filter your inivtes by the receiver...'
               autoComplete='off'
@@ -232,7 +280,7 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
             />
           </div>
           <div className='overflow-y-auto h-[calc(100vh-210px)]'>
-            {outInvites?.map(({ id, username, picture }) => (
+            {filteredOutInvites?.map(({ id, username, picture }) => (
               <div
                 key={id}
                 className='group flex-row flex w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white items-center'>
@@ -374,18 +422,18 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
               }
             </div>
           ))}
-        <button className="w-[600px]" onClick={() => handleJoinOpen()}>
-          <BigBlueButtonAtTheBottom Icon={FaDoorOpen} text="Click here to join a server!" subText="All you need is a server name!" />
-        </button>
-        <button className="w-[600px]" onClick={() => handleCreateOpen()}>
-          <BigBlueButtonAtTheBottom Icon={IoMdAdd} text="Create a new server" subText="Click here to create a new server!" />
-        </button>
-      </div>
+          <button className="w-[600px]" onClick={() => handleJoinOpen()}>
+            <BigBlueButtonAtTheBottom Icon={FaDoorOpen} text="Click here to join a server!" subText="All you need is a server name!" />
+          </button>
+          <button className="w-[600px]" onClick={() => handleCreateOpen()}>
+            <BigBlueButtonAtTheBottom Icon={IoMdAdd} text="Create a new server" subText="Click here to create a new server!" />
+          </button>
+        </div>
         <DeleteServerConfirmation
           open={serverDeleteOpen}
           handleClose={handleServerDeleteClose}
           removeServer={removeServer}
-          passedId={dialogId} 
+          passedId={dialogId}
         />
         <CreateServerDialog
           open={createOpen}
@@ -401,7 +449,7 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
           open={serverLeaveOpen}
           handleClose={handleServerLeaveClose}
           removeServer={removeServer}
-          passedId={dialogId} 
+          passedId={dialogId}
         />
       </div>
     );
@@ -409,15 +457,15 @@ function Dashboard({ friends, servers, removeServer, mode, handleAddServer }: Da
 
   return (
     <div className='md:flex h-full w-full -z-20 flex-col fixed inset-y-0 top-20 left-0'>
-      {mode === "friends" ? <RenderFriends {...{ friends, servers, removeServer, mode, handleAddServer }} /> : null}
-      {mode === "servers" ? <RenderServers {...{ friends, servers, removeServer, mode, handleAddServer }} /> : null}
+      {mode === "friends" ? <RenderFriends {...{ friends, servers, removeServer, removeFriend, mode, handleAddServer }} /> : null}
+      {mode === "servers" ? <RenderServers {...{ friends, servers, removeServer, removeFriend, mode, handleAddServer }} /> : null}
     </div>
   );
 };
 export default Dashboard;
 
 // 1 button style for easier editing :)
-const BigBlueButtonAtTheBottom = ({ Icon, text, subText }: {Icon: IconType, text: string, subText: string}) => (
+const BigBlueButtonAtTheBottom = ({ Icon, text, subText }: { Icon: IconType, text: string, subText: string }) => (
   <div className="pt-2 pb-4 h-auto text-2xl font-semibold text-white">
     <div className='w-full flex mr-2 bg-tertiary shadow-lg p-2 rounded-full items-center px-5 border-dashed border-2 hover:bg-yellow-500 hover:text-primary duration-300 ease-linear'>
       <Icon className="mx-3" size="32" />
