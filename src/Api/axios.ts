@@ -660,3 +660,4 @@ export const removeFriend = async (token: string, id: string) => {
     );
     return response;
 }
+

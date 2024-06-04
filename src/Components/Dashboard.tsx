@@ -13,7 +13,7 @@ import useAuth from "../Hooks/useAuth";
 import { TiUserAdd } from "react-icons/ti";
 import AddFriendDialog from "./DialogPopups/AddFriendDialog";
 import { enqueueSnackbar } from 'notistack';
-import { acceptInvite, getIncomingInvites, getOutgoingInvites, rejectInvite, removeFriend } from "../Api/axios";
+import { acceptInvite, getIncomingInvites, getOutgoingInvites, rejectInvite } from "../Api/axios";
 import { IoClose } from "react-icons/io5";
 import { IconType } from "react-icons";
 import LeaveServerConfirmation from "./DialogPopups/LeaveServerConfirmation";
@@ -146,6 +146,17 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
         enqueueSnackbar("We couldn't reject this invite. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
     };
+
+    const handleInviteCancel = async (user: FriendProps) => {
+      try {
+        await rejectInvite(auth.token, user.id);
+        setOutInvites(outInvites?.filter((invite) => invite.id !== user.id));
+      }
+      catch (error: any) {
+        enqueueSnackbar("We couldn't cancel this invite. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      }
+    };
+
 
     // it should work after adding axios function
     const handleRemoveFriendOpen = (id: string) => {
@@ -280,22 +291,26 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
             />
           </div>
           <div className='overflow-y-auto h-[calc(100vh-210px)]'>
-            {filteredOutInvites?.map(({ id, username, picture }) => (
+            {filteredOutInvites?.map((user: FriendProps) => (
               <div
-                key={id}
+                key={user.id}
                 className='group flex-row flex w-full pt-2 pb-4 pl-[20px] h-auto text-2xl font-semibold text-white items-center'>
                 <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[600px] align-middle duration-300 ease-linear'>
                   <UserAvatar
-                    name={username}
+                    name={user.username}
                     picture={
-                      picture
-                        ? "https://localhost:7031/file/" + picture
+                      user.avatar
+                        ? "https://localhost:7031/file/" + user.avatar
                         : undefined
                     }
                   />
                   <div className='pl-2'>
-                    {username}
+                    {user.username}
                   </div>
+                  <button className="invisible group-hover:visible absolute right-2 px-4 py-2 text-right text-sm text-white rounded-full bg-tertiary hover:bg-red-600 transition-all duration-300 ease-linear"
+                    onClick={() => handleInviteCancel(user)}>
+                    <IoClose size={25} />
+                  </button>
                 </div>
               </div>
             ))}
