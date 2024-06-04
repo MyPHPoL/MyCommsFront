@@ -24,7 +24,8 @@ function Header() {
   const [servers, setServers] = useState<ServerProps[] | undefined>();
   const [friends, setFriends] = useState<FriendProps[] | undefined>();
   const [tmpServer, setTmpServer] = useState<ServerProps | undefined>();
-  const [toRemoveId, setToRemoveId] = useState('');
+  const [toRemoveIdServer, setToRemoveIdServer] = useState('');
+  const [toRemoveIdFriend, setToRemoveIdFriend] = useState('');
   const [openSettings, setOpenSettings] = useState(false);
 
   const handleDialogClose = () => {
@@ -32,8 +33,12 @@ function Header() {
   };
 
   const removeServer = (id: string) => {
-    setToRemoveId(id);
+    setToRemoveIdServer(id);
     console.log('removed')
+  }
+
+  const removeFriend = (id: string) => {
+    setToRemoveIdFriend(id);
   }
 
   const pushServer = (server: ServerProps) => {
@@ -51,13 +56,23 @@ function Header() {
 
   useEffect(() => {
     if (servers) {
-      if (toRemoveId) {
+      if (toRemoveIdServer) {
         // toRemoveId is string but server.id is number thus != instead of !==
         // eslint-disable-next-line eqeqeq
-        setServers(servers.filter((server) => server.id != toRemoveId))
+        setServers(servers.filter((server) => server.id != toRemoveIdServer))
       }
     }
-  }, [toRemoveId])
+  }, [toRemoveIdServer])
+
+  useEffect(() => {
+    if (friends) {
+      if (toRemoveIdFriend) {
+        // toRemoveId is string but server.id is number thus != instead of !==
+        // eslint-disable-next-line eqeqeq
+        setFriends(friends.filter((friend) => friend.id != toRemoveIdFriend))
+      }
+    }
+  }, [toRemoveIdFriend])
 
   useEffect(() => {
     let isMounted = true; // something, something not to render when component is unmounted
@@ -157,7 +172,7 @@ function Header() {
         handleClose={handleDialogClose}
         changeAuth={changeAuth}
       />
-      {useLocation().pathname === '/home' && <Dashboard friends={friends} servers={servers} removeServer={removeServer} mode={activeTopbar || 'null'} handleAddServer={pushServer} />}
+      {useLocation().pathname === '/home' && <Dashboard friends={friends} servers={servers} removeServer={removeServer} removeFriend={removeFriend} mode={activeTopbar || 'null'} handleAddServer={pushServer} />}
     </div>
   );
   function toggleDropdown() {
