@@ -15,15 +15,15 @@ export interface MessagePropsWithDelete {
   isPrivateMessage: boolean;
   removeMessage: (id: string) => void
   widthmsg?: number;
+  username: string;
 }
 export interface MessageContentProps {
   body: string;
   attachment: string | null;
 
 }
-export const Message = ({ id, authorId, body, creationDate, attachment, isPrivateMessage, removeMessage, widthmsg }: MessagePropsWithDelete) => {
+export const Message = ({ id, authorId, body, creationDate, attachment, isPrivateMessage, removeMessage, widthmsg, username }: MessagePropsWithDelete) => {
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [username, setUsername] = useState('');
     const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
 
     const handleDialogOpen = () => {
@@ -33,10 +33,6 @@ export const Message = ({ id, authorId, body, creationDate, attachment, isPrivat
     const handleDialogClose = () => {
       setDialogOpen(false);
     };
-    getUsername(auth.token, authorId).then((res) => {
-      const username: string = res;
-      setUsername(username);
-    });
     return (
       <div className='group justify-evenly w-auto flex-row py-3 px-8 cursor-pointer border-tertiary border-b-2 hover:bg-tertiary text-ellipsis truncate break-all' style={{ marginRight: `${widthmsg? widthmsg + 1.5 : 0}%`}}>
           <div className='flex flex-col ml-auto border-tertiary'>

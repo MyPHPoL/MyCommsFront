@@ -6,7 +6,7 @@ import { HiGif } from "react-icons/hi2";
 import { useLocation, useParams } from "react-router-dom";
 import { IoRefreshOutline } from "react-icons/io5";
 import { UserAvatar } from "./IconLib";
-import { MessageProps } from "./Channel";
+import { AuthorProps, MessageProps } from "./Channel";
 import { Message } from "./Message";
 import TextBar from "./TextBar";
 import { getAllMessagesFromUser, getUser, sendPrivateMessageForm } from "../Api/axios";
@@ -29,7 +29,7 @@ function FriendMessage() {
   const [user, setUser] = useState<UserProps>();
   const location = useLocation();
   const [toBeRemovedId, settoBeRemoved] = useState('');
-
+  const [author, setAuthor] = useState<AuthorProps>({ username: '', id: '', creationDate: '', avatar: '' });
   const removeMessage = (id: string) => {
     settoBeRemoved(id);
   }
@@ -43,7 +43,13 @@ function FriendMessage() {
     }
     fetchAllMessages();
   }, [UserId]);
-
+  useEffect(() => {
+    getUser(auth.token, auth.id).then((response) => {
+      setAuthor(response.data);
+    }).catch((error: any) => {
+      enqueueSnackbar("We couldn't load user info. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+    })
+  },[]);
   useEffect(() => {
     chatWindowRef.current?.scrollIntoView({ behavior: 'auto' });
   },);
@@ -63,7 +69,8 @@ function FriendMessage() {
         authorId: response.data.authorId,
         body: response.data.body,
         creationDate: response.data.creationDate,
-        attachment: response.data.attachment
+        attachment: response.data.attachment,
+        author: response.data.author
       };
       setMessages((messages) => [...messages, newMessage]);
     } catch (error: any) {
@@ -90,7 +97,7 @@ function FriendMessage() {
         {user?.username}
       </div>
       <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 border-tertiary w-full'>
-        {messages.map(({ id, authorId, body, creationDate, attachment }: MessageProps) => (
+        {messages.map(({ id, authorId, body, creationDate, attachment, author }: MessageProps) => (
           <Message
             id={id}
             authorId={authorId}
@@ -99,6 +106,7 @@ function FriendMessage() {
             attachment={attachment}
             isPrivateMessage={true}
             removeMessage={removeMessage}
+            username={author.username}
           />
         ))}
         <div ref={chatWindowRef} />
@@ -108,6 +116,7 @@ function FriendMessage() {
         name={user?.username || 'this friend'}
         widthmsg={15}//temporary hardcoded value, I was not the creator of this code so will wait for the original creator to fix this
         refreshMessages={fetchAllMessages}
+        author={author}
       />
     </div>
   );

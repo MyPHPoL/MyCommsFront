@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import useAuth from "../Hooks/useAuth";
-import { getAllMessages, getChannelInfo, sendMessage, sendMessageForm } from "../Api/axios";
+import { getAllDetailedMessages, getAllMessages, getChannelInfo, getUser, sendMessage, sendMessageForm } from "../Api/axios";
 import { Message } from "./Message";
 import DeleteMessageConfirmation from "./DialogPopups/DeleteMessageConfirmation";
 import TextBar from "./TextBar";
+import { get } from "http";
 
 export interface ChannelProps {
   id: string;
@@ -20,8 +21,14 @@ export interface MessageProps {
   body: string,
   creationDate: string
   attachment: string | null
+  author: AuthorProps
 }
-
+export interface AuthorProps {
+  username: string;
+  id: string;
+  creationDate: string;
+  avatar: string;
+}
 function Channel({ widthmsg }: { widthmsg: number }) {
 
   const { ChannelId } = useParams(); // ChannelId is the name of the variable in the URL
@@ -30,7 +37,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [toBeRemovedId, settoBeRemoved] = useState('');
-
+  const [User, setUser] = useState<AuthorProps>({ username: '', id: '', creationDate: '', avatar: '' });
 
   // will add message to the database and then to the messages array (if successful)
   /*const addMessage = async (body: string) => {
@@ -47,9 +54,14 @@ function Channel({ widthmsg }: { widthmsg: number }) {
       enqueueSnackbar("We couldn't send your message. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
     };
   };*/
-
-
-  const addMessageForm = async (body: string, file: File | null) => {
+  useEffect(() => {
+      getUser(auth.token, auth.id).then((response) => {
+        setUser(response.data);
+      }).catch((error: any) => {
+        enqueueSnackbar("We couldn't load user info. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      })
+  },[]);
+  const addMessageForm = async (body: string, file: File | null, author: AuthorProps) => {
     try {
       const response = await sendMessageForm(auth.token, ChannelId || '', body, '0', file);
       const newMessage: MessageProps = {
@@ -57,7 +69,8 @@ function Channel({ widthmsg }: { widthmsg: number }) {
         authorId: response.data.authorId,
         body: response.data.body,
         creationDate: response.data.creationDate,
-        attachment: response.data.attachment
+        attachment: response.data.attachment,
+        author: author
       };
       setMessages((messages) => [...messages, newMessage]);
     } catch (error: any) {
@@ -68,7 +81,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   // this function is especially out of the useEffect because it is used in the TextBar component
   const fetchAllMessages = async () => {
     try {
-      const response = await getAllMessages(auth.token, ChannelId || '');
+      const response = await getAllDetailedMessages(auth.token, ChannelId || '');
       setMessages(response.data);
     } catch (error: any) {
       enqueueSnackbar("We couldn't load messagess. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
@@ -123,7 +136,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
         {channelInfo?.name} | {channelInfo?.description}
       </div>
       <div className='mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 w-[85%]'>
-        {messages?.map(({ id, authorId, body, creationDate, attachment }) => (
+        {messages?.map(({ id, authorId, body, creationDate, attachment, author}) => (
           <div key={id} className='border-tertiary'>
               <Message
                 id={id}
@@ -134,6 +147,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
                 isPrivateMessage={false}
                 removeMessage={removeMessage}
                 widthmsg={widthmsg}
+                username={author.username}
               />
           </div>
         ))}
@@ -145,6 +159,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
         addMessage={addMessageForm}
         name={channelInfo?.name || 'this channel'}
         widthmsg={widthmsg}
+        author={User}
       />
     </div>
   );
