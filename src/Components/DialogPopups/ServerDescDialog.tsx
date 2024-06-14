@@ -11,25 +11,25 @@ interface ServerDescDialogProps {
 
 const useStyles = makeStyles({
     dialogPaper: {
-        width: '300px', // or whatever size you need
-        height: '200px', // or whatever size you need
+        width: '300px',
+        height: '200px',
         backgroundColor: '#2a3a54',
         color: '#ffffff',
         borderRadius: '15px'
     },
     title: {
         backgroundColor: '#152238',
-        fontWeight: 600, // replace with your desired color
+        fontWeight: 600,
     },
     description: {
-        color: '#ffffff', // this will make the server description white
+        color: '#ffffff',
     },
     closeButton: {
-        color: '#ffffff', // replace with your desired color
-        backgroundColor: '#123456', // replace with your desired color
-        fontWeight: 600, // replace with your desired color
+        color: '#ffffff',
+        backgroundColor: '#123456',
+        fontWeight: 600,
         '&:hover': {
-            backgroundColor: '#789abc', // replace with your desired color for hover state
+            backgroundColor: '#789abc',
 
         },
     },

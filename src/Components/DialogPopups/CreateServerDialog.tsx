@@ -8,33 +8,37 @@ import { withStyles } from "@mui/styles";
 import { dialogStyles } from "./DialogStyles";
 
 interface DialogProps {
-  open: boolean; /* Whether the dialog is open or not */
-  handleClose: () => void; /* Function to close the dialog */
-  actions?: React.ReactNode; /* Optional custom actions for the dialog */
+  open: boolean;
+  handleClose: () => void;
   handleAddServer: (server: ServerProps) => void;
 }
+
 const CustomCheckbox = withStyles({
   root: {
-    color: '#ffffff', // replace with your desired color
+    color: '#ffffff',
     '&$checked': {
-      color: '#FBC02D', // replace with your desired color
+      color: '#FBC02D',
     },
   },
   checked: {},
 })(Checkbox);
-const CreateServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, handleAddServer }) => {
+
+const CreateServerDialog: React.FC<DialogProps> = ({ open, handleClose, handleAddServer }) => {
   const { auth }: { auth: any } = useAuth();
   const [nameValue, setInputValue] = React.useState('');
   const isNameValueValid = (nameValue.length < 32) && (nameValue.length > 0);
   const [description, setDescription] = React.useState('');
   const isServerDescriptionValid = (description.length < 128);
   const [isPublic, setIsPublic] = React.useState(false);
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
+
   const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDescription(event.target.value);
   }
+
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsPublic(event.target.checked);
   }
@@ -59,14 +63,14 @@ const CreateServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions,
       }
     }
   }
+
   const handleCreateServer = () => {
     if (isNameValueValid && isServerDescriptionValid) {
       serverCreate();
       closeDialog();
-    } else {
-      //throw error
     }
   }
+
   const closeDialog = () => {
     setInputValue("");
     setDescription("");
@@ -74,7 +78,6 @@ const CreateServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions,
   }
 
   return (
-    /* Dialog component from Material UI */
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" sx={dialogStyles.dialogPaper}>
       <DialogTitle id="form-dialog-title" sx={dialogStyles.title}>Server Creation</DialogTitle>
       <DialogContent sx={dialogStyles.inputField}>
@@ -115,21 +118,13 @@ const CreateServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions,
           label="Is Public"
         />
       </DialogContent>
-      {/* Actions of the dialog */}
       <DialogActions>
-        {/* If custom actions are provided, use them, otherwise use default actions */}
-        {actions ? actions : (
-          <>
-            {/* Confirm button, closes the dialog */}
-            <Button onClick={handleCreateServer} sx={dialogStyles.styleButton}>
-              Confirm
-            </Button>
-            {/* Cancel button, closes the dialog */}
-            <Button onClick={closeDialog} sx={dialogStyles.styleButton}>
-              Cancel
-            </Button>
-          </>
-        )}
+        <Button onClick={handleCreateServer} sx={dialogStyles.styleButton}>
+          Confirm
+        </Button>
+        <Button onClick={closeDialog} sx={dialogStyles.styleButton}>
+          Cancel
+        </Button>
       </DialogActions>
     </Dialog>
   );

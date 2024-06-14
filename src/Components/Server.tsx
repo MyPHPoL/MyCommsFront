@@ -54,7 +54,6 @@ function Server({ removeServer }: AdditionalProps) {
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogEditOpen, setDialogEditOpen] = useState(false);
   const [dialogAddOpen, setDialogAddOpen] = useState(false);
-  const [dialogType, setDialogType] = useState("Add Channel");
   const [dialogId, setPassedId] = useState("");
   const [tmpChannel, setTmpChannel] = useState<ChannelProps | undefined>();
   const [toBeRemovedId, settoBeRemoved] = useState('');
@@ -67,7 +66,7 @@ function Server({ removeServer }: AdditionalProps) {
   const [editDesc, setEditDesc] = useState(server?.description ?? "");
   const [editName, setEditName] = useState(server?.name ?? "");
   const location = useLocation();
-  
+
   const handleServerEditOpen = () => {
     setServerEditOpen(true);
   }
@@ -109,17 +108,16 @@ function Server({ removeServer }: AdditionalProps) {
   const handleDialogAddClose = () => {
     setDialogAddOpen(false);
   };
-  //changed to accept Id so it can be used for both channels and servers
+
   const setDialogTypeAndOpen = (type: string, passedId: string) => {
-    setDialogType(type);
     setPassedId(passedId);
     if (type === "EditChannel") {
       setToBeEditedChannel(channels?.find((channel) => channel.id === passedId));
     }
-    if(type === "Add Channel"){
+    if (type === "Add Channel") {
       handleDialogAddOpen();
-    }else{
-    handleDialogEditOpen();
+    } else {
+      handleDialogEditOpen();
     }
   }
 
@@ -165,7 +163,6 @@ function Server({ removeServer }: AdditionalProps) {
 
   useEffect(() => {
     if (tmpChannel) {
-      console.log(tmpChannel);
       if (channels) {
         setChannels([...channels, tmpChannel]);
       }
@@ -221,8 +218,6 @@ function Server({ removeServer }: AdditionalProps) {
       isMounted = false;
       controller.abort();
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ServerId]);
 
   useTitle(`MyCommsPoL | ${server?.name}`)
@@ -343,14 +338,14 @@ function Server({ removeServer }: AdditionalProps) {
                           onClick={() => setDialogTypeAndOpen("EditChannel", id)}>
                           <MdEdit size={25} />
                         </button> : null}
-                      {(auth.id === server?.ownerId) ? //narazie tak bd
+                      {(auth.id === server?.ownerId) ?
                         <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
                           onClick={() => handleDelete(id)}>
                           <MdDeleteForever size={25} />
                         </button> : null}
                     </div>
                   </Link>
-                  <EditChannelDialog open={dialogEditOpen} handleClose={handleDialogEditClose} passedId={dialogId} pushChannel={pushChannel} setChannelEdit={setChannelEdit} passedDescription={description} passedName={name} serverId={ServerId}/>
+                  <EditChannelDialog open={dialogEditOpen} handleClose={handleDialogEditClose} passedId={dialogId} pushChannel={pushChannel} setChannelEdit={setChannelEdit} passedDescription={description} passedName={name} serverId={ServerId} />
                 </li>
               ))}
             </ul>

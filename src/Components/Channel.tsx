@@ -2,11 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import useAuth from "../Hooks/useAuth";
-import { getAllDetailedMessages, getAllMessages, getChannelInfo, getUser, sendMessage, sendMessageForm } from "../Api/axios";
+import { getAllDetailedMessages, getChannelInfo, getUser, sendMessageForm } from "../Api/axios";
 import { Message } from "./Message";
-import DeleteMessageConfirmation from "./DialogPopups/DeleteMessageConfirmation";
 import TextBar from "./TextBar";
-import { get } from "http";
 
 export interface ChannelProps {
   id: string;
@@ -23,6 +21,7 @@ export interface MessageProps {
   attachment: string | null
   author: AuthorProps
 }
+//thanks to new endpoint getting messages also includes author info, added special author props for cleaner code
 export interface AuthorProps {
   username: string;
   id: string;
@@ -35,32 +34,17 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   const [channelInfo, setChannelInfo] = useState<ChannelProps | undefined>();
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
-  const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
+  const { auth }: { auth: any } = useAuth();
   const [toBeRemovedId, settoBeRemoved] = useState('');
   const [User, setUser] = useState<AuthorProps>({ username: '', id: '', creationDate: '', avatar: '' });
 
-  // will add message to the database and then to the messages array (if successful)
-  /*const addMessage = async (body: string) => {
-    try {
-      const response = await sendMessage(auth.token, ChannelId || '', body, '0');
-      const newMessage: MessageProps = {
-        id: response.data.id,
-        authorId: response.data.authorId,
-        body: response.data.body,
-        creationDate: response.data.creationDate,
-      };
-      setMessages((messages) => [...messages, newMessage]);
-    } catch (error: any) {
-      enqueueSnackbar("We couldn't send your message. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
-    };
-  };*/
   useEffect(() => {
-      getUser(auth.token, auth.id).then((response) => {
-        setUser(response.data);
-      }).catch((error: any) => {
-        enqueueSnackbar("We couldn't load user info. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
-      })
-  },[]);
+    getUser(auth.token, auth.id).then((response) => {
+      setUser(response.data);
+    }).catch((error: any) => {
+      enqueueSnackbar("We couldn't load user info. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+    })
+  }, []);
   const addMessageForm = async (body: string, file: File | null, author: AuthorProps) => {
     try {
       const response = await sendMessageForm(auth.token, ChannelId || '', body, '0', file);
@@ -86,7 +70,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
     } catch (error: any) {
       enqueueSnackbar("We couldn't load messagess. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
     }
-  } 
+  }
 
   const fetchChannelInfo = async () => {
     try {
@@ -110,7 +94,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   }, [toBeRemovedId])
 
   useEffect(() => {
-    let isMounted = true; // something, something not to render when component is unmounted
+    let isMounted = true; // not to render when component is unmounted
     const controller = new AbortController(); // cancels request when component unmounts
 
     if (isMounted) {
@@ -122,8 +106,6 @@ function Channel({ widthmsg }: { widthmsg: number }) {
       isMounted = false;
       controller.abort();
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ChannelId]);
 
   useEffect(() => {
@@ -136,22 +118,21 @@ function Channel({ widthmsg }: { widthmsg: number }) {
         {channelInfo?.name} | {channelInfo?.description}
       </div>
       <div className='mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 w-[85%]'>
-        {messages?.map(({ id, authorId, body, creationDate, attachment, author}) => (
+        {messages?.map(({ id, authorId, body, creationDate, attachment, author }) => (
           <div key={id} className='border-tertiary'>
-              <Message
-                id={id}
-                authorId={authorId}
-                body={body}
-                creationDate={creationDate}
-                attachment={attachment}
-                isPrivateMessage={false}
-                removeMessage={removeMessage}
-                widthmsg={widthmsg}
-                username={author.username}
-              />
+            <Message
+              id={id}
+              authorId={authorId}
+              body={body}
+              creationDate={creationDate}
+              attachment={attachment}
+              isPrivateMessage={false}
+              removeMessage={removeMessage}
+              widthmsg={widthmsg}
+              username={author.username}
+            />
           </div>
         ))}
-
         <div className='max-w-[95%] overflow-wrap text-wrap h-auto break-words' ref={chatWindowRef} />
       </div>
       <TextBar

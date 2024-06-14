@@ -1,10 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { RiAttachment2 } from "react-icons/ri";
-import { FaRegSmile } from "react-icons/fa";
-import { IoSend } from "react-icons/io5";
-import { HiGif } from "react-icons/hi2";
 import { useLocation, useParams } from "react-router-dom";
-import { IoRefreshOutline } from "react-icons/io5";
 import { UserAvatar } from "./IconLib";
 import { AuthorProps, MessageProps } from "./Channel";
 import { Message } from "./Message";
@@ -12,7 +7,6 @@ import TextBar from "./TextBar";
 import { getAllMessagesFromUser, getUser, sendPrivateMessageForm } from "../Api/axios";
 import useAuth from "../Hooks/useAuth";
 import { enqueueSnackbar } from "notistack";
-import { MessagePropsWithDelete } from "./Message";
 import { UserProps } from "./User";
 
 export interface FriendProps {
@@ -29,10 +23,12 @@ function FriendMessage() {
   const [user, setUser] = useState<UserProps>();
   const location = useLocation();
   const [toBeRemovedId, settoBeRemoved] = useState('');
-  const [author, setAuthor] = useState<AuthorProps>({ username: '', id: '', creationDate: '', avatar: '' });
+  const [author, setAuthor] = useState<AuthorProps>({ username: '', id: '', creationDate: '', avatar: '' }); // needs to be initialized with anything, the value is overwritten immediately on start
+
   const removeMessage = (id: string) => {
     settoBeRemoved(id);
   }
+
   useEffect(() => {
     if (UserId && (location.pathname.startsWith(`/friends/${UserId}`))) {
       getUser(auth.token, UserId || '').then((response) => {
@@ -43,13 +39,15 @@ function FriendMessage() {
     }
     fetchAllMessages();
   }, [UserId]);
+
   useEffect(() => {
     getUser(auth.token, auth.id).then((response) => {
       setAuthor(response.data);
     }).catch((error: any) => {
       enqueueSnackbar("We couldn't load user info. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
     })
-  },[]);
+  }, []);
+
   useEffect(() => {
     chatWindowRef.current?.scrollIntoView({ behavior: 'auto' });
   },);
@@ -61,6 +59,7 @@ function FriendMessage() {
       }
     }
   }, [toBeRemovedId])
+
   const addMessageForm = async (body: string, file: File | null) => {
     try {
       const response = await sendPrivateMessageForm(auth.token, UserId || '', body, '0', file);
@@ -114,13 +113,12 @@ function FriendMessage() {
       <TextBar
         addMessage={addMessageForm}
         name={user?.username || 'this friend'}
-        widthmsg={15}//temporary hardcoded value, I was not the creator of this code so will wait for the original creator to fix this
+        widthmsg={15}
         refreshMessages={fetchAllMessages}
         author={author}
       />
     </div>
   );
-
 }
 
 

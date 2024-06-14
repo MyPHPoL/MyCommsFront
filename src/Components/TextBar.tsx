@@ -39,8 +39,6 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages, author }: { addM
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Handle the selected file
-    console.log(file);
     if (event.target.files && event.target.files.length > 0) {
       setFile(event.target.files[0]);
     }

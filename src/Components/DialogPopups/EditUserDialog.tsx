@@ -9,9 +9,8 @@ import CloseIcon from '@mui/icons-material/Close'
 import React from "react";
 import useAuth from "../../Hooks/useAuth";
 
-// copied 90% from RegisterForm.tsx works, so i dont care, maybe refactor later, but probably not
 const SettingsDialog = ({ open, handleClose, changeAuth }: { open: boolean, handleClose: () => void, changeAuth: (token: string) => void }) => {
-    const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
+    const { auth }: { auth: any } = useAuth();
     const [email, setEmail] = useState(auth.email);
     const [validEmail, setValidEmail] = useState(false);
     const [emailFocus, setEmailFocus] = useState(false);
