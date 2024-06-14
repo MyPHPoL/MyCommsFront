@@ -9,23 +9,23 @@ import { createChannel } from "../../Api/axios";
 import { useNavigate } from 'react-router-dom';
 
 interface DialogProps {
-    open: boolean; /* Whether the dialog is open or not */
-    handleClose: () => void; /* Function to close the dialog */
-    type?: string; /* Type of the dialog, we might change it to an enum later */
-    actions?: React.ReactNode; /* Optional custom actions for the dialog */
-    passedId: string;
-    pushChannel: (channel: ChannelProps) => void;
-  }
+  open: boolean;
+  handleClose: () => void;
+  passedId: string;
+  pushChannel: (channel: ChannelProps) => void;
+}
+
 const CustomCheckbox = withStyles({
   root: {
-    color: '#ffffff', // replace with your desired color
+    color: '#ffffff',
     '&$checked': {
-      color: '#FBC02D', // replace with your desired color
+      color: '#FBC02D',
     },
   },
   checked: {},
 })(Checkbox);
-const CreateServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, passedId, pushChannel }) => {
+
+const CreateServerDialog: React.FC<DialogProps> = ({ open, handleClose, passedId, pushChannel }) => {
   const { auth }: { auth: any } = useAuth();
   const navigate = useNavigate();
   const [nameValue, setInputValue] = React.useState('');
@@ -67,75 +67,65 @@ const CreateServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions,
     if (isNameValueValid && isChannelDescriptionValid) {
       addChannel();
       closeDialog();
-    } else {
-      //throw error
-    }
+    } // If the input is valid we handle adding channel and close the dialog, otherwise we don't close it
   }
+
   const closeDialog = () => {
     setInputValue("");
     setDescription("");
     handleClose();
   }
+
   const handleError = (errorCode: string) => {
     navigate(`/error/${errorCode}`);
   }
 
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" sx={dialogStyles.dialogPaper}>
-        <DialogTitle id="form-dialog-title" sx={dialogStyles.title}>Add new channel</DialogTitle>
-        <DialogContent sx={dialogStyles.inputField}>
-          {/* for now the values used in both server and channel creation are the same in order not to create thousands of variables */}
-          {/* as for now I am not familiar with the required validation, this might force us to create a new set of variables, or handle the validation differently */}
-          <TextField
-            InputProps={{
-              sx: dialogStyles.inputField
-            }}
-            InputLabelProps={{
-              sx: dialogStyles.inputLabel
-            }}
-            autoFocus
-            margin="dense"
-            id="AddChannelName"
-            label="Channel name"
-            type="text"
-            fullWidth
-            value={nameValue}
-            onChange={handleInputChange}
-          />
-          <TextField
-            InputProps={{
-              sx: dialogStyles.inputField
-            }}
-            InputLabelProps={{
-              sx: dialogStyles.inputLabel
-            }}
-            autoFocus
-            margin="dense"
-            id="AddChannelDescription"
-            label="Channel description"
-            type="text"
-            fullWidth
-            value={description}
-            onChange={handleDescriptionChange}
-          />
-        </DialogContent>
-        {/* Actions of the dialog */}
-        <DialogActions>
-          {/* If custom actions are provided, use them, otherwise use default actions */}
-          {actions ? actions : (
-            <>
-              {/* Confirm button, closes the dialog */}
-              <Button onClick={handleAddChannel} sx={dialogStyles.styleButton}>
-                Confirm
-              </Button>
-              {/* Cancel button, closes the dialog */}
-              <Button onClick={closeDialog} sx={dialogStyles.styleButton}>
-                Cancel
-              </Button>
-            </>
-          )}
-        </DialogActions>
-      </Dialog>
+      <DialogTitle id="form-dialog-title" sx={dialogStyles.title}>Add new channel</DialogTitle>
+      <DialogContent sx={dialogStyles.inputField}>
+        <TextField
+          InputProps={{
+            sx: dialogStyles.inputField
+          }}
+          InputLabelProps={{
+            sx: dialogStyles.inputLabel
+          }}
+          autoFocus
+          margin="dense"
+          id="AddChannelName"
+          label="Channel name"
+          type="text"
+          fullWidth
+          value={nameValue}
+          onChange={handleInputChange}
+        />
+        <TextField
+          InputProps={{
+            sx: dialogStyles.inputField
+          }}
+          InputLabelProps={{
+            sx: dialogStyles.inputLabel
+          }}
+          autoFocus
+          margin="dense"
+          id="AddChannelDescription"
+          label="Channel description"
+          type="text"
+          fullWidth
+          value={description}
+          onChange={handleDescriptionChange}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleAddChannel} sx={dialogStyles.styleButton}>
+          Confirm
+        </Button>
+        <Button onClick={closeDialog} sx={dialogStyles.styleButton}>
+          Cancel
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 

@@ -10,13 +10,13 @@ interface DialogProps {
   handleClose: () => void;
   removeChannel: (removeId: string) => void;
   passedId: string;
-  actions?: React.ReactNode;
 }
 
 
-const DeleteChannelConfirmation: React.FC<DialogProps> = ({ open, handleClose, actions, removeChannel, passedId }) => {
+const DeleteChannelConfirmation: React.FC<DialogProps> = ({ open, handleClose, removeChannel, passedId }) => {
   const navigate = useNavigate();
   const { auth }: { auth: any } = useAuth();
+
   const channelDelete = async () => {
     try {
       const response = await deleteChannel(auth.token, passedId);
@@ -28,7 +28,6 @@ const DeleteChannelConfirmation: React.FC<DialogProps> = ({ open, handleClose, a
   }
 
   const handleDeleteChannel = () => {
-    //needs to redirect to server here 
     channelDelete();
     handleClose();
   }
@@ -38,22 +37,15 @@ const DeleteChannelConfirmation: React.FC<DialogProps> = ({ open, handleClose, a
       <DialogTitle id="form-dialog-title" sx={dialogStyles.title}>Are you sure you want to delete the channel?</DialogTitle>
       <DialogContent sx={dialogStyles.inputField}>
       </DialogContent>
-      {/* Actions of the dialog */}
       <DialogActions>
-        {/* If custom actions are provided, use them, otherwise use default actions */}
-        {actions ? actions : (
-          <>
-            <Button onClick={handleDeleteChannel} sx={dialogStyles.styleButton}>
-              Yes
-            </Button>
-            <Button onClick={handleClose} sx={dialogStyles.styleButton}>
-              Cancel
-            </Button>
-          </>
-        )}
+        <Button onClick={handleDeleteChannel} sx={dialogStyles.styleButton}>
+          Yes
+        </Button>
+        <Button onClick={handleClose} sx={dialogStyles.styleButton}>
+          Cancel
+        </Button>
       </DialogActions>
     </Dialog>
   );
-
 }
 export default DeleteChannelConfirmation;

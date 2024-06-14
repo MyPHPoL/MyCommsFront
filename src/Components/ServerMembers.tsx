@@ -3,12 +3,11 @@ import "../index.css";
 import { UserAvatar } from "./IconLib";
 import { UserProps } from "./User";
 import useAuth from "../Hooks/useAuth";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogTitle } from "@mui/material";
 import { MdDeleteForever } from "react-icons/md";
 import { kickUser } from "../Api/axios";
 import { enqueueSnackbar } from "notistack";
 import { dialogStyles } from './DialogPopups/DialogStyles';
-import { withStyles } from '@mui/styles';
 
 interface ServerMembersProps {
   serverMembers: UserProps[];
@@ -25,12 +24,8 @@ interface KickUserProps {
 function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps) {
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [toBeRemovedId, settoBeRemoved] = useState('');
   const [selectedUser, setSelectedUser] = useState({ id: '', username: '' });
 
-  const handleDialogOpen = () => {
-    setDialogOpen(true);
-  };
 
   const handleDialogClose = () => {
     setDialogOpen(false);
@@ -44,7 +39,7 @@ function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps)
           All Members
         </div>
         <ul>
-          {serverMembers.map((user) => ( // Fix the map function
+          {serverMembers.map((user) => (
             <li key={user.id} className="w-full flex border-[1px] shadow border-tertiary hover:bg-secondary">
               <div className="text-lg flex flex-col my-1 mb-2 font-semibold text-white mr-2 pl-2   py-2 px-4 w-full items-start">
                 <div className="flex justify-start items-center w-full">
@@ -55,7 +50,7 @@ function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps)
                 </div>
               </div>
               <div className="text-lg flex flex-col my-1 mb-2 font-semibold text-white mr-2 pl-2 py-2 px-4 justify-center">
-                {((auth.id === ownerId) && (auth.id !== user.id)) ? //narazie tak bd
+                {((auth.id === ownerId) && (auth.id !== user.id)) ?
                   <button className="px-4 py-2 ml-1 text-sm text-white rounded-lg radius-10 bg-secondary hover:bg-red-600"
                     onClick={() => { setSelectedUser({ id: user.id, username: user.username }); setDialogOpen(true) }}>
                     <MdDeleteForever size={25} />
@@ -75,19 +70,21 @@ function ServerMembers({ serverMembers, ownerId, serverId }: ServerMembersProps)
     </div>
   );
 }
+
 const KickConfirmation: React.FC<KickUserProps> = ({ open, handleClose, userId, currServerId, userName }) => {
   const { auth }: { auth: any } = useAuth();
+
   const handleKick = async () => {
     try {
       if (currServerId) {
         const response = await kickUser(auth.token, currServerId, userId);
-        console.log(response.data)
       }
     } catch (error: any) {
       enqueueSnackbar("Something went wrong", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
     }
     handleClose();
   }
+
   return (
     <Dialog
       open={open}
@@ -97,7 +94,6 @@ const KickConfirmation: React.FC<KickUserProps> = ({ open, handleClose, userId, 
       sx={dialogStyles.dialogPaper}
     >
       <DialogTitle id="alert-dialog-title" sx={dialogStyles.title}>
-
         {"Are you sure you want to kick " + userName + " from the server?"}
       </DialogTitle>
 

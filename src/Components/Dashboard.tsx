@@ -18,7 +18,6 @@ import { IoClose } from "react-icons/io5";
 import { IconType } from "react-icons";
 import LeaveServerConfirmation from "./DialogPopups/LeaveServerConfirmation";
 import RemoveFriendConfirmation from "./DialogPopups/RemoveFriendConfirmation";
-import { Remove } from "@mui/icons-material";
 import { TbLock, TbLockOff } from "react-icons/tb";
 
 interface DashBoardProps {
@@ -50,7 +49,7 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
     const [filteredIncInvites, setFilteredIncInvites] = useState(incInvites);
     const [filteredOutInvites, setFilteredOutInvites] = useState(outInvites);
     const [filteredBlockedUsers, setFilteredBlockedUsers] = useState(blockedUsers);
-    const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
+    const { auth }: { auth: any } = useAuth();
 
 
     const handleFilter = (event: any) => {
@@ -83,7 +82,7 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
 
     useEffect(() => {
 
-      let isMounted = true; // something, something not to render when component is unmounted
+      let isMounted = true; // not to render when component is unmounted
       const controller = new AbortController(); // cancels request when component unmounts
 
       const fetchIncInvites = async () => {
@@ -192,36 +191,30 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
 
     const handleBlockFriend = async (user: FriendProps) => {
       try {
-        console.log(user.id)
         await blockUser(auth.token, user.id);
         setBlockedUsers(prevBlockedUsers => [...prevBlockedUsers, user]);
       }
       catch (error: any) {
-        console.log(error)
         enqueueSnackbar("We couldn't block this user. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
     };
 
     const handleUnblockFriend = async (user: FriendProps) => {
       try {
-        console.log(user.id)
         await unblockUser(auth.token, user.id);
         setBlockedUsers(blockedUsers.filter((blockedUser) => blockedUser.id !== user.id));
       }
       catch (error: any) {
-        console.log(error)
         enqueueSnackbar("We couldn't unblock this user. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
       }
     };
 
-    // it should work after adding axios function
     const handleRemoveFriendOpen = (id: string) => {
       setPassedId(id);
       setRemoveFriendOpen(true);
     }
 
     const handleRemoveFriendClose = () => {
-      console.log('closed')
       setRemoveFriendOpen(false);
     }
 
@@ -232,10 +225,6 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
     const handleAddClose = () => {
       setAddOpen(false);
     };
-    
-    useEffect(() => {
-      console.log(blockedUsers); // Logs the new value of blockedUsers whenever it changes
-    }, [blockedUsers]);
 
     return (
       <div className="flex">
@@ -266,27 +255,22 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
                           : undefined
                       }
                     />
-
                     <div className='pl-2'>
                       {user.username}
-
-
                     </div>
-                    
                   </div>
                 </Link>
                 <button className="invisible group-hover:visible px-4 py-2 ml-0 text-sm text-white rounded-full bg-tertiary hover:bg-red-600 transition-all duration-300 ease-linear"
-                    onClick={() => handleRemoveFriendOpen(user.id)}>
+                  onClick={() => handleRemoveFriendOpen(user.id)}>
                   <MdDeleteForever size={25} />
-                  </button>
-                  {isUserBlocked(user) ? null :  (
+                </button>
+                {isUserBlocked(user) ? null : (
                   <button className="invisible group-hover:visible px-4 py-2 ml-0 text-sm text-white rounded-full bg-tertiary hover:bg-yellow-600 transition-all duration-300 ease-linear"
-                   onClick={() => handleBlockFriend(user)}>
-                   <TbLock size={25} />
-                </button>)}
+                    onClick={() => handleBlockFriend(user)}>
+                    <TbLock size={25} />
+                  </button>)}
               </div>
             ))}
-
             <button className="w-[430px]" onClick={() => handleAddOpen()}>
               <BigBlueButtonAtTheBottom Icon={TiUserAdd} text="Click here to add a friend!" subText="All you need is their username!" />
             </button>
@@ -382,7 +366,7 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
             ))}
           </div>
         </div>
-        
+
         <div className="w-[450px]">
           <h1 className='text-4xl font-bold my-4 text-white mx-2 pl-[20px]'> Users you blocked </h1>
           <div className='relative w-[430px] h-12 my-2 pl-[20px]'>
@@ -409,7 +393,7 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
                     }
                   />
                   <div className='pl-2'>
-                  {user.username}
+                    {user.username}
                   </div>
                   <button className="invisible group-hover:visible absolute right-2 px-4 py-2 text-right text-sm text-white rounded-full bg-tertiary hover:bg-green-600 transition-all duration-300 ease-linear"
                     onClick={() => handleUnblockFriend(user)}>
@@ -420,7 +404,6 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
             ))}
           </div>
         </div>
-
 
       </div>
     );
@@ -434,21 +417,16 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
     const [dialogId, setPassedId] = useState("");
     const [joinOpen, setJoinOpen] = useState(false);
     const [createOpen, setCreateOpen] = useState(false);
-    const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
+    const { auth }: { auth: any } = useAuth();
 
-    // servers didn't want to load at first so i added this useEffect. it probably won't be necessary in the friends function
     useEffect(() => {
-
-      let isMounted = true; // something, something not to render when component is unmounted
+      let isMounted = true; // not to render when component is unmounted
       const controller = new AbortController(); // cancels request when component unmounts
-
       isMounted && setFilteredServers(servers);
-
       return () => {
         isMounted = false;
         controller.abort();
       };
-
     }, [servers]);
 
     // easy way to filter servers by name
@@ -458,7 +436,7 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
       setFilteredServers(filtered);
     };
 
-    // deleting servers when owner stuff
+    // deleting servers (owner only)
     const handleServerDeleteOpen = (id: string) => {
       setPassedId(id);
       setServerDeleteOpen(true);
@@ -468,7 +446,7 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
       setServerDeleteOpen(false);
     }
 
-    // leaving servers when not owner stuff
+    // leaving servers when not owner 
     const handleServerLeaveOpen = (id: string) => {
       setPassedId(id);
       setServerLeaveOpen(true);

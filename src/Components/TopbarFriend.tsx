@@ -9,20 +9,14 @@ import AddFriendDialog from "./DialogPopups/AddFriendDialog";
 
 interface TopbarProps {
   friends?: FriendProps[];
-  //handleAddFriend: (friend: FriendProps) => void;
-  //removeFriend: (id: string) => void;
 }
 
 export default function TopbarFriend({ friends }: TopbarProps) {
-
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState("Add Friend");
 
   const navigate = useNavigate();
   useEffect(() => {
     navigate('/home');
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDialogOpen = () => {
@@ -32,19 +26,13 @@ export default function TopbarFriend({ friends }: TopbarProps) {
   const handleDialogClose = () => {
     setDialogOpen(false);
   };
-
-  const setDialogTypeAndOpen = (type: string) => {
-    setDialogType(type);
-    handleDialogOpen();
-  };
-
   return (
     <div>
       <div className="h-auto w-auto flex flex-row bg-primary">
         <ul className="first:my-0 last:my-0 flex flex-row">
           <i
             className="mr-1"
-            onClick={() => setDialogTypeAndOpen("Add Friend")}
+            onClick={() => handleDialogOpen()}
           >
             <IconButton icon={<TiUserAdd size="30" />} name={"Add Friend"} />
           </i>
@@ -52,8 +40,6 @@ export default function TopbarFriend({ friends }: TopbarProps) {
         <AddFriendDialog
           open={dialogOpen}
           handleClose={handleDialogClose}
-          type={dialogType}
-        //handleAddFriend={handleAddFriend} the dialog currently does not have any functionality, moved from dialog template to separate component for further development
         />
         <ul className="m-4 first:my-0 last:my-0 flex flex-row">
           {friends?.map(({ id, username, avatar }) => (
