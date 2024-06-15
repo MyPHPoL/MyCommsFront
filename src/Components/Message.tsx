@@ -5,17 +5,18 @@ import { FaFilePdf } from "react-icons/fa";
 import { useEffect } from "react";
 import { MdDeleteForever } from "react-icons/md";
 import DeleteMessageConfirmation from "./DialogPopups/DeleteMessageConfirmation";
+import { AuthorProps } from "./Channel";
+import { UserAvatar } from "./IconLib";
 
 export interface MessagePropsWithDelete {
   id: string,
-  authorId: string,
   body: string,
   creationDate: string
   attachment: string | null
   isPrivateMessage: boolean;
   removeMessage: (id: string) => void
   widthmsg?: number;
-  username: string;
+  author: AuthorProps;
 }
 
 export interface MessageContentProps {
@@ -23,7 +24,7 @@ export interface MessageContentProps {
   attachment: string | null;
 
 }
-export const Message = ({ id, authorId, body, creationDate, attachment, isPrivateMessage, removeMessage, widthmsg, username }: MessagePropsWithDelete) => {
+export const Message = ({ id, author, body, creationDate, attachment, isPrivateMessage, removeMessage, widthmsg }: MessagePropsWithDelete) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { auth }: { auth: any } = useAuth(); 
 
@@ -38,13 +39,16 @@ export const Message = ({ id, authorId, body, creationDate, attachment, isPrivat
     <div className='group justify-evenly w-auto flex-row py-3 px-8 cursor-pointer border-tertiary border-b-2 hover:bg-tertiary text-ellipsis truncate break-all' style={{ marginRight: `${widthmsg ? widthmsg + 1.5 : 0}%` }}>
       <div className='flex flex-col ml-auto border-tertiary'>
         <div>
-          {(auth.id === authorId) ?
+          {(auth.id === author.id) ?
             <button className="invisible group-hover:visible w-7 h-7 text-xs float-right text-white rounded-lg radius-10 hover:bg-red-600 self-end"
               onClick={() => handleDialogOpen()}>
               <MdDeleteForever size={25} />
             </button> : null}
+            <p className="float-left mr-2 mt-1">
+            {author.avatar ? <UserAvatar name={author.username} picture={"https://localhost:7031/file/" + author.avatar} /> : <UserAvatar name={author.username} />}
+            </p>
           <p className='text-left font-semibold text-white mr-2 cursor-pointer'>
-            {username}
+            {author.username}
             <small className='text-xs text-left font-semibold text-gray-500 ml-2'>
               {new Date(creationDate).toLocaleDateString()} {new Date(creationDate).toLocaleTimeString()}
             </small>

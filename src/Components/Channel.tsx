@@ -118,18 +118,17 @@ function Channel({ widthmsg }: { widthmsg: number }) {
         {channelInfo?.name} | {channelInfo?.description}
       </div>
       <div className='mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 w-[85%]'>
-        {messages?.map(({ id, authorId, body, creationDate, attachment, author }) => (
+        {messages?.map(({ id, body, creationDate, attachment, author }) => (
           <div key={id} className='border-tertiary'>
             <Message
               id={id}
-              authorId={authorId}
+              author={author}
               body={body}
               creationDate={creationDate}
               attachment={attachment}
               isPrivateMessage={false}
               removeMessage={removeMessage}
               widthmsg={widthmsg}
-              username={author.username}
             />
           </div>
         ))}

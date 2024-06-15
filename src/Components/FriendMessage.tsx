@@ -96,16 +96,15 @@ function FriendMessage() {
         {user?.username}
       </div>
       <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 border-tertiary w-full'>
-        {messages.map(({ id, authorId, body, creationDate, attachment, author }: MessageProps) => (
+        {messages.map(({ id, body, creationDate, attachment, author }: MessageProps) => (
           <Message
             id={id}
-            authorId={authorId}
+            author={author}
             body={body}
             creationDate={creationDate}
             attachment={attachment}
             isPrivateMessage={true}
             removeMessage={removeMessage}
-            username={author.username}
           />
         ))}
         <div ref={chatWindowRef} />
