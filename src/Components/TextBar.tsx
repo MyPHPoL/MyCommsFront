@@ -135,7 +135,7 @@ const GifMenu = ({ addMessage, author }: { addMessage: (message: string, file: F
         gifHeight: gif.gif.dims.height,
         previewHeight: gif.preview.dims.height,
         previewWidth: gif.preview.dims.width,
-        author: gif.author, // Add the 'author' property here
+        author: gif.author,
         tenorId: gif.tenorId,
       }));
       setGifs(formattedGifs);
@@ -155,7 +155,7 @@ const GifMenu = ({ addMessage, author }: { addMessage: (message: string, file: F
         gifHeight: gif.gif.dims.height,
         previewHeight: gif.preview.dims.height,
         previewWidth: gif.preview.dims.width,
-        author: gif.author, // Add the 'author' property here
+        author: gif.author,
       }));
       setFavoriteGifs(formattedGifs);
     }
@@ -186,7 +186,7 @@ const GifMenu = ({ addMessage, author }: { addMessage: (message: string, file: F
   }
 
   useEffect(() => {
-    let isMounted = true; // something, something not to render when component is unmounted
+    let isMounted = true; // not to render when component is unmounted
     const controller = new AbortController(); // cancels request when component unmounts
 
     if (isMounted) {
@@ -197,8 +197,6 @@ const GifMenu = ({ addMessage, author }: { addMessage: (message: string, file: F
       isMounted = false;
       controller.abort();
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { enqueueSnackbar } from "notistack";
 import useAuth from "../../Hooks/useAuth";
 import React from "react";
-import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material";
+import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { withStyles } from "@mui/styles";
 import { dialogStyles } from "./DialogStyles";
 import { ChannelProps } from "../Channel";
