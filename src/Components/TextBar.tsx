@@ -10,7 +10,6 @@ import { addFavoriteGif, deleteFavoriteGif, getFavoriteGifs, getGifs } from "../
 import useDebounce from "../Hooks/useDebounce";
 import { FaStar } from "react-icons/fa";
 import { LazyLoadComponent } from 'react-lazy-load-image-component';
-import { AuthorProps } from "./Channel";
 
 export interface GifProps {
   description?: string;
@@ -20,12 +19,11 @@ export interface GifProps {
   previewUrl: string;
   previewWidth: number;
   previewHeight: number;
-  author: AuthorProps;
   tenorId?: string;
 }
 
 // input field at the bottom of the page
-const TextBar = ({ addMessage, name, widthmsg, refreshMessages, author }: { addMessage: (message: string, file: File | null, author: AuthorProps) => void, name: string, widthmsg: number, author: AuthorProps, refreshMessages: () => void }) => {
+const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: (message: string, file: File | null) => void, name: string, widthmsg: number, refreshMessages: () => void }) => {
   const [emojiMenuOpen, setEmojiMenuOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [gifMenuOpen, setGifMenuOpen] = useState(false);
@@ -53,7 +51,7 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages, author }: { addM
 
     if (!inputValue && !file) return;
     const messageToSend = inputValue || "attachment";
-    addMessage(messageToSend, file, author);
+    addMessage(messageToSend, file);
     setInputValue('');
     setFile(null);
   };
@@ -93,7 +91,7 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages, author }: { addM
       </button>
 
       <div className="absolute bottom-full right-1 my-2">
-        {gifMenuOpen && <GifMenu addMessage={addMessage} author={author}/>}
+        {gifMenuOpen && <GifMenu addMessage={addMessage}/>}
       </div>
 
       <div className="absolute bottom-full right-1 my-2">
@@ -115,7 +113,7 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages, author }: { addM
 
 export default TextBar;
 
-const GifMenu = ({ addMessage, author }: { addMessage: (message: string, file: File | null, author: AuthorProps) => void, author: AuthorProps}) => {
+const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | null) => void}) => {
 
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [keyword, setKeyword] = useState("");
@@ -135,7 +133,6 @@ const GifMenu = ({ addMessage, author }: { addMessage: (message: string, file: F
         gifHeight: gif.gif.dims.height,
         previewHeight: gif.preview.dims.height,
         previewWidth: gif.preview.dims.width,
-        author: gif.author,
         tenorId: gif.tenorId,
       }));
       setGifs(formattedGifs);
@@ -155,7 +152,6 @@ const GifMenu = ({ addMessage, author }: { addMessage: (message: string, file: F
         gifHeight: gif.gif.dims.height,
         previewHeight: gif.preview.dims.height,
         previewWidth: gif.preview.dims.width,
-        author: gif.author,
       }));
       setFavoriteGifs(formattedGifs);
     }
@@ -221,7 +217,7 @@ const GifMenu = ({ addMessage, author }: { addMessage: (message: string, file: F
             <li>
               {favoriteGifs.map((gif) => (
                 <div key={gif.gifUrl} className='m-2 break-inside-avoid'>
-                    <Gif gif={gif} addMessage={addMessage} checkIfFavorite={checkIfFavorite} addFavorite={addFavorite} deleteFavorite={deleteFavorite} author={author}/>
+                    <Gif gif={gif} addMessage={addMessage} checkIfFavorite={checkIfFavorite} addFavorite={addFavorite} deleteFavorite={deleteFavorite}/>
                 </div>
               ))}
             </li>
@@ -230,7 +226,7 @@ const GifMenu = ({ addMessage, author }: { addMessage: (message: string, file: F
             <li>
               {gifs.map((gif) => (
                 <div key={gif.gifUrl} className='m-2 break-inside-avoid'>
-                    <Gif gif={gif} addMessage={addMessage} checkIfFavorite={checkIfFavorite} addFavorite={addFavorite} deleteFavorite={deleteFavorite} author={author}/>
+                    <Gif gif={gif} addMessage={addMessage} checkIfFavorite={checkIfFavorite} addFavorite={addFavorite} deleteFavorite={deleteFavorite}/>
                 </div>
               ))}
             </li>
@@ -243,15 +239,14 @@ const GifMenu = ({ addMessage, author }: { addMessage: (message: string, file: F
 
 export interface GifProps2 {
   gif: GifProps;
-  addMessage: (message: string, file: File | null, author: AuthorProps) => void;
+  addMessage: (message: string, file: File | null) => void;
   checkIfFavorite: (gifUrl: string) => boolean;
   addFavorite: (gif: GifProps) => void;
   deleteFavorite: (gifUrl: string) => void;
-  author: AuthorProps;
 }
 
 
-const Gif = ({ gif, addMessage, checkIfFavorite, addFavorite, deleteFavorite, author}: GifProps2) => {
+const Gif = ({ gif, addMessage, checkIfFavorite, addFavorite, deleteFavorite}: GifProps2) => {
   return (
     <div className='group relative'>
       <div style={{width: '180px', height: (gif.previewHeight / gif.previewWidth * 180)}}> { /* to properly load the gif while also using lazy load, image needs a fixed sized, because before loading it has 0 widht and height so it loads */}
@@ -264,7 +259,7 @@ const Gif = ({ gif, addMessage, checkIfFavorite, addFavorite, deleteFavorite, au
           preload="none"
           poster="/myphpol.png"
           className='object-cover rounded shadow-lg w-[180px] h-full'
-          onClick={() => addMessage(gif.gifUrl, null, author)}>
+          onClick={() => addMessage(gif.gifUrl, null)}>
           <source src={gif.previewUrl} type="video/mp4"/> 
         </video>
       </LazyLoadComponent>

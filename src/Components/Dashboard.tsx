@@ -29,7 +29,7 @@ interface DashBoardProps {
   removeFriend: (id: string) => void;
 }
 
-interface InviteProps {
+export interface InviteProps {
   id: string;
   username: string;
   picture?: string;

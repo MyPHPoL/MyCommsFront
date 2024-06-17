@@ -19,6 +19,14 @@ export interface MessageProps {
   body: string,
   creationDate: string
   attachment: string | null
+}
+
+export interface MessagePropsWithAuthor {
+  id: string,
+  authorId: string,
+  body: string,
+  creationDate: string
+  attachment: string | null
   author: AuthorProps
 }
 //thanks to new endpoint getting messages also includes author info, added special author props for cleaner code
@@ -32,7 +40,7 @@ function Channel({ widthmsg }: { widthmsg: number }) {
 
   const { ChannelId } = useParams(); // ChannelId is the name of the variable in the URL
   const [channelInfo, setChannelInfo] = useState<ChannelProps | undefined>();
-  const [messages, setMessages] = useState<MessageProps[]>([]);
+  const [messages, setMessages] = useState<MessagePropsWithAuthor[]>([]);
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
   const { auth }: { auth: any } = useAuth();
   const [toBeRemovedId, settoBeRemoved] = useState('');
@@ -45,16 +53,16 @@ function Channel({ widthmsg }: { widthmsg: number }) {
       enqueueSnackbar("We couldn't load user info. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
     })
   }, []);
-  const addMessageForm = async (body: string, file: File | null, author: AuthorProps) => {
+  const addMessageForm = async (body: string, file: File | null) => {
     try {
       const response = await sendMessageForm(auth.token, ChannelId || '', body, '0', file);
-      const newMessage: MessageProps = {
+      const newMessage: MessagePropsWithAuthor = {
         id: response.data.id,
         authorId: response.data.authorId,
         body: response.data.body,
         creationDate: response.data.creationDate,
         attachment: response.data.attachment,
-        author: author
+        author: User
       };
       setMessages((messages) => [...messages, newMessage]);
     } catch (error: any) {
@@ -139,7 +147,6 @@ function Channel({ widthmsg }: { widthmsg: number }) {
         addMessage={addMessageForm}
         name={channelInfo?.name || 'this channel'}
         widthmsg={widthmsg}
-        author={User}
       />
     </div>
   );
