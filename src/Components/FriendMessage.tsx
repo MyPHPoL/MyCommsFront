@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { UserAvatar } from "./IconLib";
-import { AuthorProps, MessageProps } from "./Channel";
+import { AuthorProps, MessageProps, MessagePropsWithAuthor } from "./Channel";
 import { Message } from "./Message";
 import TextBar from "./TextBar";
 import { getAllDetailedMessagesFromUser, getUser, sendPrivateMessageForm } from "../Api/axios";
@@ -24,7 +24,7 @@ function FriendMessage() {
   const location = useLocation();
   const [toBeRemovedId, settoBeRemoved] = useState('');
   const [author, setAuthor] = useState<AuthorProps>({ username: '', id: '', creationDate: '', avatar: '' }); // needs to be initialized with anything, the value is overwritten immediately on start
-
+  const [self, setSelf] = useState<AuthorProps>({ username: '', id: '', creationDate: '', avatar: '' }); // needs to be initialized with anything, the value is overwritten immediately on start
   const removeMessage = (id: string) => {
     settoBeRemoved(id);
   }
@@ -39,6 +39,14 @@ function FriendMessage() {
     }
     fetchAllMessages();
   }, [UserId]);
+
+  useEffect(() => {
+      getUser(auth.token, auth.id).then((response) => {
+        setSelf(response.data);
+      }).catch((error: any) => {
+        enqueueSnackbar("We couldn't load user info. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      })
+  }, [auth.id]);
 
   useEffect(() => {
     getUser(auth.token, auth.id).then((response) => {
@@ -63,13 +71,13 @@ function FriendMessage() {
   const addMessageForm = async (body: string, file: File | null) => {
     try {
       const response = await sendPrivateMessageForm(auth.token, UserId || '', body, '0', file);
-      const newMessage: MessageProps = {
+      const newMessage: MessagePropsWithAuthor = {
         id: response.data.id,
         authorId: response.data.authorId,
         body: response.data.body,
         creationDate: response.data.creationDate,
         attachment: response.data.attachment,
-        author: response.data.author
+        author: self
       };
       setMessages((messages) => [...messages, newMessage]);
     } catch (error: any) {
@@ -96,7 +104,7 @@ function FriendMessage() {
         {user?.username}
       </div>
       <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 border-tertiary w-full'>
-        {messages.map(({ id, body, creationDate, attachment, author }: MessageProps) => (
+        {messages.map(({ id, body, creationDate, attachment}: MessageProps) => (
           <Message
             id={id}
             author={author}
@@ -114,7 +122,6 @@ function FriendMessage() {
         name={user?.username || 'this friend'}
         widthmsg={15}
         refreshMessages={fetchAllMessages}
-        author={author}
       />
     </div>
   );
