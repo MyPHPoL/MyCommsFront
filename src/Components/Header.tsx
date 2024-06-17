@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
 import TopbarServer from "./TopbarServer";
 import { IconButton, UserAvatar } from "./IconLib";
@@ -34,7 +34,6 @@ function Header() {
 
   const removeServer = (id: string) => {
     setToRemoveIdServer(id);
-    console.log('removed')
   }
 
   const removeFriend = (id: string) => {
@@ -58,7 +57,6 @@ function Header() {
     if (servers) {
       if (toRemoveIdServer) {
         // toRemoveId is string but server.id is number thus != instead of !==
-        // eslint-disable-next-line eqeqeq
         setServers(servers.filter((server) => server.id != toRemoveIdServer))
       }
     }
@@ -68,14 +66,13 @@ function Header() {
     if (friends) {
       if (toRemoveIdFriend) {
         // toRemoveId is string but server.id is number thus != instead of !==
-        // eslint-disable-next-line eqeqeq
         setFriends(friends.filter((friend) => friend.id != toRemoveIdFriend))
       }
     }
   }, [toRemoveIdFriend])
 
   useEffect(() => {
-    let isMounted = true; // something, something not to render when component is unmounted
+    let isMounted = true; // not to render when component is unmounted
     const controller = new AbortController(); // cancels request when component unmounts
 
     const fetchServers = async () => {
@@ -103,8 +100,6 @@ function Header() {
       isMounted = false;
       controller.abort();
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const navigate = useNavigate();
@@ -175,13 +170,13 @@ function Header() {
       {useLocation().pathname === '/home' && <Dashboard friends={friends} servers={servers} removeServer={removeServer} removeFriend={removeFriend} mode={activeTopbar || 'null'} handleAddServer={pushServer} />}
     </div>
   );
+
   function toggleDropdown() {
     const dropdown = document.querySelector('#dropdown-menu');
     if (dropdown) {
       dropdown.classList.toggle('hidden');
     }
   }
-
 
 }
 

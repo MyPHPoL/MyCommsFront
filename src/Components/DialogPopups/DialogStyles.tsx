@@ -24,10 +24,10 @@ export const dialogStyles = {
   },
   inputLabel: {
     "&.Mui-focused": {
-      color: '#ffffff' // replace with your desired color
+      color: '#ffffff'
     },
     "&.MuiInputLabel-root": {
-      color: '#ffffff' // replace with your desired color
+      color: '#ffffff'
     }
   },
   inputField: {

@@ -40,19 +40,13 @@ const LeaveServerConfirmation: React.FC<DialogProps> = ({ open, handleClose, act
       <DialogContent sx={dialogStyles.inputField}>
       <DialogContentText sx={dialogStyles.inputField}>You will be able to join back at any time.</DialogContentText>
       </DialogContent>
-      {/* Actions of the dialog */}
       <DialogActions>
-        {/* If custom actions are provided, use them, otherwise use default actions */}
-        {actions ? actions : (
-          <>
             <Button onClick={handleLeaveServer} sx={dialogStyles.styleButton}>
               Yes
             </Button>
             <Button onClick={handleClose} sx={dialogStyles.styleButton}>
               Cancel
             </Button>
-          </>
-        )}
       </DialogActions>
     </Dialog>
   );

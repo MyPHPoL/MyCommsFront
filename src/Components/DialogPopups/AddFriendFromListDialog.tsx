@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { dialogStyles } from "./DialogStyles";
 import React from "react";
 import useAuth from "../../Hooks/useAuth";
@@ -8,24 +8,17 @@ import { useNavigate } from "react-router-dom";
 
 interface DialogProps {
   open: boolean;
+  username: string;
   handleClose: () => void;
 }
 
-const AddFriendDialog: React.FC<DialogProps> = ({ open, handleClose }) => {
+const AddFriendFromListDialog: React.FC<DialogProps> = ({ open, username, handleClose}) => {
   const { auth }: { auth: any } = useAuth();
-  const [nameValue, setInputValue] = React.useState('');
-  const isNameValueValid = (nameValue.length < 32) && (nameValue.length > 0);
   const navigate = useNavigate();
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
-  };
-
   const handleAddFriend = () => {
-    if (isNameValueValid) {
       sendInvite();
       handleClose();
-    }
   }
 
   const handleError = (errorCode: string) => {
@@ -34,7 +27,7 @@ const AddFriendDialog: React.FC<DialogProps> = ({ open, handleClose }) => {
 
   const sendInvite = async () => {
     try {
-      const response = await inviteFriendName(auth.token, nameValue);
+      const response = await inviteFriendName(auth.token, username);
     } catch (error: any) {
       if (error.response) {
         if (error.response.status === 401) {
@@ -54,28 +47,12 @@ const AddFriendDialog: React.FC<DialogProps> = ({ open, handleClose }) => {
 
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" sx={dialogStyles.dialogPaper}>
-      <DialogTitle id="form-dialog-title" sx={dialogStyles.title}>Type the username to add</DialogTitle>
+      <DialogTitle id="form-dialog-title" sx={dialogStyles.title}>Are you sure you want to invite {username} to friends?</DialogTitle>
       <DialogContent sx={dialogStyles.inputField}>
-        <TextField
-          InputProps={{
-            sx: dialogStyles.inputField
-          }}
-          InputLabelProps={{
-            sx: dialogStyles.inputLabel
-          }}
-          autoFocus
-          margin="dense"
-          id="AddFriendUsermame"
-          label="Friend Username"
-          type="text"
-          fullWidth
-          value={nameValue}
-          onChange={handleInputChange}
-        />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleAddFriend} sx={dialogStyles.styleButton}>
-          Confirm
+          Yes
         </Button>
         <Button onClick={handleClose} sx={dialogStyles.styleButton}>
           Cancel
@@ -85,4 +62,4 @@ const AddFriendDialog: React.FC<DialogProps> = ({ open, handleClose }) => {
   );
 }
 
-export default AddFriendDialog;
+export default AddFriendFromListDialog;

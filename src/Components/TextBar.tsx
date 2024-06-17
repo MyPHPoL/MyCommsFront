@@ -37,8 +37,6 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Handle the selected file
-    console.log(file);
     if (event.target.files && event.target.files.length > 0) {
       setFile(event.target.files[0]);
     }
@@ -93,7 +91,7 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
       </button>
 
       <div className="absolute bottom-full right-1 my-2">
-        {gifMenuOpen && <GifMenu addMessage={addMessage} />}
+        {gifMenuOpen && <GifMenu addMessage={addMessage}/>}
       </div>
 
       <div className="absolute bottom-full right-1 my-2">
@@ -115,7 +113,7 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
 
 export default TextBar;
 
-const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | null) => void }) => {
+const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | null) => void}) => {
 
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
   const [keyword, setKeyword] = useState("");
@@ -184,7 +182,7 @@ const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | nu
   }
 
   useEffect(() => {
-    let isMounted = true; // something, something not to render when component is unmounted
+    let isMounted = true; // not to render when component is unmounted
     const controller = new AbortController(); // cancels request when component unmounts
 
     if (isMounted) {
@@ -195,8 +193,6 @@ const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | nu
       isMounted = false;
       controller.abort();
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -221,7 +217,7 @@ const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | nu
             <li>
               {favoriteGifs.map((gif) => (
                 <div key={gif.gifUrl} className='m-2 break-inside-avoid'>
-                    <Gif gif={gif} addMessage={addMessage} checkIfFavorite={checkIfFavorite} addFavorite={addFavorite} deleteFavorite={deleteFavorite} />
+                    <Gif gif={gif} addMessage={addMessage} checkIfFavorite={checkIfFavorite} addFavorite={addFavorite} deleteFavorite={deleteFavorite}/>
                 </div>
               ))}
             </li>
@@ -230,7 +226,7 @@ const GifMenu = ({ addMessage }: { addMessage: (message: string, file: File | nu
             <li>
               {gifs.map((gif) => (
                 <div key={gif.gifUrl} className='m-2 break-inside-avoid'>
-                    <Gif gif={gif} addMessage={addMessage} checkIfFavorite={checkIfFavorite} addFavorite={addFavorite} deleteFavorite={deleteFavorite} />
+                    <Gif gif={gif} addMessage={addMessage} checkIfFavorite={checkIfFavorite} addFavorite={addFavorite} deleteFavorite={deleteFavorite}/>
                 </div>
               ))}
             </li>
@@ -250,7 +246,7 @@ export interface GifProps2 {
 }
 
 
-const Gif = ({ gif, addMessage, checkIfFavorite, addFavorite, deleteFavorite }: GifProps2) => {
+const Gif = ({ gif, addMessage, checkIfFavorite, addFavorite, deleteFavorite}: GifProps2) => {
   return (
     <div className='group relative'>
       <div style={{width: '180px', height: (gif.previewHeight / gif.previewWidth * 180)}}> { /* to properly load the gif while also using lazy load, image needs a fixed sized, because before loading it has 0 widht and height so it loads */}

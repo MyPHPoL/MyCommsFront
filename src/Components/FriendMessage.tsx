@@ -1,18 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { RiAttachment2 } from "react-icons/ri";
-import { FaRegSmile } from "react-icons/fa";
-import { IoSend } from "react-icons/io5";
-import { HiGif } from "react-icons/hi2";
 import { useLocation, useParams } from "react-router-dom";
-import { IoRefreshOutline } from "react-icons/io5";
 import { UserAvatar } from "./IconLib";
-import { MessageProps } from "./Channel";
+import { AuthorProps, MessageProps, MessagePropsWithAuthor } from "./Channel";
 import { Message } from "./Message";
 import TextBar from "./TextBar";
-import { getAllMessagesFromUser, getUser, sendPrivateMessageForm } from "../Api/axios";
+import { getAllDetailedMessagesFromUser, getUser, sendPrivateMessageForm } from "../Api/axios";
 import useAuth from "../Hooks/useAuth";
 import { enqueueSnackbar } from "notistack";
-import { MessagePropsWithDelete } from "./Message";
 import { UserProps } from "./User";
 
 export interface FriendProps {
@@ -29,10 +23,12 @@ function FriendMessage() {
   const [user, setUser] = useState<UserProps>();
   const location = useLocation();
   const [toBeRemovedId, settoBeRemoved] = useState('');
-
+  const [author, setAuthor] = useState<AuthorProps>({ username: '', id: '', creationDate: '', avatar: '' }); // needs to be initialized with anything, the value is overwritten immediately on start
+  const [self, setSelf] = useState<AuthorProps>({ username: '', id: '', creationDate: '', avatar: '' }); // needs to be initialized with anything, the value is overwritten immediately on start
   const removeMessage = (id: string) => {
     settoBeRemoved(id);
   }
+
   useEffect(() => {
     if (UserId && (location.pathname.startsWith(`/friends/${UserId}`))) {
       getUser(auth.token, UserId || '').then((response) => {
@@ -45,6 +41,22 @@ function FriendMessage() {
   }, [UserId]);
 
   useEffect(() => {
+      getUser(auth.token, auth.id).then((response) => {
+        setSelf(response.data);
+      }).catch((error: any) => {
+        enqueueSnackbar("We couldn't load user info. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      })
+  }, [auth.id]);
+
+  useEffect(() => {
+    getUser(auth.token, auth.id).then((response) => {
+      setAuthor(response.data);
+    }).catch((error: any) => {
+      enqueueSnackbar("We couldn't load user info. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+    })
+  }, []);
+
+  useEffect(() => {
     chatWindowRef.current?.scrollIntoView({ behavior: 'auto' });
   },);
 
@@ -55,15 +67,17 @@ function FriendMessage() {
       }
     }
   }, [toBeRemovedId])
+
   const addMessageForm = async (body: string, file: File | null) => {
     try {
       const response = await sendPrivateMessageForm(auth.token, UserId || '', body, '0', file);
-      const newMessage: MessageProps = {
+      const newMessage: MessagePropsWithAuthor = {
         id: response.data.id,
         authorId: response.data.authorId,
         body: response.data.body,
         creationDate: response.data.creationDate,
-        attachment: response.data.attachment
+        attachment: response.data.attachment,
+        author: self
       };
       setMessages((messages) => [...messages, newMessage]);
     } catch (error: any) {
@@ -73,7 +87,7 @@ function FriendMessage() {
 
   const fetchAllMessages = async () => {
     try {
-      const response = await getAllMessagesFromUser(auth.token, UserId || '');
+      const response = await getAllDetailedMessagesFromUser(auth.token, UserId || '');
       setMessages(response.data);
     } catch (error: any) {
       enqueueSnackbar("We couldn't load messagess. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
@@ -90,10 +104,10 @@ function FriendMessage() {
         {user?.username}
       </div>
       <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 border-tertiary w-full'>
-        {messages.map(({ id, authorId, body, creationDate, attachment }: MessageProps) => (
+        {messages.map(({ id, body, creationDate, attachment}: MessageProps) => (
           <Message
             id={id}
-            authorId={authorId}
+            author={author}
             body={body}
             creationDate={creationDate}
             attachment={attachment}
@@ -106,12 +120,11 @@ function FriendMessage() {
       <TextBar
         addMessage={addMessageForm}
         name={user?.username || 'this friend'}
-        widthmsg={15}//temporary hardcoded value, I was not the creator of this code so will wait for the original creator to fix this
+        widthmsg={15}
         refreshMessages={fetchAllMessages}
       />
     </div>
   );
-
 }
 
 

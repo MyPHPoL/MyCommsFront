@@ -43,7 +43,7 @@ export default function TopbarServer({
   const handleCreateClose = () => {
     setCreateOpen(false);
   };
-  
+
   return (
     <div>
       <div className="h-auto w-auto flex flex-row bg-primary">
@@ -59,21 +59,20 @@ export default function TopbarServer({
           </i>
         </ul>
         <CreateServerDialog
-        open={createOpen}
-        handleClose={handleCreateClose}
-        handleAddServer={handleAddServer}
+          open={createOpen}
+          handleClose={handleCreateClose}
+          handleAddServer={handleAddServer}
         />
         <JoinServerDialog
-        open={joinOpen}
-        handleClose={handleJoinClose}
-        handleJoinServer={handleAddServer}
+          open={joinOpen}
+          handleClose={handleJoinClose}
+          handleJoinServer={handleAddServer}
         />
-        {/*tu dodac nowy dialog na join */}
         <ul className="m-4 first:my-0 last:my-0 flex flex-row">
           {servers?.map(({ id, name, picture }) => (
             <li className="mr-2" key={id}>
               <Link to={`/server/${id}`}>
-                <ServerButton name={name ? name : 'undefined server name'} picture={picture ? "https://localhost:7031/file/"+picture : undefined} />
+                <ServerButton name={name ? name : 'undefined server name'} picture={picture ? "https://localhost:7031/file/" + picture : undefined} />
               </Link>
             </li>
           ))}

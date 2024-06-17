@@ -1,10 +1,7 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
-import { enqueueSnackbar } from "notistack";
-import { useNavigate } from "react-router-dom";
-import { deleteChannel, deleteServer, editServer } from "../../Api/axios";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { editServer } from "../../Api/axios";
 import useAuth from "../../Hooks/useAuth";
 import { dialogStyles } from "./DialogStyles";
-import { ChannelProps } from "../Channel";
 import { MuiFileInput } from "mui-file-input";
 import CloseIcon from '@mui/icons-material/Close'
 import { useEffect, useState } from "react";
@@ -12,17 +9,15 @@ import { FaEnvelope, FaUser } from "react-icons/fa";
 import React from "react";
 
 interface DialogProps {
-    open: boolean; /* Whether the dialog is open or not */
-    handleClose: () => void; /* Function to close the dialog */
-    type?: string; /* Type of the dialog, we might change it to an enum later */
-    actions?: React.ReactNode; /* Optional custom actions for the dialog */
+    open: boolean;
+    handleClose: () => void;
     passedName: string;
     passedDesc: string;
     serverId: string;
 }
 
-const EditServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, passedName, passedDesc, serverId }) => {
-    const nameRegex = /^.{1,32}$/; //using the regex does not work, currently using a temp fix
+const EditServerDialog: React.FC<DialogProps> = ({ open, handleClose, passedName, passedDesc, serverId }) => {
+    const nameRegex = /^.{1,32}$/;
     const descRegex = /^.{0,128}$/;
     const { auth }: { auth: any } = useAuth();
     const [name, setName] = useState(passedName);
@@ -33,9 +28,11 @@ const EditServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, p
     const [descriptionFocus, setDescriptionFocus] = useState(false);
     const [file, setFile] = React.useState<File | null>(null);
     const [errMsg, setErrMsg] = useState("");
+
     const handlePictureChange = (newFile: File | null): void => {
         setFile(newFile);
     }
+
     // clear error message
     useEffect(() => {
         setErrMsg("");
@@ -46,6 +43,7 @@ const EditServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, p
         setDescription('');
         handleClose();
     }
+
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         if (name === passedName && description === passedDesc && !file) {
@@ -83,12 +81,15 @@ const EditServerDialog: React.FC<DialogProps> = ({ open, handleClose, actions, p
             }
         }
     };
+
     useEffect(() => {
         setValidName(nameRegex.test(name));
     }, [name]);
+
     useEffect(() => {
         setValidDescription(descRegex.test(description));
     }, [description]);
+
     return (
         <div>
             <Dialog
