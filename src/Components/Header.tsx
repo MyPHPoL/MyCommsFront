@@ -16,6 +16,7 @@ import { useTitle } from '../Hooks/useTitle';
 import { IoLogInOutline } from "react-icons/io5";
 import SettingsDialog from './DialogPopups/EditUserDialog';
 import Dashboard from './Dashboard';
+import { useSignalR } from '../Hooks/useSignalR';
 
 function Header() {
   const [activeTopbar, setActiveTopbar] = useState<string | null>('servers');
@@ -27,6 +28,7 @@ function Header() {
   const [toRemoveIdServer, setToRemoveIdServer] = useState('');
   const [toRemoveIdFriend, setToRemoveIdFriend] = useState('');
   const [openSettings, setOpenSettings] = useState(false);
+  const signalR = useSignalR();
 
   const handleDialogClose = () => {
     setOpenSettings(false);
@@ -44,6 +46,26 @@ function Header() {
     setTmpServer(server);
   }
 
+  useEffect(() => {
+    if (signalR === null) {
+      console.log("SignalR is null");
+      return
+    }
+
+    const startConnection = async () => {
+      try {
+        await signalR.start();
+        console.log("SignalR connected")
+      } catch (error) {
+        console.log("SignalR Connection Error: ", error)
+        setTimeout(startConnection, 5000)
+      }
+    }
+    startConnection()
+    return () => {
+      signalR.stop()
+    }
+  }, [])
 
   useEffect(() => {
     if (tmpServer) {
