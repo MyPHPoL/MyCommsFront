@@ -4,7 +4,7 @@ import { UserAvatar } from "./IconLib";
 import { AuthorProps, MessageProps } from "./Channel";
 import { Message } from "./Message";
 import TextBar from "./TextBar";
-import { getAllMessagesFromUser, getUser, sendPrivateMessageForm } from "../Api/axios";
+import { getAllDetailedMessagesFromUser, getUser, sendPrivateMessageForm } from "../Api/axios";
 import useAuth from "../Hooks/useAuth";
 import { enqueueSnackbar } from "notistack";
 import { UserProps } from "./User";
@@ -79,7 +79,7 @@ function FriendMessage() {
 
   const fetchAllMessages = async () => {
     try {
-      const response = await getAllMessagesFromUser(auth.token, UserId || '');
+      const response = await getAllDetailedMessagesFromUser(auth.token, UserId || '');
       setMessages(response.data);
     } catch (error: any) {
       enqueueSnackbar("We couldn't load messagess. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });

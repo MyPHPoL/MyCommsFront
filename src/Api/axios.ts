@@ -47,6 +47,7 @@ const BLOCKLIST_ADD = '/BlockList/Add?userId=';
 const BLOCKLIST_REMOVE = '/BlockList/Delete?userId=';
 const BLOCKLIST_CHECK = '/BlockList/IsBlocked?userId=';
 const GET_ALL_DETAILED_CHANNEL_MESSAGES = '/Message/GetAllDetailed?channelId=';
+const GET_ALL_DETAILED_MESSAGES_FROM_USER_URL = '/PrivateMessage/GetDetailed/';
 
 export const registerUser = async (username: string, email: string, password: string, repeatPassword: string) => {
     const response = await axios.post(
@@ -722,6 +723,19 @@ export const checkBlocked = async (token: string, id: string) => {
 export const getAllDetailedMessages = async (token: string, id: string) => {
     const response = await axios.get(
         BASE_URL+GET_ALL_DETAILED_CHANNEL_MESSAGES+id,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        },
+    );
+    return response;
+};
+
+export const getAllDetailedMessagesFromUser = async (token: string, id: string) => {
+    const response = await axios.get(
+        BASE_URL+GET_ALL_DETAILED_MESSAGES_FROM_USER_URL+id,
         {
             headers: { 
                 'Content-Type': 'application/json',
