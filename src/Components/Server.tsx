@@ -26,6 +26,7 @@ import EditServerDialog from "./DialogPopups/EditServerDialog";
 import { useLocation } from 'react-router-dom';
 import AddChannelDialog from "./DialogPopups/AddChannelDialog";
 import LeaveServerConfirmation from "./DialogPopups/LeaveServerConfirmation";
+import { useSignalR } from "../Hooks/useSignalR";
 
 export interface ServerProps {
   id: string;
@@ -66,6 +67,7 @@ function Server({ removeServer }: AdditionalProps) {
   const [editDesc, setEditDesc] = useState(server?.description ?? "");
   const [editName, setEditName] = useState(server?.name ?? "");
   const location = useLocation();
+  const signalR = useSignalR();
 
   const handleServerEditOpen = () => {
     setServerEditOpen(true);
@@ -122,11 +124,13 @@ function Server({ removeServer }: AdditionalProps) {
   }
 
   const pushChannel = (channel: ChannelProps) => {
-    setTmpChannel(channel);
+    // not needed with signalR
+    // setTmpChannel(channel);
   }
 
   const removeChannel = (id: string) => {
-    settoBeRemoved(id);
+    // not needed with signalR
+    //settoBeRemoved(id);
   }
 
   const handleRemoveServer = (id: string) => {
@@ -147,12 +151,85 @@ function Server({ removeServer }: AdditionalProps) {
   }
 
   const setChannelEdit = (channel: ChannelProps) => {
-    setEditedChannel(channel);
+    // not needed with signalR
+    //setEditedChannel(channel);
   }
   const handleDelete = (channelId: string) => {
     setPassedId(channelId);
     handleDeleteOpen();
   }
+  
+  useEffect(() => {
+    if (signalR === null || ServerId === undefined) return
+    
+    
+    const joinServer = async () => {
+      try {
+        await signalR.joinServer(ServerId);
+      } catch (error: any){
+        enqueueSnackbar("Failed to join server on SignalR", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      }
+    }
+    joinServer()
+    
+    signalR.onEditServer((editedServer) => {
+      if (ServerId === undefined || ServerId !== editedServer.id) {
+        return;
+      }
+      
+      const newServer = {
+        id: editedServer.id,
+        name: editedServer.name,
+        description: editedServer.description,
+        picture: server?.picture as string,
+        ownerId: server?.ownerId as string
+      }
+      setServer(newServer);
+    });
+    
+    signalR.onEditChannel((editedChannel) => {
+      
+      const newChannel = {
+        id: editedChannel.id,
+        name: editedChannel.name,
+        description: editedChannel.description ?? undefined,
+        serverId: editedChannel.serverId
+      }
+      setEditedChannel(newChannel);
+    });
+    
+    signalR.onDeleteChannel((channelId) => {
+      settoBeRemoved(channelId)
+    })
+    
+    signalR.onCreateChannel((newChannel) => {
+      if (newChannel.serverId == ServerId) {
+        const channel = {
+          id: newChannel.id,
+          name: newChannel.name,
+          description: newChannel.description ?? undefined,
+          serverId: newChannel.serverId
+        }
+        setTmpChannel(channel)
+      }
+    })
+
+    return () => {
+      signalR.offCreateChannel();
+      signalR.offDeleteChannel();
+      signalR.offEditChannel();
+      signalR.offEditServer();
+      const leaveServer = async () => {
+        try {
+          await signalR.leaveServer(ServerId);
+        }
+        catch (error: any) {
+        }
+      }
+      leaveServer()
+    }
+  },[ServerId])
+  
   useEffect(() => {
     if (editedChannel) {
       if (channels) {

@@ -2,34 +2,44 @@ import * as signalR from "@microsoft/signalr";
 
 
 export interface MessageResponse {
-    id: number,
-    channelId: number,
+    id: string,
+    channelId: string,
     authorId: string,
     body: string,
-    creationDate: Date,
-    attachment: string
+    creationDate: string,
+    attachment: string | null
 }
 
 export interface ChannelResponse {
-    id: number,
+    id: string,
     name: string,
     description: string | null,
-    serverId: number
+    serverId: string
+}
+
+export interface ServerResponse {
+    id: string,
+    name: string,
+    description: string
 }
 
 export interface SignalRClient {
     start(): Promise<void>
-    stop(): void
-    joinServer(serverId: number): void,
-    leaveServer(serverId: number): void,
+    stop(): Promise<void>,
+    joinServer(serverId: string): Promise<void>,
+    leaveServer(serverId: string): Promise<void>,
     onReceiveMessage(callback: (message: MessageResponse) => void): void,
-    onDeleteMessage(callback: (messageId: number) => void): void,
+    onDeleteMessage(callback: (messageId: string) => void): void,
     onCreateChannel(callback: (channel: ChannelResponse) => void): void,
-    onDeleteChannel(callback: (channelId: number) => void): void,
-    offReceiveMessage(): void
-    offDeleteMessage(): void
-    offCreateChannel(): void
-    offDeleteChannel(): void
+    onDeleteChannel(callback: (channelId: string) => void): void,
+    onEditChannel(callback: (channel: ChannelResponse) => void): void,
+    onEditServer(callback: (server: ServerResponse) => void): void,
+    offReceiveMessage(): void,
+    offDeleteMessage(): void,
+    offCreateChannel(): void,
+    offDeleteChannel(): void,
+    offEditChannel(): void,
+    offEditServer(): void
 }
 
 export class SignalRClientImpl implements SignalRClient {
@@ -45,26 +55,28 @@ export class SignalRClientImpl implements SignalRClient {
     }
     
     start(): Promise<void> {
+        this.connection.on("dummy", () => {});
         return this.connection.start();
     }
     
-    stop(): void {
-        this.connection.stop();
+    stop(): Promise<void> {
+        this.connection.off("dummy");
+        return this.connection.stop();
     }
 
-    joinServer(serverId: number): void {
-        this.connection.invoke("JoinServer", serverId);
+    joinServer(serverId: string): Promise<void> {
+        return this.connection.invoke("JoinServer", serverId);
     }
 
-    leaveServer(serverId: number): void {
-        this.connection.invoke("LeaveServer", serverId);
+    leaveServer(serverId: string): Promise<void> {
+        return this.connection.invoke("LeaveServer", serverId);
     }
 
     onReceiveMessage(callback: (message: MessageResponse) => void): void {
         this.connection.on("ReceiveMessage", callback);
     }
 
-    onDeleteMessage(callback: (messageId: number) => void): void {
+    onDeleteMessage(callback: (messageId: string) => void): void {
         this.connection.on("DeleteMessage", callback);
     }
 
@@ -72,8 +84,16 @@ export class SignalRClientImpl implements SignalRClient {
         this.connection.on("CreateChannel", callback);
     }
 
-    onDeleteChannel(callback: (channelId: number) => void): void {
+    onDeleteChannel(callback: (channelId: string) => void): void {
         this.connection.on("DeleteChannel", callback);
+    }
+    
+    onEditChannel(callback: (channel: ChannelResponse) => void): void {
+        this.connection.on("EditChannel", callback);
+    }
+    
+    onEditServer(callback: (server: ServerResponse) => void): void {
+        this.connection.on("EditServer", callback);
     }
     
     offReceiveMessage(): void {
@@ -91,4 +111,13 @@ export class SignalRClientImpl implements SignalRClient {
     offDeleteChannel(): void {
         this.connection.off("DeleteChannel");
     }
+    
+    offEditChannel(): void {
+        this.connection.off("EditChannel");
+    }
+
+    offEditServer(): void {
+        this.connection.off("EditServer");
+    }
+    
 }

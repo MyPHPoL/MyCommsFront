@@ -48,16 +48,13 @@ function Header() {
 
   useEffect(() => {
     if (signalR === null) {
-      console.log("SignalR is null");
       return
     }
 
     const startConnection = async () => {
       try {
         await signalR.start();
-        console.log("SignalR connected")
       } catch (error) {
-        console.log("SignalR Connection Error: ", error)
         setTimeout(startConnection, 5000)
       }
     }
