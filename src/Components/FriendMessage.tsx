@@ -17,10 +17,10 @@ export interface FriendProps {
 
 function FriendMessage() {
   const { UserId } = useParams(); // userId is the name of the variable in the URL
-  const [messages, setMessages] = useState<MessageProps[]>([]);
+  const [messages, setMessages] = useState<MessagePropsWithAuthor[]>([]);
   const chatWindowRef = useRef<HTMLDivElement | null>(null); // used to scroll to the bottom of the chat
   const { auth }: { auth: any } = useAuth(); // id, username, email, password, token
-  const [user, setUser] = useState<UserProps>();
+  const [user, setUser] = useState<UserProps>({ id: '', username: '', email: '', creationDate: new Date(), avatar: '' });
   const location = useLocation();
   const [toBeRemovedId, settoBeRemoved] = useState('');
   const [author, setAuthor] = useState<AuthorProps>({ username: '', id: '', creationDate: '', avatar: '' }); // needs to be initialized with anything, the value is overwritten immediately on start
@@ -41,11 +41,11 @@ function FriendMessage() {
   }, [UserId]);
 
   useEffect(() => {
-      getUser(auth.token, auth.id).then((response) => {
-        setSelf(response.data);
-      }).catch((error: any) => {
-        enqueueSnackbar("We couldn't load user info. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
-      })
+    getUser(auth.token, auth.id).then((response) => {
+      setSelf(response.data);
+    }).catch((error: any) => {
+      enqueueSnackbar("We couldn't load user info. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+    })
   }, [auth.id]);
 
   useEffect(() => {
@@ -98,21 +98,23 @@ function FriendMessage() {
       <div className='flex-row flex w-full pt-2 pb-4 pl-[20px] bg-tertiary h-auto text-5xl shadow-sg tracking-wider font-semibold text-white items-center'>
         Chat with:
         <div className='flex mx-2'>
-          {user?.avatar ? <UserAvatar name={user.username} picture={"https://localhost:7031/file/" + user.avatar} /> : <UserAvatar name={user?.username} />}
+          {user.avatar ? <UserAvatar name={user.username} picture={"https://localhost:7031/file/" + user.avatar} /> : <UserAvatar name={user.username} />}
         </div>
-        {user?.username}
+        {user.username}
       </div>
       <div className='items-center mt-0 ml-0 mx-auto px-0 overflow-y-auto mb-16 border-tertiary w-full'>
-        {messages.map(({ id, body, creationDate, attachment}: MessageProps) => (
-          <Message
-            id={id}
-            author={author}
-            body={body}
-            creationDate={creationDate}
-            attachment={attachment}
-            isPrivateMessage={true}
-            removeMessage={removeMessage}
-          />
+        {messages?.map(({ id, body, creationDate, attachment, author }) => (
+          <div key={id} className='border-tertiary'>
+            <Message
+              id={id}
+              author={author}
+              body={body}
+              creationDate={creationDate}
+              attachment={attachment}
+              isPrivateMessage={true}
+              removeMessage={removeMessage}
+            />
+          </div>
         ))}
         <div ref={chatWindowRef} />
       </div>
