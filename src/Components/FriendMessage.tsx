@@ -8,6 +8,7 @@ import { getAllDetailedMessagesFromUser, getUser, sendPrivateMessageForm } from 
 import useAuth from "../Hooks/useAuth";
 import { enqueueSnackbar } from "notistack";
 import { UserProps } from "./User";
+import { useSignalR } from "../Hooks/useSignalR";
 
 export interface FriendProps {
   id: string;
@@ -25,8 +26,10 @@ function FriendMessage() {
   const [toBeRemovedId, settoBeRemoved] = useState('');
   const [author, setAuthor] = useState<AuthorProps>({ username: '', id: '', creationDate: '', avatar: '' }); // needs to be initialized with anything, the value is overwritten immediately on start
   const [self, setSelf] = useState<AuthorProps>({ username: '', id: '', creationDate: '', avatar: '' }); // needs to be initialized with anything, the value is overwritten immediately on start
+  const signalR = useSignalR();
   const removeMessage = (id: string) => {
-    settoBeRemoved(id);
+    // not needed with signalr
+    // settoBeRemoved(id);
   }
 
   useEffect(() => {
@@ -39,6 +42,61 @@ function FriendMessage() {
     }
     fetchAllMessages();
   }, [UserId]);
+  
+  useEffect( () => {
+    if (signalR === null) {
+      enqueueSnackbar("Failed to connect with backend using SignalR", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      return
+    }
+    if (UserId === undefined) return
+    
+    const joinFriend = async () => {
+      try {
+        await signalR.joinFriend(UserId);
+      } catch (error: any) {
+        enqueueSnackbar("Failed to join friend in SignalR", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      }
+    }
+    
+    joinFriend()
+
+    return () => {
+      const leaveFriend = async () => {
+        try {
+          await signalR.leaveFriend(UserId);
+        } catch (error: any) {
+          enqueueSnackbar("Failed to leave friend in SignalR", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+        }
+      }
+      
+      leaveFriend()
+    }
+  }, [UserId])
+  
+  useEffect(() => {
+    if (signalR === null) return
+    signalR.onCreatePrivateMessage((message) => {
+      getUser(auth.token, message.authorId).then((response) => {
+        const newMessage: MessagePropsWithAuthor = {
+          id: message.id,
+          body: message.body,
+          creationDate: message.creationDate,
+          attachment: null,
+          author: response.data
+        }
+        setMessages((messages) => [...messages, newMessage]);
+      })
+    })
+    
+    signalR.onDeletePrivateMessage((id) => {
+      settoBeRemoved(id)
+    })
+    
+    return () => {
+      signalR.offCreatePrivateMessage()
+      signalR.offDeletePrivateMessage()
+    }
+  }, [])
 
   useEffect(() => {
     getUser(auth.token, auth.id).then((response) => {
@@ -78,7 +136,8 @@ function FriendMessage() {
         attachment: response.data.attachment,
         author: self
       };
-      setMessages((messages) => [...messages, newMessage]);
+      // not needed with signalR
+      //setMessages((messages) => [...messages, newMessage]);
     } catch (error: any) {
       enqueueSnackbar("We couldn't send your message. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
     };

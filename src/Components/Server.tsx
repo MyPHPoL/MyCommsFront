@@ -161,8 +161,6 @@ function Server({ removeServer }: AdditionalProps) {
   
   useEffect(() => {
     if (signalR === null || ServerId === undefined) return
-    
-    
     const joinServer = async () => {
       try {
         await signalR.joinServer(ServerId);
