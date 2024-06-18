@@ -7,11 +7,11 @@ interface SignalRProviderProps {
     children: ReactNode;
 }
 
-export const SignalRProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const SignalRProvider: React.FC<{ token: string, children: ReactNode }> = ({ token, children }) => {
     const [connection, setConnection] = useState<SignalRClient | null>(null)
 
     useEffect(() => {
-        const signalR: SignalRClient = new SignalRClientImpl();
+        const signalR: SignalRClient = new SignalRClientImpl(token);
         setConnection(signalR)
     }, [])
 
