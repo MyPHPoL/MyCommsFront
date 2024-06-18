@@ -73,7 +73,6 @@ function FriendMessage() {
       const response = await sendPrivateMessageForm(auth.token, UserId || '', body, '0', file);
       const newMessage: MessagePropsWithAuthor = {
         id: response.data.id,
-        authorId: response.data.authorId,
         body: response.data.body,
         creationDate: response.data.creationDate,
         attachment: response.data.attachment,
@@ -118,10 +117,10 @@ function FriendMessage() {
         <div ref={chatWindowRef} />
       </div>
       <TextBar
+        refreshMessages={fetchAllMessages}
         addMessage={addMessageForm}
         name={user?.username || 'this friend'}
         widthmsg={15}
-        refreshMessages={fetchAllMessages}
       />
     </div>
   );

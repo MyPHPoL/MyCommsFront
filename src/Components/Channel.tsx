@@ -5,6 +5,8 @@ import useAuth from "../Hooks/useAuth";
 import { getAllDetailedMessages, getChannelInfo, getUser, sendMessageForm } from "../Api/axios";
 import { Message } from "./Message";
 import TextBar from "./TextBar";
+import { useSignalR } from "../Hooks/useSignalR";
+import { MessageResponse } from "../SignalR";
 
 export interface ChannelProps {
   id: string;
@@ -15,7 +17,6 @@ export interface ChannelProps {
 
 export interface MessageProps {
   id: string,
-  authorId: string,
   body: string,
   creationDate: string
   attachment: string | null
@@ -23,7 +24,6 @@ export interface MessageProps {
 
 export interface MessagePropsWithAuthor {
   id: string,
-  authorId: string,
   body: string,
   creationDate: string
   attachment: string | null
@@ -45,7 +45,54 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   const { auth }: { auth: any } = useAuth();
   const [toBeRemovedId, settoBeRemoved] = useState('');
   const [User, setUser] = useState<AuthorProps>({ username: '', id: '', creationDate: '', avatar: '' });
+  const [newMessage, setNewMessage] = useState<MessageResponse | null>(null)
+  const signalR = useSignalR();
 
+
+  useEffect( () => {
+      if (channelInfo === undefined || newMessage === null || channelInfo.id != newMessage.channelId) {
+        return;
+      }
+
+      const newMessageAsProp: MessageProps = {
+        id: newMessage.id,
+        body: newMessage.body,
+        creationDate: newMessage.creationDate,
+        attachment: newMessage.attachment,
+      }
+      const authorId = newMessage.authorId
+
+      getUser(auth.token, authorId).then((response) => {
+        const messageWithAuthor = {
+          ...newMessageAsProp,
+          author: response.data
+        }
+        setMessages((messages) => [...messages, messageWithAuthor]);
+      }).catch((error: any) => {
+        enqueueSnackbar("We couldn't load user info. Please try again later: SignalR", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+      })
+  }, [newMessage])
+
+  useEffect( () => {
+  }, [channelInfo])
+
+  useEffect(() => {
+    if (signalR === null) {
+      return
+    }
+
+    signalR.onReceiveMessage((message) => {
+      setNewMessage(message)
+    })
+    
+    signalR.onDeleteMessage((messageId) => settoBeRemoved(messageId))
+    
+    return () => { 
+      signalR.offDeleteMessage();
+      signalR.offReceiveMessage(); 
+    }
+
+  },[])
   useEffect(() => {
     getUser(auth.token, auth.id).then((response) => {
       setUser(response.data);
@@ -56,15 +103,15 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   const addMessageForm = async (body: string, file: File | null) => {
     try {
       const response = await sendMessageForm(auth.token, ChannelId || '', body, '0', file);
-      const newMessage: MessagePropsWithAuthor = {
-        id: response.data.id,
-        authorId: response.data.authorId,
-        body: response.data.body,
-        creationDate: response.data.creationDate,
-        attachment: response.data.attachment,
-        author: User
-      };
-      setMessages((messages) => [...messages, newMessage]);
+      // const newMessage: MessagePropsWithAuthor = {
+      //   id: response.data.id,
+      //   body: response.data.body,
+      //   creationDate: response.data.creationDate,
+      //   attachment: response.data.attachment,
+      //   author: User
+      // };
+      // not needed with signalR
+      //setMessages((messages) => [...messages, newMessage]);
     } catch (error: any) {
       enqueueSnackbar("We couldn't send your message. Please try again later", { variant: 'error', preventDuplicate: true, anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
     };
@@ -90,7 +137,8 @@ function Channel({ widthmsg }: { widthmsg: number }) {
   }
 
   const removeMessage = (id: string) => {
-    settoBeRemoved(id);
+    // it doesnt need to do anything now because of signalR
+    //settoBeRemoved(id);
   }
 
   useEffect(() => {
