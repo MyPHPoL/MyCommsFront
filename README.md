@@ -62,6 +62,7 @@ npm start
 - emoji-picker-react
 - mui-file-input
 - react-lazy-load-image-component
+- signalr
 
 ## Made By
 
