@@ -44,9 +44,9 @@ export const Message = ({ id, author, body, creationDate, attachment, isPrivateM
               onClick={() => handleDialogOpen()}>
               <MdDeleteForever size={25} />
             </button> : null}
-            <p className="float-left mr-2 mt-1">
+            <div className="float-left mr-2 mt-1">
             {author.avatar ? <UserAvatar name={author.username} picture={"https://localhost:7031/file/" + author.avatar} /> : <UserAvatar name={author.username} />}
-            </p>
+            </div>
           <p className='text-left font-semibold text-white mr-2 cursor-pointer'>
             {author.username}
             <small className='text-xs text-left font-semibold text-gray-500 ml-2'>

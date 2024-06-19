@@ -23,7 +23,7 @@ export interface GifProps {
 }
 
 // input field at the bottom of the page
-const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: (message: string, file: File | null) => void, name: string, widthmsg: number, refreshMessages: () => void }) => {
+const TextBar = ({ addMessage, name, widthmsg, refreshMessages}: { addMessage: (message: string, file: File | null) => void, name: string, widthmsg: number, refreshMessages: () => void }) => {
   const [emojiMenuOpen, setEmojiMenuOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [gifMenuOpen, setGifMenuOpen] = useState(false);
@@ -75,7 +75,7 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
         accept="image/png, image/jpeg, application/pdf, image/gif"
       />
       {/* This is a button to refresh all channel messages */}
-      <button onClick={refreshMessages}>
+      <button type="button" onClick={refreshMessages}>
         <IoRefreshOutline size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
       <input
@@ -86,7 +86,7 @@ const TextBar = ({ addMessage, name, widthmsg, refreshMessages }: { addMessage: 
         className='w-full bg-transparent outline-none ml-0 mr-auto text-gray-300 placeholder-gray-500 cursor-text'
       />
       {/* This is a button that will open GIF menu */}
-      <button onClick={() => [setGifMenuOpen(!gifMenuOpen), setEmojiMenuOpen(false)]}>
+      <button type="button" onClick={() => [setGifMenuOpen(!gifMenuOpen), setEmojiMenuOpen(false)]}>
         <HiGif size='22' className='text-gray-300 mx-2 hover:text-gray-200' />
       </button>
 
