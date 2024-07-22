@@ -243,9 +243,9 @@ function Dashboard({ friends, servers, removeServer, removeFriend, mode, handleA
             {filteredFriends?.map((user: FriendProps) => (
               <div
                 key={user.id}
-                className='group flex-row flex w-full pt-2 pb-4 h-auto text-2xl font-semibold text-white items-center  '>
+                className='group flex-row flex w-full pt-2 pb-4 h-auto text-2xl font-semibold text-white items-center overflow-hidden'>
                 <Link to={`/friends/${user.id}`}>
-                  <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 min-w-[300px]  duration-300  hover:bg-yellow-500 hover:text-primary align-middle  ease-linear'>
+                  <div className='relative flex mr-2 bg-tertiary p-2 rounded-full items-center px-5 w-[430px]  duration-300  hover:bg-yellow-500 hover:text-primary align-middle ease-in group-hover:w-[300px]'>
 
                     <UserAvatar
                       name={user.username}
